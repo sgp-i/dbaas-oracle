@@ -1,0 +1,6 @@
+export ORACLE_SID="{{ ORACLE_SID }}"
+export ORACLE_HOME=$DB_HOME
+export PATH=$ORACLE_HOME/bin:$BASE_PATH
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
+export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib

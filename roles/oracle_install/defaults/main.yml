@@ -1,0 +1,83 @@
+---
+
+oracle_version: 11.2.0.1
+
+# Oracle Editions avaialble: EE, SEONE, SE
+oracle_edition: EE
+
+# installation mode. Avaialable modes are : INSTALL_DB_SWONLY, INSTALL_DB_AND_CONFIG
+install_mode: INSTALL_DB_SWONLY
+
+oracle_hostname: "{{ inventory_hostname }}"
+
+# location for temporary installation files
+oracle_tmp: /tmp/oracle
+
+oracle_base: /u01/app
+
+oracle_db_home: db_1 
+
+oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+oracle_db_name: db
+
+# password for the sysdba
+oracle_db_syspass: password
+
+oracle_db_mem: "450"
+
+oracle_user: 
+    - { name: oracle, id: 5001 }
+
+oracle_pass: "oracle123"
+
+oracle_group:   
+    - { name: oinstall, id: 54321 }
+
+oracle_dba_group: 
+    - { name: dba, id: 54322 }
+
+asm_oper_group: 
+    - { name: asmoper, id: 54328 }
+
+asm_admin_group: 
+    - { name: asmadmin, id: 54329 }
+
+asm_dba_group: 
+    - { name: asmdba, id: 54327 }
+
+# FILE_SYSTEM_STORAGE | ASM_STORAGE
+oracle_storage_type: ASM_STORAGE
+
+oracle_installer_path: "/home/{{ oracle_user  }}/software"
+
+# array  os images avaialbe
+oracle_images:
+    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip", version: "11.2.0.1" }
+    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
+    - { image: "{{ oracle_installer_path }}/linuxx64_12201_database.zip", version: "12.2.0.1" }
+
+oracle_pv: /dev/sdb
+
+oracle_vg: oravg
+
+oracle_bin_lv: orabinlv
+
+oracle_bin_fs: "{{ oracle_base }}/oracle"
+
+oracle_data_lv: oradatalv
+
+oracle_data_fs: "{{ oracle_base }}/data"
+
+#FSTYPE for Oracle filesystems.
+oracle_fstype: ext4
+
+# Whether to start Oracle Enterprise Manager DBconsole
+oracle_em: false
+
+oracle_swap_file: "/swapfile"
+
+# Swap size in MB 
+oracle_swap_size: 200
+
+selinux_mode: permissive
