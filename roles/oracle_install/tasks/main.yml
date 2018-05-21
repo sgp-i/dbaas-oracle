@@ -7,6 +7,8 @@
   failed_when: oracle_installed.rc == 0
 
 # TODO: Add entries for Public, Private, VIRTUAL, and SCAN using Vars
+# May not be needed in Charter Env
+# Just need to confirm that hostnames do resolve
 - name: ensure the hostname entry exist in /etc/hosts
   lineinfile:
     path: /etc/hosts
@@ -20,6 +22,7 @@
   stat: path="{{ oracle_pv }}"
   register: pv
 
+# May not be needed in Charter Env
 - include: usergroups.yml
 
 - include: filesystems.yml
