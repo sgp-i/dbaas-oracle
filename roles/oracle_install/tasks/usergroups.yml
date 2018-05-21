@@ -2,9 +2,9 @@
 
 - name: create initial groups for the oracle user
   group:
-    name={{ item.name }}
-    gid={{ item.id }}
-    state=present
+    name: "{{ item.name }}"
+    gid: "{{ item.id }}"
+    state: present
   with_items:
     - "{{ oracle_group }}"
     - "{{ oracle_dba_group }}"
@@ -14,21 +14,22 @@
 
 - name: create oracle user
   user:
-    name={{ item.name }}
-    group={{ oracle_group[0].name }}
-    uid={{ item.id }}
-    groups={{ oracle_dba_group[0].name }}
-    home=/home/{{ item.name }}
-    shell=/bin/bash password="{{ oracle_pass }}
-    append=yes
+    name: "{{ item.name }}"
+    group: "{{ oracle_group[0].name }}"
+    uid: "{{ item.id }}"
+    groups: "{{ oracle_dba_group[0].name }}"
+    home: "/home/{{ item.name }}"
+    shell: /bin/bash 
+    password: "{{ oracle_pass }}"
+    append: yes
   with_items:
     - "{{ oracle_user }}"
 
 - name: set oracle user environment
   lineinfile:
-    dest=/home/{{ oracle_user[0].name }}/.bashrc
-    state=present
-    line={{ item }}
+    dest: "/home/{{ oracle_user[0].name }}/.bashrc"
+    state: present
+    line: "{{ item }}"
   with_items:
     - "export TMP=/tmp"
     - "export TMPDIR=$TMP"
@@ -39,7 +40,6 @@
     - "export ORACLE_UNQNAME={{ ora_user_env.ORACLE_UNQNAME }}"
     - "export DB_HOME={{ ora_user_env.ORACLE_HOME }}"
     - "export ORACLE_HOME=$DB_HOME"
-    - "export PATH=$PATH:$ORACLE_HOME/bin"
     - "export NLS_LANG={{ ora_user_env.NLS_LANG }}"
     - "export ORACLE_TERM=xterm"
     - "export BASE_PATH=/usr/sbin:$PATH"
@@ -50,8 +50,8 @@
 
 - name: update PATH for oracle user
   lineinfile: 
-    path: /tmp/oracle/db_install.rsp
+    path: /home/{{ oracle_user[0].name }}/.bashrc
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
-    - { regex: PATH=, value: "$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin" }
+    - { regex: export PATH=, value: "$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin" }
