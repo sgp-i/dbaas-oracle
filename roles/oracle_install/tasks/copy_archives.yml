@@ -19,3 +19,4 @@
   file:
     path: "{{ oracle_tmp }}/database/copied"
     state: touch
+  when: unzipped.stat.exists == false
