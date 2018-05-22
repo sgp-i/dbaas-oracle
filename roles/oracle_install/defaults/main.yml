@@ -47,7 +47,7 @@ asm_dba_group:
     - { name: asmdba, id: 54327 }
 
 # FILE_SYSTEM_STORAGE | ASM_STORAGE
-oracle_storage_type: ASM_STORAGE
+oracle_storage_type: FILE_SYSTEM_STORAGE
 
 oracle_installer_path: "/tmp/oracle/software"
 
