@@ -49,13 +49,13 @@ asm_dba_group:
 # FILE_SYSTEM_STORAGE | ASM_STORAGE
 oracle_storage_type: ASM_STORAGE
 
-oracle_installer_path: "/home/{{ oracle_user  }}/software"
+oracle_installer_path: "/tmp/oracle/software"
 
 # array  os images avaialbe
 oracle_images:
     - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip", version: "11.2.0.1" }
     - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
-    - { image: "{{ oracle_installer_path }}/linuxx64_12201_database.zip", version: "12.2.0.1" }
+    - { image: "{{ oracle_installer_path }}/linux.x64_12201_database.zip", version: "12.2.0.1" }
 
 oracle_pv: /dev/sdb
 
