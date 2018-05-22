@@ -12,7 +12,7 @@
     dest: "{{ oracle_tmp }}" 
     remote_src: false 
     keep_newer: true 
-  when: item.version == "{{ oracle_version }}" and unzipped.stat.exists == false
+  when: item.version == oracle_version and unzipped.stat.exists == false
   with_items: "{{ oracle_images }}"
   
 - name: place a marker for the completion
