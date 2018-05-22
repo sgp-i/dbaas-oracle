@@ -13,7 +13,30 @@
   lineinfile:
     path: /etc/hosts
     regexp: "^{{ ansible_host }}"
-    line: "{{ ansible_host }} {{inventory_hostname}}"
+    line: "{{ ansible_host }} {{ inventory_hostname }}"
+
+- name: add the hostname and public ip's in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ etc_hosts.public_ip }} {{ etc_hosts.public_ip_hostnames | join(' ') }}"
+
+- name: add the hostname and private ip's in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ etc_hosts.private_ip }} {{ etc_hosts.private_ip_hostnames | join(' ') }}"
+
+- name: add the hostname and private ip's in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item.scan_ip }} {{ item.scan_hostname | join(' ') }}"
+    state: present
+  with_items:
+    - "{{ etc_hosts.listners }}"
+
+# - name: add lines in resolv.conf file
+#   lineinfile:
+#     path: /etc/resolv.conf
+#     line:    
 
 - name: set the hostname
   hostname: name="{{ inventory_hostname }}"
@@ -74,12 +97,12 @@
 - name: copy grid_env file
   copy:
     src: grid_env
-    dest: /home/{{ oracle_user }}/grid_env
+    dest: /home/{{ oracle_user[0].name }}/grid_env
 
 - name: copy db_env file
   copy:
     src: db_env
-    dest: /home/{{ oracle_user }}/db_env
+    dest: /home/{{ oracle_user[0].name }}/db_env
 
 - include: copy_archives.yml
 

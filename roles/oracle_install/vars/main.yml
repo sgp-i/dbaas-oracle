@@ -7,3 +7,32 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+
+
+etc_hosts:
+  public_ip: "<public_ip>"
+  public_ip_hostnames:
+    - "oel7-node1.localdomain"
+    - "oel7-node1"
+
+  private_ip: "<private_ip>"
+  private_ip_hostnames:
+    - "oel7-node1-priv.localdomain"
+    - "oel7-node1-priv"
+
+  listners:
+    - scan_ip: "<scan-ip1>"
+      scan_hostname: 
+        - "oel7-scan.localdomain"
+        - "oel7-scan"
+    - scan_ip: "<scan-ip2>"
+      scan_hostname: 
+        - "oel7-scan.localdomain"
+        - "oel7-scan"
+    - scan_ip: "<scan-ip>3"
+      scan_hostname: 
+        - "oel7-scan.localdomain"
+        - "oel7-scan"
+
+
+
