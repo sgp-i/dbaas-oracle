@@ -1,0 +1,13 @@
+---
+
+- name: install oracle
+  hosts: oracle
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_install
+  vars:
+    oracle_edition: EE
+    oracle_version: 11.2.0.1
+    install_mode: INSTALL_DB_AND_CONFIG
+    oracle_db_name: demo
