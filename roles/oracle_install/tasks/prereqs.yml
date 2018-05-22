@@ -52,14 +52,16 @@
     dest: /etc/pam.d/login
     state: present
     line: "session required pam_limits.so"
+    backup: yes
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
-  backup: yes
+  
 
 - name: oracle-recommended security limits for 11g
   lineinfile:
     dest: /etc/security/limits.conf
     state: present
     line: "{{ item }}"
+    backup: yes
   with_items:
     - "oracle soft nproc 2047"
     - "oracle hard nproc 16384"
@@ -68,13 +70,14 @@
     - "oracle soft stack 10240"
     - "oracle hard stack 32768"
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
-  backup: yes
+  
 
 - name: oracle-recommended security limits for 12c
   lineinfile:
     dest: /etc/security/limits.conf
     state: present
     line: "{{ item }}"
+    backup: yes
   with_items:
     - "oracle soft nproc 2047"
     - "oracle hard nproc 16384"
@@ -85,7 +88,6 @@
     - "oracle hard memlock 134217728"
     - "oracle soft memlock 134217728"
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
-  backup: yes
 
 
     
