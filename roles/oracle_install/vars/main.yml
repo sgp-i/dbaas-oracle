@@ -9,7 +9,7 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
 
 
-etc_hosts:
+hostname_entry:
   public_ip: "<public_ip>"
   public_ip_hostnames:
     - "oel7-node1.localdomain"
@@ -33,6 +33,9 @@ etc_hosts:
       scan_hostname: 
         - "oel7-scan.localdomain"
         - "oel7-scan"
+
+resolv_ip: "<resolv_ip>"
+eth_onboot: "off"
 
 
 
