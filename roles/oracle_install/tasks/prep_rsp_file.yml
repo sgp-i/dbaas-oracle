@@ -52,6 +52,7 @@
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
+    - { regex: oracle.install.db.config.starterdb.memoryOption, value: "false" }
     - { regex: oracle.install.db.OSDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSOPER_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSBACKUPDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
