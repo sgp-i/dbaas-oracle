@@ -10,7 +10,7 @@
   unarchive: 
     src: "{{ item.image }}" 
     dest: "{{ oracle_tmp }}" 
-    remote_src: false 
+    remote_src: no 
     keep_newer: true 
   when: item.version == oracle_version and unzipped.stat.exists == false
   with_items: "{{ oracle_images }}"

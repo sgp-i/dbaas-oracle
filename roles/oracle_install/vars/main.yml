@@ -9,7 +9,7 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
 
 
-hostname_entry:
+hostname_entries:
   public_ip: "<public_ip>"
   public_ip_hostnames:
     - "oel7-node1.localdomain"
@@ -22,20 +22,20 @@ hostname_entry:
 
   listners:
     - scan_ip: "<scan-ip1>"
-      scan_hostname: 
+      scan_hostnames: 
         - "oel7-scan.localdomain"
         - "oel7-scan"
     - scan_ip: "<scan-ip2>"
-      scan_hostname: 
+      scan_hostnames: 
         - "oel7-scan.localdomain"
         - "oel7-scan"
     - scan_ip: "<scan-ip>3"
-      scan_hostname: 
+      scan_hostnames: 
         - "oel7-scan.localdomain"
         - "oel7-scan"
 
 resolv_ip: "<resolv_ip>"
-eth_onboot: "off"
+eth_onboot_status: "off"
 
 
 
