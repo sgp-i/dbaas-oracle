@@ -55,3 +55,13 @@
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
     - { regex: export PATH=, value: "$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin" }
+
+- name: copy grid_env file
+  copy:
+    src: grid_env
+    dest: /home/{{ oracle_user[0].name }}/grid_env
+
+- name: copy db_env file
+  copy:
+    src: db_env
+    dest: /home/{{ oracle_user[0].name }}/db_env

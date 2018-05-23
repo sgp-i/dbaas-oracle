@@ -70,16 +70,6 @@
 #    owner: "{{ oracle_user[0].name }}"
 #    group: "{{ oracle_group[0].name }}"
 
-- name: copy grid_env file
-  copy:
-    src: grid_env
-    dest: /home/{{ oracle_user[0].name }}/grid_env
-
-- name: copy db_env file
-  copy:
-    src: db_env
-    dest: /home/{{ oracle_user[0].name }}/db_env
-
 - include: copy_archives.yml
 
 - include: prep_rsp_file.yml
