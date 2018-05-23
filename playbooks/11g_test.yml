@@ -5,6 +5,7 @@
   become: yes
   become_method: sudo
   roles:
+    - oracle_prereqs
     - oracle_install
   vars:
     oracle_edition: EE

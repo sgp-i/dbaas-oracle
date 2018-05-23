@@ -8,8 +8,6 @@ oracle_edition: EE
 # installation mode. Avaialable modes are : INSTALL_DB_SWONLY, INSTALL_DB_AND_CONFIG
 install_mode: INSTALL_DB_SWONLY
 
-oracle_hostname: "{{ inventory_hostname }}"
-
 # location for temporary installation files
 oracle_tmp: /tmp/oracle
 
@@ -28,8 +26,6 @@ oracle_db_mem: "450"
 
 oracle_user: 
     - { name: oracle, id: 5001 }
-
-oracle_pass: "oracle123"
 
 oracle_group:   
     - { name: oinstall, id: 54321 }
@@ -57,27 +53,6 @@ oracle_images:
     - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
     - { image: "{{ oracle_installer_path }}/linux.x64_12201_database.zip", version: "12.2.0.1" }
 
-oracle_pv: /dev/sdb
-
-oracle_vg: oravg
-
-oracle_bin_lv: orabinlv
-
-oracle_bin_fs: "{{ oracle_base }}/oracle"
-
-oracle_data_lv: oradatalv
-
-oracle_data_fs: "{{ oracle_base }}/data"
-
-#FSTYPE for Oracle filesystems.
-oracle_fstype: ext4
-
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false
 
-oracle_swap_file: "/swapfile"
-
-# Swap size in block_size, block_size=1024 * your_swap_file_size_in_mb
-oracle_swap_size: 524288 #512MB
-
-selinux_mode: permissive

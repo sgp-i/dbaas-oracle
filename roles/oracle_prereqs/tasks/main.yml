@@ -1,0 +1,57 @@
+---
+
+- include: hostname_entries.yml
+
+- name: check for the pv for oravg
+  stat: path="{{ oracle_pv }}"
+  register: pv
+
+# May not be needed in Charter Env
+- include: usergroups.yml
+
+- include: filesystems.yml
+  when: pv.stat.isblk is defined
+
+# Not sure why this was commented but may want to re-enable
+#- name: check enough free space to continue 
+#  assert:
+#    that:
+#      - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
+#      - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
+#      - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
+#  with_items: "{{ ansible_mounts }}"
+#  ignore_errors: yes
+
+# Unsure if we will need this
+- include: packages.yml
+
+- name: make sure the installer directory exists
+  stat: path={{ oracle_tmp }}/database
+  register: install_dir
+
+# Unsure if we will need this
+- include: prereqs.yml
+
+- name: set selinux
+  selinux:
+    policy: targeted
+    state: "{{ selinux_mode }}"
+
+#*******************************************
+# THE BELOW TO BE UNCOMMENTED WHEN WE GET THE LAB ENVIRONMENT WITH ALL THE IP'S REQUIRED
+#*******************************************
+
+#- include: ethernet_config.yml
+#- include: ntpd_config.yml
+
+#--------------------------------------------
+
+- name: check whether swap space exisits (for cloud instances)
+  shell: free  | awk ' $1 == "Swap:" {print $2}'
+  register: swapsize
+
+- debug: var=swapsize.stdout
+
+- name: create swap file (for cloud instances)
+  include: swap_check.yml
+  when: swapsize.stdout | int < 200000
