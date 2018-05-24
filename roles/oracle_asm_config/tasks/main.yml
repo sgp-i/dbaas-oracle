@@ -1,0 +1,12 @@
+---
+
+- name: install oracleasm tools
+  yum: 
+   name: "{{ item }}"
+   state: present
+  with_items:
+   - oracleasm
+   - oracleasm-support
+
+- name: configure oracleasm
+  command: oracleasm configure -u {{ oracle_user[0].name }} -g {{ oracle_group[0].name }} -D {{ asm_disk_location}} -e

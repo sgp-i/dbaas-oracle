@@ -1,0 +1,23 @@
+---
+
+oracle_user: 
+    - { name: oracle, id: 5001 }
+
+oracle_group:   
+    - { name: oinstall, id: 54321 }
+
+oracle_dba_group: 
+    - { name: dba, id: 54322 }
+
+asm_oper_group: 
+    - { name: asmoper, id: 54328 }
+
+asm_admin_group: 
+    - { name: asmadmin, id: 54329 }
+
+asm_dba_group: 
+    - { name: asmdba, id: 54327 }
+
+asm_disk_location: "/dev/oracleasm/disks"
+
+
