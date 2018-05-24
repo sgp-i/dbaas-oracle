@@ -1,0 +1,38 @@
+---
+
+oracle_version: 11.2.0.1
+
+# Oracle Editions avaialble: EE, SEONE, SE
+oracle_edition: EE
+
+# installation mode. Avaialable modes are : CRS_CONFIG | HA_CONFIG | UPGRADE | CRS_SWONLY | HA_SWONLY
+grid_install_mode: CRS_CONFIG
+
+cluster_type: STANDARD
+
+cluster_name: scan1
+
+oracle_asm_syspass: oracle123!
+
+# location for temporary installation files
+oracle_tmp: /tmp/oracle
+
+oracle_base: /u01/app
+
+oracle_db_home: db_1 
+
+oracle_grid_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/gid"
+
+oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+oracle_db_name: db
+
+# LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
+grid_storage_type: LOCAL_ASM_STORAGE
+
+oracle_installer_path: "~/Downloads"
+
+# array  os images avaialbe
+oracle_images:
+    - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_1of2.zip", version: "12.2.0.1" } 
+    - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_2of2.zip", version: "12.2.0.1" }

@@ -1,0 +1,20 @@
+---
+
+#- include: copy_archives.yml
+
+- name: get cvuqdisk package name
+  find:
+    paths: "{{ oracle_tmp }}/grid/rpm"
+    file_type: file
+    patterns: cvuqdisk*
+    use_regex: yes
+  register: cvuqdisk_package
+
+- name: install cvuqdisk package
+  yum: 
+    name: "{{ oracle_tmp }}/grid/rpm/{{ cvuqdisk_package.files[0].path | basename }}"
+    state: present
+
+- include: prep_rsp_file.yml
+
+- include: grid_install.yml

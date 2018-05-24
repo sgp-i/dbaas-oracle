@@ -1,0 +1,30 @@
+---
+
+- name: install grid
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep grid_install.rsp | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash
+    #creates: "{{ oracle_home }}/bin/sqlplus"
+
+- name: run grid configTool
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user[0].name }} -c "{{ oracle_grid_home }}/cfgtoologs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash

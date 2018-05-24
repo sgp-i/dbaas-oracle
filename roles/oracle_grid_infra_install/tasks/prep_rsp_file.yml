@@ -1,0 +1,60 @@
+---
+ 
+- name: make a copy of the response file
+  copy:
+    src: "{{ oracle_tmp }}/grid/response/grid_install.rsp"
+    dest: "{{ oracle_tmp }}/grid_install.rsp"
+    owner: "{{ oracle_user[0].name }}"
+    group: "{{ oracle_group[0].name }}"
+    remote_src: yes
+
+- name: set inline changes (common)
+  lineinfile: 
+    path: /tmp/oracle/grid_install.rsp
+    regexp: "^{{ item.regex }}"
+    line: "{{ item.regex }}={{ item.value }}"
+  with_items:
+  #  - { regex: oracle.install.responseFileVersion, value: "/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0" }
+    - { regex: ORACLE_HOSTNAME, value: "{{ ansible_hostname }}" }
+    - { regex: INVENTORY_LOCATION, value: "{{ oracle_base }}/oraInventory" }
+    - { regex: SELECTED_LANGUAGES, value: "en" }
+    - { regex: oracle.install.option, value: "{{ grid_install_mode }}" }
+    - { regex: ORACLE_BASE, value: "{{ oracle_base }}" }
+    - { regex: ORACLE_HOME, value: "{{ oracle_home }}" }
+    - { regex: oracle.install.asm.OSDBA, value: "{{ oracle_group[0].name }}" }
+    - { regex: oracle.install.asm.OSOPER, value: "{{ oracle_group[0].name }}" }
+    - { regex: oracle.install.asm.OSASM, value: "{{ oracle_group[0].name }}" }
+    - { regex: oracle.install.crs.config.gpnp.scanName, value: "scan1.techlab.com" }
+    - { regex: oracle.install.crs.config.gpnp.scanPort, value: "1521" }
+    - { regex: oracle.install.crs.config.ClusterType, value: "{{ cluster_type }}" }
+    - { regex: oracle.install.crs.config.clusterName, value: "{{ cluster_name }}" }
+    - { regex: oracle.install.crs.config.gpnp.configureGNS, value: "false" }
+    - { regex: oracle.install.crs.config.autoConfigureClusterNodeVIP, value: "true" }
+    - { regex: oracle.install.crs.config.gpnp.gnsOption, value: "CREATE_NEW_GNS" }
+    - { regex: oracle.install.crs.config.gpnp.gnsClientDataFile, value: "" }
+    - { regex: oracle.install.crs.config.gpnp.gnsSubDomain, value: "" }
+    - { regex: oracle.install.crs.config.gpnp.gnsVIPAddress, value: "" }
+    - { regex: oracle.install.crs.config.clusterNodes, value: "dbaas2.techlab.com:dbaas2-vip.techlab.com,dbaas3.techlab.com:dbaas3-vip.techlab.com" }
+    - { regex: oracle.install.crs.config.networkInterfaceList, value: "eth0:10.10.98.0:1,eth1:10.10.101.0:2" }
+    - { regex: oracle.install.crs.config.storageOption, value: "grid_storage_type" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations, value: "" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy, value: "NORMAL" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrLocations, value: "" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy, value: "NORMAL" }
+    - { regex: oracle.install.crs.config.useIPMI, value: "false" }
+    - { regex: oracle.install.crs.config.ipmi.bmcUsername, value: "" }
+    - { regex: oracle.install.crs.config.ipmi.bmcPassword, value: "" }
+    - { regex: oracle.install.asm.SYSASMPassword, value: "{{ oracle_asm_syspass }}" }
+    - { regex: oracle.install.asm.diskGroup.name, value: "DATA" }
+    - { regex: oracle.install.asm.diskGroup.redundancy, value: "EXTERNAL" }
+    - { regex: oracle.install.asm.diskGroup.AUSize, value: "1" }
+    - { regex: oracle.install.asm.diskGroup.disks, value: "/dev/oracleasm/disks/DATA1,/dev/oracleasm/disks/DATA2" }
+    - { regex: oracle.install.asm.diskGroup.diskDiscoveryString, value: "/dev/oracleasm/disks" }
+    - { regex: oracle.install.asm.monitorPassword, value: "" }
+    - { regex: oracle.install.asm.ClientDataFile, value: "" }
+    - { regex: oracle.install.crs.config.ignoreDownNodes, value: "false" }
+    - { regex: oracle.install.config.managementOption, value: "NONE" }
+    - { regex: oracle.install.config.omsHost, value: "" }
+    - { regex: oracle.install.config.omsPort, value: "0" }
+    - { regex: oracle.install.config.emAdminUser, value: "" }
+    - { regex: oracle.install.config.emAdminPassword, value: "" }
