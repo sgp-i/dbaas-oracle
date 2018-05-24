@@ -2,15 +2,15 @@
 
 - include: hostname_entries.yml
 
-- name: check for the pv for oravg
-  stat: path="{{ oracle_pv }}"
-  register: pv
+# - name: check for the pv for oravg
+#   stat: path="{{ oracle_pv }}"
+#   register: pv
 
 # May not be needed in Charter Env
 - include: usergroups.yml
 
 - include: filesystems.yml
-  when: pv.stat.isblk is defined
+  # when: pv.stat.isblk is defined
 
 # Not sure why this was commented but may want to re-enable
 #- name: check enough free space to continue 
