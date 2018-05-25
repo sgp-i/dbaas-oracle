@@ -1,6 +1,6 @@
 ---
 
-#- include: copy_archives.yml
+- include: copy_archives.yml
 
 - name: get cvuqdisk package name
   find:
