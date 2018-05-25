@@ -5,6 +5,10 @@ oracle_version: 11.2.0.1
 # Oracle Editions avaialble: EE, SEONE, SE
 oracle_edition: EE
 
+oracle_user: oracle
+
+oracle_group: oinstall
+
 # installation mode. Avaialable modes are : CRS_CONFIG | HA_CONFIG | UPGRADE | CRS_SWONLY | HA_SWONLY
 grid_install_mode: CRS_CONFIG
 
@@ -29,6 +33,16 @@ oracle_db_name: db
 
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
+
+scan_name: "{{ ansible_hostname}}-scan.localdomain"
+
+scan_port: 1521
+
+cluster_nodes: "{{ ansible_hostname }}.localdomain:{{ ansible_hostname }}-vip.localdomain"
+
+net_interfaces: enp0s3:192.168.56.101:1,enp0s8:172.16.100.51:2
+
+asm_disk_label: DATA
 
 oracle_installer_path: "~/Downloads"
 

@@ -3,7 +3,7 @@
 - name: install grid
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/grid_stderr.err >{{ oracle_tmp }}/grid_stdout.out &
     sleep 30
     while true
     do 
@@ -13,12 +13,12 @@
     done
   args:
     executable: /bin/bash
-    #creates: "{{ oracle_home }}/bin/sqlplus"
+    creates: "{{ oracle_grid_home }}/cfgtoologs/configToolAllCommands"
 
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user[0].name }} -c "{{ oracle_grid_home }}/cfgtoologs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_grid_home }}/cfgtoologs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
     sleep 30
     while true
     do 
