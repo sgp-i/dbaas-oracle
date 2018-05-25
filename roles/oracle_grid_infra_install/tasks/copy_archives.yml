@@ -13,7 +13,7 @@
     remote_src: no 
     keep_newer: true 
   when: item.version == oracle_version and grid_unzipped.stat.exists == false
-  with_items: "{{ oracle_images }}"
+  with_items: "{{ grid_images }}"
   
 - name: place a marker for the completion
   file:

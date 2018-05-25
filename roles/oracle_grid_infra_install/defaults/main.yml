@@ -33,6 +33,6 @@ grid_storage_type: LOCAL_ASM_STORAGE
 oracle_installer_path: "~/Downloads"
 
 # array  os images avaialbe
-oracle_images:
+grid_images:
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_1of2.zip", version: "12.2.0.1" } 
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_2of2.zip", version: "12.2.0.1" }
