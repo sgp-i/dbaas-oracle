@@ -30,7 +30,7 @@
   register: install_dir
 
 # Unsure if we will need this
-- include: prereqs.yml
+- include: ora_best_practices.yml
 
 - name: set selinux
   selinux:
