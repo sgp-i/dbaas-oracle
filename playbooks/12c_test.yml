@@ -5,10 +5,10 @@
   become: yes
   become_method: sudo
   roles:
-    - oracle_asm_config
     - oracle_prereqs
+    - oracle_asm_config
     - oracle_grid_infra_install
-    - oracle_install
+    # - oracle_install
   vars:
     oracle_edition: EE
     oracle_version: 12.2.0.1

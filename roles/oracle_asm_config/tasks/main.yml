@@ -8,5 +8,4 @@
    - oracleasm
    - oracleasm-support
 
-- name: configure oracleasm
-  command: oracleasm configure -u {{ oracle_user[0].name }} -g {{ oracle_group[0].name }} -D {{ asm_disk_location}} -e
+- include: prep_asm_disks.yml

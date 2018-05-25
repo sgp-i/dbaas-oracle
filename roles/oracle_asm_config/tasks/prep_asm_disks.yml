@@ -1,0 +1,74 @@
+---
+
+# - name: get disks
+#   find:
+#     paths: "/dev"
+#     file_type: any
+#     patterns: sd[^a]
+#     use_regex: yes
+#   register: raw_disks
+
+# - name: check disk partitions
+#   parted:
+#     device: "{{ item.path }}"
+#     number: 1
+#     state: present
+#   with_items: "{{ raw_disks.files }}"
+
+# - name: create disk partitions
+#   parted:
+#     device: "{{ item.path }}"
+#     number: 1
+#     state: present
+#   with_items: "{{ raw_disks.files }}"
+
+# - name: make sure scsi_id.config exists
+#   file:
+#     path: /etc/scsi_id.config
+#     state: touch
+
+# - name: set option -g for the scsi_id command
+#   lineinfile:
+#     dest: /etc/scsi_id.config
+#     state: present
+#     line: options=-g
+
+# - name: create oracleasm udev rules
+#   script: ../scripts/createOracleAsmUdevRules.sh
+#   args:
+#     creates: /etc/udev/rules.d/99-oracle-asmdevices.rules
+
+# - name: probe disks
+#   command: "/sbin/partprobe /dev/{{ item.path | basename }}1"
+#   with_items: "{{ raw_disks.files }}"
+
+# - name: reload udev rules
+#   command: /sbin/udevadm control --reload-rules
+
+- name: configure oracleasm
+  command: oracleasm configure -u {{ oracle_user[0].name }} -g {{ oracle_group[0].name }} -D {{ asm_disk_location}} -b -e
+
+- name: initialize oracleasm
+  command: oracleasm init
+  ignore_errors: yes
+
+- name: create asm disk
+  command: oracleasm createdisk {{ asm_disk_label }} /dev/mapper/{{ oracle_vg }}-{{ oracle_data_lv }}
+  args:
+    creates: "{{ asm_disk_location }}/{{ asm_disk_label }}"
+  ignore_errors: yes
+
+- name: chown the asm disk
+  file:
+    group: "{{ oracle_group[0].name }}"
+    owner: "{{ oracle_user[0].name }}"
+    path: "{{ asm_disk_location }}/{{ asm_disk_label }}"
+    state: file
+
+- name: scan asm disks
+  command: oracleasm scandisks
+
+- name: confirm {{ asm_disk_label }} is found
+  shell: oracleasm listdisks | grep {{ asm_disk_label }}
+  args:
+    executable: /bin/bash
