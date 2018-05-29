@@ -25,7 +25,7 @@ oracle_base: /u01/app
 
 oracle_db_home: db_1 
 
-oracle_grid_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/gid"
+oracle_grid_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/grid"
 
 oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
