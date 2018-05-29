@@ -50,7 +50,7 @@
     - { regex: oracle.install.asm.diskGroup.AUSize, value: "1" }
     - { regex: oracle.install.asm.diskGroup.disks, value: "/dev/oracleasm/disks/DATA" }
     - { regex: oracle.install.asm.diskGroup.diskDiscoveryString, value: "/dev/oracleasm/disks" }
-    - { regex: oracle.install.asm.monitorPassword, value: "" }
+    - { regex: oracle.install.asm.monitorPassword, value: "{{ oracle_asm_syspass }}" }
     - { regex: oracle.install.asm.ClientDataFile, value: "" }
     - { regex: oracle.install.crs.config.ignoreDownNodes, value: "false" }
     - { regex: oracle.install.config.managementOption, value: "NONE" }
