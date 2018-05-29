@@ -16,7 +16,7 @@ cluster_type: STANDARD
 
 cluster_name: scan1
 
-oracle_asm_syspass: oracle123!
+oracle_asm_syspass: Oracle123
 
 # location for temporary installation files
 oracle_tmp: /tmp/oracle
