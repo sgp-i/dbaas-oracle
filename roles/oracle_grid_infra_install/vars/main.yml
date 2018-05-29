@@ -7,3 +7,7 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+
+grid_post_install_scripts:
+  - "{{ oracle_base }}/oraInventory/orainstRoot.sh"
+  - "{{ oracle_home }}/root.sh"

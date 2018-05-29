@@ -15,6 +15,14 @@
     executable: /bin/bash
     creates: "{{ oracle_home }}/cfgtoollogs/configToolAllCommands"
 
+# - name: get list of grid install fix scripts to run
+#   register: grid_post_install_scripts
+
+
+- name: run grid install fix scripts
+  command: "{{ item }}"
+  with_items: "{{ grid_post_install_scripts }}"
+
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
   shell: |
