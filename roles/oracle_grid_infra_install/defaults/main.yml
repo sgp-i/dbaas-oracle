@@ -34,13 +34,23 @@ oracle_db_name: db
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
 
-scan_name: "{{ ansible_hostname}}-scan.localdomain"
+domain: localdomain
+
+scan_name: "{{ ansible_hostname}}-scan.{{ domain }}"
 
 scan_port: 1521
 
-cluster_nodes: "{{ ansible_hostname }}.localdomain:{{ ansible_hostname }}-vip.localdomain"
+cluster_nodes: "{{ ansible_hostname }}.{{ domain }}:{{ ansible_hostname }}-vip.{{ domain }}"
 
-net_interfaces: enp0s3:192.168.56.101:1,enp0s8:172.16.100.51:2
+public_net_interface: ""
+
+public_net_address: ""
+
+private_net_interface: ""
+
+private_net_address: ""
+
+crs_net_interfaces: "{{ public_net_interface }}:{{ public_net_address }}:1,{{ private_net_interface }}:{{ private_net_address }}:2"
 
 asm_disk_label: DATA
 

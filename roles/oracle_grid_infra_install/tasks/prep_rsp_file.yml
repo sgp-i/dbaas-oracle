@@ -35,7 +35,7 @@
     - { regex: oracle.install.crs.config.gpnp.gnsSubDomain, value: "" }
     - { regex: oracle.install.crs.config.gpnp.gnsVIPAddress, value: "" }
     - { regex: oracle.install.crs.config.clusterNodes, value: "{{ cluster_nodes }}" }
-    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ net_interfaces }}" }
+    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ crs_net_interfaces }}" }
     - { regex: oracle.install.crs.config.storageOption, value: "{{ grid_storage_type }}" }
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations, value: "" }
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy, value: "NORMAL" }

@@ -14,3 +14,7 @@
     oracle_version: 12.2.0.1
     install_mode: INSTALL_DB_AND_CONFIG
     oracle_db_name: demo
+    public_net_interface: <<public_interface_name>>
+    public_net_address: <public_ip>>
+    private_net_interface: <<private_interface_name>>
+    private_net_address: <<private_ip>>
