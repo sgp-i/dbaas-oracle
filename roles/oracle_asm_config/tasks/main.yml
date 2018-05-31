@@ -8,4 +8,14 @@
    - oracleasm
    - oracleasm-support
 
-- include: prep_asm_disks.yml
+- name: configure oracleasm
+  command: oracleasm configure -u {{ oracle_user }} -g {{ oracle_group }} -D {{ asm_disk_location}} -b -e
+
+- name: initialize oracleasm
+  command: oracleasm init
+  ignore_errors: yes
+
+- include_tasks: create_asm_disk.yml
+  loop: "{{ asm_disks }}"
+  loop_control:
+    loop_var: disk_info

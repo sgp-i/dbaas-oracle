@@ -1,0 +1,22 @@
+---
+
+- name: create asm disk
+  command: oracleasm createdisk {{ disk_info.label }} {{ disk_info.raw_disk }}
+  args:
+    creates: "{{ asm_disk_location }}/{{ disk_info.label }}"
+  ignore_errors: yes
+
+- name: chown the asm disk
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ asm_disk_location }}/{{ disk_info.label }}"
+    state: file
+
+- name: scan asm disks
+  command: oracleasm scandisks
+
+- name: confirm {{ disk_info.label }} is found
+  shell: oracleasm listdisks | grep {{ disk_info.label }}
+  args:
+    executable: /bin/bash
