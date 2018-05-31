@@ -17,4 +17,6 @@
     public_net_interface: <<public_interface_name>>
     public_net_address: <public_ip>>
     private_net_interface: <<private_interface_name>>
-    private_net_address: <<private_ip>>
+    private_net_address: <<private_ip>> 
+    asm_disks: 
+      - { raw_disk: <<disk_path ie /dev/sdb1>>, label: <<asm_label>> }
