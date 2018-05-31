@@ -1,12 +1,33 @@
 ---
 
-- name: check for the marker
+- name: check for cluvfy marker
+  stat:
+    path: "{{ oracle_tmp }}/cluster_verify/copied"
+  register: cluvfy_unzipped
+  ignore_errors: yes
+
+- name: unzip cluvfy
+  become_user: "{{ oracle_user }}"
+  unarchive: 
+    src: "{{ oracle_installer_path }}/cvupack_Linux_x86_64.zip" 
+    dest: "{{ oracle_tmp }}/cluster_verify" 
+    remote_src: no 
+    keep_newer: true 
+  when: cluvfy_unzipped.stat.exists == false
+  
+- name: place a marker for the completion of cluvfy unzip
+  file:
+    path: "{{ oracle_tmp }}/cluster_verify/copied"
+    state: touch
+  when: cluvfy_unzipped.stat.exists == false
+
+- name: check for grid marker
   stat:
     path: "{{ oracle_tmp }}/grid/copied"
   register: grid_unzipped
   ignore_errors: yes
 
-- name: unzip installer
+- name: unzip grid installer
   unarchive: 
     src: "{{ item.image }}" 
     dest: "{{ oracle_tmp }}" 
@@ -15,7 +36,7 @@
   when: item.version == oracle_version and grid_unzipped.stat.exists == false
   with_items: "{{ grid_images }}"
   
-- name: place a marker for the completion
+- name: place a marker for the completion of grid unzip
   file:
     path: "{{ oracle_tmp }}/grid/copied"
     state: touch

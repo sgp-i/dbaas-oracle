@@ -1,0 +1,25 @@
+---
+
+- name: run cluvfy
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }} -fixup -verbose" 2>{{ oracle_tmp }}/cluvfy_stderr.err >{{ oracle_tmp }}/cluvfy_stdout.out &
+    sleep 30
+  args:
+    executable: /bin/bash
+
+- name: check for runfixup.sh
+  find:
+    paths: "/tmp/CVU_12.2.0.1.0_oracle"
+    file_type: file
+    patterns: runfixup.sh
+    use_regex: no
+  register: fixup_script
+
+- name: execute runfixup.sh
+  shell: |
+    "{{ fixup_script.files[0].path }}" 2>{{ oracle_tmp }}/fixup_stderr.err >{{ oracle_tmp }}/fixup_stdout.out &
+    sleep 30
+  args:
+    executable: /bin/bash
+  when: fixup_script.matched == 1
