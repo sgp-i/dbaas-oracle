@@ -52,7 +52,9 @@ private_net_address: ""
 
 crs_net_interfaces: "{{ public_net_interface }}:{{ public_net_address }}:1,{{ private_net_interface }}:{{ private_net_address }}:2"
 
-asm_disk_label: DATA
+asm_disk_location: /dev/oracleasm/disks
+
+asm_disk_group: DATA
 
 oracle_installer_path: "~/Downloads"
 
