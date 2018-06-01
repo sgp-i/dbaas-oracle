@@ -3,7 +3,7 @@
 - name: install oracle
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
     sleep 30
     while true
     do 
@@ -32,7 +32,7 @@
 - name: configure oracle for 12c only
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent -executeConfigTools -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -executeConfigTools -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
     sleep 30
     while true
     do 
@@ -45,19 +45,19 @@
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
 
 - name: touch tnsnames.ora
-  file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user[0].name }}
+  file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user }}
   when: install_mode == "INSTALL_DB_SWONLY"
 
 - name: start the listener
   become: yes
-  become_user : "{{ oracle_user[0].name }}"
+  become_user : "{{ oracle_user }}"
   environment: "{{ ora_user_env }}" 
   command: "{{ oracle_home }}/bin/lsnrctl start"
   ignore_errors: yes
 
 - name: start the enterprise manager web console
   become: yes
-  become_user : "{{ oracle_user[0].name }}"
+  become_user : "{{ oracle_user }}"
   environment: "{{ ora_user_env }}" 
   command: "{{ oracle_home }}/bin/emctl start dbconsole"
   ignore_errors: yes
