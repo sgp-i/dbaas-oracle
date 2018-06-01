@@ -10,4 +10,4 @@ ora_user_env:
 
 grid_post_install_scripts:
   - "{{ oracle_base }}/oraInventory/orainstRoot.sh"
-  - "{{ oracle_home }}/root.sh"
+  - "{{ oracle_grid_home }}/root.sh"

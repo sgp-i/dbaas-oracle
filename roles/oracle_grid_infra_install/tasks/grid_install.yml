@@ -13,7 +13,7 @@
     done
   args:
     executable: /bin/bash
-    creates: "{{ oracle_home }}/cfgtoollogs/configToolAllCommands"
+    creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
 
 # - name: get list of grid install fix scripts to run
 #   register: grid_post_install_scripts
@@ -26,11 +26,11 @@
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_configTool.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
     sleep 30
     while true
     do 
-      c=$(ps -ef | grep -v grep | grep grid_install.rsp | grep java | wc -l)
+      c=$(ps -ef | grep -v grep | grep grid_configTool.rsp | grep java | wc -l)
       [ $c -eq 0 ] && break
       sleep 10
     done

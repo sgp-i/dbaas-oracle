@@ -10,7 +10,7 @@
 
 - name: set inline changes (common)
   lineinfile: 
-    path: /tmp/oracle/grid_install.rsp
+    path: "{{ oracle_tmp }}/grid_install.rsp"
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
@@ -20,7 +20,7 @@
     - { regex: SELECTED_LANGUAGES, value: "en" }
     - { regex: oracle.install.option, value: "{{ grid_install_mode }}" }
     - { regex: ORACLE_BASE, value: "{{ oracle_base }}" }
-    - { regex: ORACLE_HOME, value: "{{ oracle_home }}" }
+    - { regex: ORACLE_HOME, value: "{{ oracle_grid_home }}" }
     - { regex: oracle.install.asm.OSDBA, value: "{{ oracle_group }}" }
     - { regex: oracle.install.asm.OSOPER, value: "{{ oracle_group }}" }
     - { regex: oracle.install.asm.OSASM, value: "{{ oracle_group }}" }
@@ -58,3 +58,11 @@
     - { regex: oracle.install.config.omsPort, value: "0" }
     - { regex: oracle.install.config.emAdminUser, value: "" }
     - { regex: oracle.install.config.emAdminPassword, value: "" }
+
+- name: create configTool rsp file
+  copy:
+    dest: "{{ oracle_tmp }}/grid_configTool.rsp"
+    content: |
+      oracle.assistants.asm|S_ASMPASSWORD={{ oracle_asm_syspass }}
+      oracle.assistants.asm|S_ASMMONITORPASSWORD={{ oracle_asm_syspass }}
+      
