@@ -5,10 +5,19 @@
   become: yes
   become_method: sudo
   roles:
-    - oracle_prereqs
+    # - oracle_prereqs
+    # - oracle_asm_config
+    # - oracle_grid_infra_install
     - oracle_install
   vars:
     oracle_edition: EE
     oracle_version: 11.2.0.1
+    grid_version: 12.1.0.2
     install_mode: INSTALL_DB_AND_CONFIG
     oracle_db_name: demo
+    public_net_interface: <<public_interface_name>>
+    public_net_address: <public_ip>>
+    private_net_interface: <<private_interface_name>>
+    private_net_address: <<private_ip>> 
+    asm_disks: 
+      - { raw_disk: <<disk_path ie /dev/sdb1>>, label: <<asm_label>> }
