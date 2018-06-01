@@ -20,3 +20,8 @@
   shell: oracleasm listdisks | grep {{ disk_info.label }}
   args:
     executable: /bin/bash
+
+- name: add asm_disk_paths to host facts
+  set_fact:
+    asm_disk_paths: "{{ asm_disk_paths }} + [ '{{ asm_disk_location }}/{{ disk_info.label }}' ]"
+    cacheable: true

@@ -48,7 +48,7 @@
     - { regex: oracle.install.asm.diskGroup.name, value: "{{ asm_disk_group }}" }
     - { regex: oracle.install.asm.diskGroup.redundancy, value: "EXTERNAL" }
     - { regex: oracle.install.asm.diskGroup.AUSize, value: "1" }
-    - { regex: oracle.install.asm.diskGroup.disks, value: "{{ asm_disk_location }}/DATA1,{{ asm_disk_location }}/DATA2" }
+    - { regex: oracle.install.asm.diskGroup.disks, value: "{{ asm_disk_paths }}" }
     - { regex: oracle.install.asm.diskGroup.diskDiscoveryString, value: "{{ asm_disk_location }}/*" }
     - { regex: oracle.install.asm.monitorPassword, value: "{{ oracle_asm_syspass }}" }
     - { regex: oracle.install.asm.ClientDataFile, value: "" }
