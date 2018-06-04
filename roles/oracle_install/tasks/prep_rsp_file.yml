@@ -14,7 +14,7 @@
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
-    - { regex: oracle.install.responseFileVersion, value: "/oracle/install/rspfmt_dbinstall_response_schema_v11_2_0" }
+    # - { regex: oracle.install.responseFileVersion, value: "/oracle/install/rspfmt_dbinstall_response_schema_v11_2_0" }
     - { regex: oracle.install.option, value: "{{ install_mode }}" }
     - { regex: ORACLE_HOSTNAME, value: "{{ ansible_hostname }}" }
     - { regex: UNIX_GROUP_NAME, value: "{{ oracle_group }}" }
