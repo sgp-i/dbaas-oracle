@@ -1,9 +1,6 @@
 ---
 
-oracle_version: 11.2.0.1
-
-# Oracle Editions avaialble: EE, SEONE, SE
-oracle_edition: EE
+grid_version: 12.1.0.2
 
 oracle_user: oracle
 
@@ -25,9 +22,9 @@ oracle_base: /u01/app
 
 oracle_db_home: db_1 
 
-oracle_grid_home: "{{ oracle_base }}/{{ oracle_version }}/grid"
+oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid"
 
-oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+oracle_home: "{{ oracle_base }}/oracle/product/{{ grid_version }}/{{ oracle_db_home }}"
 
 oracle_db_name: db
 
