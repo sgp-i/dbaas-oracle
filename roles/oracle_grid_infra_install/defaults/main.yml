@@ -56,7 +56,7 @@ asm_disk_location: /dev/oracleasm/disks
 
 asm_disk_group: DATA
 
-oracle_installer_path: "~/Downloads"
+oracle_installer_path: "/tmp/oracle/software"
 
 # array  os images avaialbe
 grid_images:
