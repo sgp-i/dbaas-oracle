@@ -1,5 +1,10 @@
 ---
 
+- name: Yum Update
+  yum:
+    name: '*'
+    state: latest
+
 - name: install dev tools
   yum: 
     name: "@Development tools" 
@@ -7,91 +12,97 @@
 
 - name: install x86 oracle dependencies for 11g
   yum: 
-   name: "{{ item }}"
+   name: |
+    binutils,
+    compat-libstdc++-33,
+    compat-libstdc++-33.i686,
+    gcc,
+    gcc-c++,
+    glibc,
+    glibc.i686,
+    glibc-devel,
+    glibc-devel.i686,
+    ksh,
+    libgcc,
+    libgcc.i686,
+    libstdc++,
+    libstdc++.i686,
+    libstdc++-devel,
+    libstdc++-devel.i686,
+    libaio,
+    libaio.i686,
+    libaio-devel,
+    libaio-devel.i686,
+    libXext,
+    libXext.i686,
+    libXtst,
+    libXtst.i686,
+    libX11,
+    libX11.i686,
+    libXau,
+    libXau.i686,
+    libxcb,
+    libxcb.i686,
+    libXi,
+    libXi.i686,
+    make,
+    sysstat,
+    unixODBC,
+    unixODBC-devel,
+    zlib-devel,
+    elfutils-libelf-devel
    state: present
-  with_items:
-    - binutils
-    - compat-libstdc++-33
-    - compat-libstdc++-33.i686
-    - gcc
-    - gcc-c++
-    - glibc
-    - glibc.i686
-    - glibc-devel
-    - glibc-devel.i686
-    - ksh
-    - libgcc
-    - libgcc.i686
-    - libstdc++
-    - libstdc++.i686
-    - libstdc++-devel
-    - libstdc++-devel.i686
-    - libaio
-    - libaio.i686
-    - libaio-devel
-    - libaio-devel.i686
-    - libXext
-    - libXext.i686
-    - libXtst
-    - libXtst.i686
-    - libX11
-    - libX11.i686
-    - libXau
-    - libXau.i686
-    - libxcb
-    - libxcb.i686
-    - libXi
-    - libXi.i686
-    - make
-    - sysstat
-    - unixODBC
-    - unixODBC-devel
-    - zlib-devel
-    - elfutils-libelf-devel
-  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
+  when: oracle_version | regex_replace ('^([0-9]{1,
+    2}.[0-9]{1,
+    }.[0-9]{1,
+    })(.*)$',
+    '\g<1>') == "11.2.0"
 
 - name: install x86 oracle dependencies for 12c
   yum: 
-   name: "{{ item }}"
+   name: |
+    binutils,
+    compat-libcap1,
+    compat-libstdc++-33,
+    compat-libstdc++-33.i686,
+    gcc,
+    gcc-c++,
+    glibc,
+    glibc.i686,
+    glibc-devel,
+    glibc-devel.i686,
+    ksh,
+    libgcc,
+    libgcc.i686,
+    libstdc++,
+    libstdc++.i686,
+    libstdc++-devel,
+    libstdc++-devel.i686,
+    libaio,
+    libaio.i686,
+    libaio-devel,
+    libaio-devel.i686,
+    libXext,
+    libXext.i686,
+    libXtst,
+    libXtst.i686,
+    libX11,
+    libX11.i686,
+    libXau,
+    libXau.i686,
+    libxcb,
+    libxcb.i686,
+    libXi,
+    libXi.i686,
+    make,
+    sysstat,
+    unixODBC,
+    unixODBC-devel,
+    zlib-devel,
+    zlib-devel.i686
    state: present
-  with_items:
-    - binutils  
-    - compat-libcap1
-    - compat-libstdc++-33  
-    - compat-libstdc++-33.i686  
-    - gcc  
-    - gcc-c++  
-    - glibc  
-    - glibc.i686  
-    - glibc-devel  
-    - glibc-devel.i686  
-    - ksh  
-    - libgcc  
-    - libgcc.i686  
-    - libstdc++  
-    - libstdc++.i686  
-    - libstdc++-devel  
-    - libstdc++-devel.i686  
-    - libaio  
-    - libaio.i686  
-    - libaio-devel  
-    - libaio-devel.i686  
-    - libXext  
-    - libXext.i686  
-    - libXtst  
-    - libXtst.i686  
-    - libX11  
-    - libX11.i686  
-    - libXau  
-    - libXau.i686  
-    - libxcb  
-    - libxcb.i686  
-    - libXi  
-    - libXi.i686  
-    - make  
-    - sysstat  
-    - unixODBC  
-    - unixODBC-devel  
-    - zlib-devel  
-    - zlib-devel.i686  
-  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
+  when: oracle_version | regex_replace ('^([0-9]{1,
+    2}.[0-9]{1,
+    }.[0-9]{1,
+    })(.*)$',
+    '\g<1>') == "12.2.0"
