@@ -55,10 +55,4 @@
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
     - { regex: oracle.install.db.config.starterdb.memoryOption, value: "false" }
-    - { regex: oracle.install.db.OSDBA_GROUP, value: "{{ oracle_dba_group }}" }
-    - { regex: oracle.install.db.OSOPER_GROUP, value: "{{ oracle_dba_group }}" }
-    - { regex: oracle.install.db.OSBACKUPDBA_GROUP, value: "{{ oracle_dba_group }}" }
-    - { regex: oracle.install.db.OSDGDBA_GROUP, value: "{{ oracle_dba_group }}" }
-    - { regex: oracle.install.db.OSKMDBA_GROUP, value: "{{ oracle_dba_group }}" }
-    - { regex: oracle.install.db.OSRACDBA_GROUP, value: "{{ oracle_dba_group }}" }
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
