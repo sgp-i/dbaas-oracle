@@ -5,7 +5,7 @@ oracle_version: 11.2.0.1
 oracle_hostname: "{{ inventory_hostname }}"
 
 # location for temporary installation files
-oracle_tmp: /tmp/oracle
+oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_base: /u01/app
 

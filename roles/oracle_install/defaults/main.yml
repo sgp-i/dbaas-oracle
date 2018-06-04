@@ -9,7 +9,7 @@ oracle_edition: EE
 install_mode: INSTALL_DB_SWONLY
 
 # location for temporary installation files
-oracle_tmp: /tmp/oracle
+oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_base: /u01/app
 

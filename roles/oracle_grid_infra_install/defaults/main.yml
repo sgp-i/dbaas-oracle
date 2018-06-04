@@ -16,7 +16,7 @@ cluster_name: scan1
 oracle_asm_syspass: Oracle123
 
 # location for temporary installation files
-oracle_tmp: /tmp/oracle
+oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_base: /u01/app
 
