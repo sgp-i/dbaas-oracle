@@ -10,7 +10,7 @@
 
 - name: set inline changes (common)
   lineinfile: 
-    path: /tmp/oracle/db_install.rsp
+    path: "{{ oracle_tmp }}/db_install.rsp"
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
@@ -48,7 +48,7 @@
 
 - name: set inline changes (12c)
   lineinfile: 
-    path: /tmp/oracle/db_install.rsp
+    path: "{{ oracle_tmp }}/db_install.rsp"
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
