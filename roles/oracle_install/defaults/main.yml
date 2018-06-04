@@ -33,6 +33,10 @@ oracle_dba_group: dba
 # FILE_SYSTEM_STORAGE | ASM_STORAGE
 oracle_storage_type: ASM_STORAGE
 
+oracle_asm_syspass: Oracle123
+
+asm_disk_group: DATA
+
 oracle_installer_path: "/tmp/oracle/software"
 
 # array  os images avaialbe
