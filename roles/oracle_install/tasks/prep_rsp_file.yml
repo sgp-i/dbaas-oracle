@@ -35,6 +35,8 @@
     - { regex: oracle.install.db.config.starterdb.installExampleSchemas, value: "false" }
     - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
     - { regex: oracle.install.db.config.starterdb.storageType, value: "{{ oracle_storage_type }}" }
+    - { regex: oracle.install.db.config.asm.diskGroup, value: "{{ asm_disk_group }}"}
+    - { regex: oracle.install.db.config.asm.ASMSNMPPassword, value: "{{ oracle_asm_syspass }}"}
     - { regex: oracle.install.db.config.starterdb.fileSystemStorage.dataLocation, value: "{{ oracle_base }}/data" }
     - { regex: SECURITY_UPDATES_VIA_MYORACLESUPPORT, value: "false" }
     - { regex: DECLINE_SECURITY_UPDATES, value: "true" }
