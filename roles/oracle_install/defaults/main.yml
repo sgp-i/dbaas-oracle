@@ -41,8 +41,8 @@ oracle_installer_path: "/tmp/oracle/software"
 
 # array  os images avaialbe
 oracle_images:
-    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip", version: "11.2.0.1" }
-    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
+    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_1of7.zip", version: "11.2.0.4" }
+    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_2of7.zip", version: "11.2.0.4" } 
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_database_1of2.zip", version: "12.1.0.2" }
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_database_2of2.zip", version: "12.1.0.2" } 
     - { image: "{{ oracle_installer_path }}/linux.x64_12201_database.zip", version: "12.2.0.1" }

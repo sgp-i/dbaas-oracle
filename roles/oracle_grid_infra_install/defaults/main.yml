@@ -57,5 +57,6 @@ oracle_installer_path: "/tmp/oracle/software"
 
 # array  os images avaialbe
 grid_images:
+    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_3of7.zip", version: "11.2.0.4" }
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_1of2.zip", version: "12.1.0.2" } 
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_2of2.zip", version: "12.1.0.2" }
