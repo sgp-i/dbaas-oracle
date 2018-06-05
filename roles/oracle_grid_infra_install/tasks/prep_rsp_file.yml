@@ -15,7 +15,7 @@
     line: "{{ item.regex }}={{ item.value }}"
   with_items:
   #  - { regex: oracle.install.responseFileVersion, value: "/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0" }
-    - { regex: ORACLE_HOSTNAME, value: "{{ ansible_hostname }}" }
+    - { regex: ORACLE_HOSTNAME, value: "{{ ansible_hostname }}.{{ domain }}" }
     - { regex: INVENTORY_LOCATION, value: "{{ oracle_base }}/oraInventory" }
     - { regex: SELECTED_LANGUAGES, value: "en" }
     - { regex: oracle.install.option, value: "{{ grid_install_mode }}" }
