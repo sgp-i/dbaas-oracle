@@ -107,3 +107,18 @@
     - { regex: oracle.install.db.OSRACDBA_GROUP, value: "{{ oracle_group }}" }
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
   
+- name: set inline changes (configure db)
+  lineinfile: 
+    path: "{{ oracle_tmp }}/db_install.rsp"
+    regexp: "^{{ item.regex }}"
+    line: "{{ item.regex }}={{ item.value }}"
+  with_items:
+    - { regex: oracle.install.db.config.starterdb.globalDBName, value: "{{ oracle_db_name }}" }
+    - { regex: oracle.install.db.config.starterdb.SID, value: "{{ oracle_db_name }}" }
+    - { regex: oracle.install.db.config.starterdb.characterSet, value: AL32UTF8 }
+    - { regex: oracle.install.db.config.starterdb.memoryLimit, value: "2048" }
+    - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
+    - { regex: oracle.install.db.config.asm.diskGroup, value: "{{ asm_disk_group }}" }
+    - { regex: oracle.install.db.config.asm.ASMSNMPPassword, value: "{{ oracle_asm_syspass }}" }
+  when: install_mode == "INSTALL_DB_AND_CONFIG"
+  
