@@ -17,6 +17,11 @@
     asm_disk_paths: []
     cacheable: true
 
+- include_tasks: create_disk_partitions.yml
+  loop: "{{ asm_disks }}"
+  loop_control:
+    loop_var: disk_info
+
 - include_tasks: create_asm_disk.yml
   loop: "{{ asm_disks }}"
   loop_control:

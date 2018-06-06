@@ -1,0 +1,13 @@
+---
+
+- name: does partition exist?
+  command: "ls {{ disk_info.raw_disk }}"
+  ignore_errors: yes
+  register: partition_exists
+
+- name: create disk partitions
+  parted:
+    device: "{{ disk_info.raw_disk[:-1]  }}"
+    number: "{{ disk_info.raw_disk[-1]  }}"
+    state: present
+  when: partition_exists.rc != 0
