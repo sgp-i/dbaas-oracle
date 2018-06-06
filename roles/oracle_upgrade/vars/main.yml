@@ -1,0 +1,10 @@
+---
+
+# shell environment for the oracle user
+ora_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_SID: "{{ oracle_db_name }}"
+  ORACLE_UNQNAME: "{{ oracle_db_name }}"
+  ORACLE_HOME: "{{ upgrade_oracle_home }}"
+  NLS_LANG: "American_America.UTF8"
+  PATH: "{{ ansible_env.PATH }}:{{ upgrade_oracle_home }}/bin"

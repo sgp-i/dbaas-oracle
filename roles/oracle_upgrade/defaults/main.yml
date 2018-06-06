@@ -1,0 +1,22 @@
+---
+
+current_oracle_version: 11.2.0.4
+
+upgrade_oracle_version: 12.1.0.2
+
+oracle_tmp: /u01/tmp/{{ current_oracle_version }}
+
+oracle_base: /u01/app/oracle
+
+oracle_db_home: db_1 
+
+current_oracle_home: "{{ oracle_base }}/product/{{ current_oracle_version }}/{{ oracle_db_home }}"
+
+upgrade_oracle_home: "{{ oracle_base }}/product/{{ upgrade_oracle_version }}/{{ oracle_db_home }}"
+
+oracle_db_name: db
+
+# password for the sysdba
+oracle_db_syspass: password
+
+oracle_user: oracle

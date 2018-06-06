@@ -1,0 +1,15 @@
+---
+
+- name: upgrade oracle 11g database to 12c database
+  hosts: oracle
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_upgrade
+  vars:
+    oracle_edition: EE
+    current_oracle_version: 11.2.0.4
+    upgrade_oracle_version: 12.1.0.2
+    oracle_db_home: db_1
+    oracle_db_name: demo
+    domain: techlab.com

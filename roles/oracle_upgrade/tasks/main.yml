@@ -1,0 +1,10 @@
+---
+
+- name: check if db exists
+  command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
+  ignore_errors: yes
+  register: oracle_installed
+  failed_when: oracle_installed.rc != 0
+
+- include: upgrade_oracle.yml
+  when: oracle_installed.rc == 0
