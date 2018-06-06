@@ -7,5 +7,5 @@ oracle_group: oinstall
 asm_disk_location: /dev/oracleasm/disks
 
 asm_disks: 
-      - { raw_disk: /dev/sdc1, label: DATA1 }
-      - { raw_disk: /dev/sdd1, label: DATA2 }
+  - { raw_disk: /dev/sdc1, label: DATA1 }
+  - { raw_disk: /dev/sdd1, label: DATA2 }
