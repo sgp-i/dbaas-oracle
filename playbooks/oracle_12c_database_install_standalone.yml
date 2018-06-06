@@ -1,0 +1,15 @@
+---
+
+- name: install oracle 12c database
+  hosts: oracle
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_install
+  vars:
+    oracle_edition: EE
+    oracle_version: 12.1.0.2
+    install_mode: INSTALL_DB_AND_CONFIG
+    oracle_db_home: db_3
+    oracle_db_name: demo
+    domain: techlab.com
