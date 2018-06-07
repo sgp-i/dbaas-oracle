@@ -89,7 +89,7 @@
     - "oracle hard stack 10240"
     - "oracle soft memlock unlimited"
     - "oracle hard memlock unlimited"
-  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
+  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0" or oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.1.0"
 
 
     
