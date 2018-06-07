@@ -15,13 +15,19 @@
     executable: /bin/bash
     creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
 
-# - name: get list of grid install fix scripts to run
-#   register: grid_post_install_scripts
+- name: wait for orainstRoot.sh
+  wait_for: 
+    path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
 
+- name: general oracle post-installation
+  command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
 
-- name: run grid install fix scripts
-  command: "{{ item }}"
-  with_items: "{{ grid_post_install_scripts }}"
+- name: wait for root.sh
+  wait_for: 
+    path: "{{ oracle_grid_home }}/root.sh"
+
+- name: db-specific oracle post-installation
+  command: "{{ oracle_grid_home }}/root.sh"
 
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
