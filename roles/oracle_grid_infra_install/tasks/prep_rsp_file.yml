@@ -38,6 +38,7 @@
        oracle.install.asm.diskGroup.name={{ asm_disk_group }}
        oracle.install.asm.diskGroup.redundancy=EXTERNAL
        oracle.install.asm.diskGroup.AUSize=1
+       oracle.install.asm.diskGroup.disks={{ asm_disk_paths }}
        oracle.install.asm.diskGroup.diskDiscoveryString={{ asm_disk_location }}/*
        oracle.install.asm.monitorPassword={{ oracle_asm_syspass }}
        oracle.install.asm.ClientDataFile=
