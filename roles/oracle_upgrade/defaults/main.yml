@@ -8,11 +8,13 @@ oracle_tmp: /u01/tmp/{{ current_oracle_version }}
 
 oracle_base: /u01/app/oracle
 
-oracle_db_home: db_1 
+current_db_home: db_1 
 
-current_oracle_home: "{{ oracle_base }}/product/{{ current_oracle_version }}/{{ oracle_db_home }}"
+upgrade_db_home: db_1 
 
-upgrade_oracle_home: "{{ oracle_base }}/product/{{ upgrade_oracle_version }}/{{ oracle_db_home }}"
+current_oracle_home: "{{ oracle_base }}/product/{{ current_oracle_version }}/{{ current_db_home }}"
+
+upgrade_oracle_home: "{{ oracle_base }}/product/{{ upgrade_oracle_version }}/{{ upgrade_db_home }}"
 
 oracle_db_name: db
 
