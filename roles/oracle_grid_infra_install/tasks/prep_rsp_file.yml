@@ -4,7 +4,7 @@
   copy:
     dest: "{{ oracle_tmp }}/grid_install.rsp"
     content: |
-       #oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0
+       oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0
        ORACLE_HOSTNAME={{ ansible_hostname }}.{{ domain }}
        INVENTORY_LOCATION={{ oracle_base }}/oraInventory
        SELECTED_LANGUAGES=en
