@@ -1,63 +1,52 @@
 ---
  
-- name: make a copy of the response file
+- name: create grid_install rsp file (common)
   copy:
-    src: "{{ oracle_tmp }}/grid/response/grid_install.rsp"
     dest: "{{ oracle_tmp }}/grid_install.rsp"
-    owner: "{{ oracle_user }}"
-    group: "{{ oracle_group }}"
-    remote_src: yes
-
-- name: set inline changes (common)
-  lineinfile: 
-    path: "{{ oracle_tmp }}/grid_install.rsp"
-    regexp: "^{{ item.regex }}"
-    line: "{{ item.regex }}={{ item.value }}"
-  with_items:
-  #  - { regex: oracle.install.responseFileVersion, value: "/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0" }
-    - { regex: ORACLE_HOSTNAME, value: "{{ ansible_hostname }}.{{ domain }}" }
-    - { regex: INVENTORY_LOCATION, value: "{{ oracle_base }}/oraInventory" }
-    - { regex: SELECTED_LANGUAGES, value: "en" }
-    - { regex: oracle.install.option, value: "{{ grid_install_mode }}" }
-    - { regex: ORACLE_BASE, value: "{{ oracle_base }}" }
-    - { regex: ORACLE_HOME, value: "{{ oracle_grid_home }}" }
-    - { regex: oracle.install.asm.OSDBA, value: "{{ oracle_group }}" }
-    - { regex: oracle.install.asm.OSOPER, value: "{{ oracle_group }}" }
-    - { regex: oracle.install.asm.OSASM, value: "{{ oracle_group }}" }
-    - { regex: oracle.install.crs.config.gpnp.scanName, value: "{{ scan_name }}" }
-    - { regex: oracle.install.crs.config.gpnp.scanPort, value: "{{ scan_port }}" }
-    - { regex: oracle.install.crs.config.ClusterType, value: "{{ cluster_type }}" }
-    - { regex: oracle.install.crs.config.clusterName, value: "{{ cluster_name }}" }
-    - { regex: oracle.install.crs.config.gpnp.configureGNS, value: "false" }
-    - { regex: oracle.install.crs.config.autoConfigureClusterNodeVIP, value: "true" }
-    - { regex: oracle.install.crs.config.gpnp.gnsOption, value: "CREATE_NEW_GNS" }
-    - { regex: oracle.install.crs.config.gpnp.gnsClientDataFile, value: "" }
-    - { regex: oracle.install.crs.config.gpnp.gnsSubDomain, value: "" }
-    - { regex: oracle.install.crs.config.gpnp.gnsVIPAddress, value: "" }
-    - { regex: oracle.install.crs.config.clusterNodes, value: "{{ cluster_nodes }}" }
-    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ crs_net_interfaces }}" }
-    - { regex: oracle.install.crs.config.storageOption, value: "{{ grid_storage_type }}" }
-    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations, value: "" }
-    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy, value: "NORMAL" }
-    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrLocations, value: "" }
-    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy, value: "NORMAL" }
-    - { regex: oracle.install.crs.config.useIPMI, value: "false" }
-    - { regex: oracle.install.crs.config.ipmi.bmcUsername, value: "" }
-    - { regex: oracle.install.crs.config.ipmi.bmcPassword, value: "" }
-    - { regex: oracle.install.asm.SYSASMPassword, value: "{{ oracle_asm_syspass }}" }
-    - { regex: oracle.install.asm.diskGroup.name, value: "{{ asm_disk_group }}" }
-    - { regex: oracle.install.asm.diskGroup.redundancy, value: "EXTERNAL" }
-    - { regex: oracle.install.asm.diskGroup.AUSize, value: "1" }
-    - { regex: oracle.install.asm.diskGroup.disks, value: "{{ asm_disk_paths }}" }
-    - { regex: oracle.install.asm.diskGroup.diskDiscoveryString, value: "{{ asm_disk_location }}/*" }
-    - { regex: oracle.install.asm.monitorPassword, value: "{{ oracle_asm_syspass }}" }
-    - { regex: oracle.install.asm.ClientDataFile, value: "" }
-    - { regex: oracle.install.crs.config.ignoreDownNodes, value: "false" }
-    - { regex: oracle.install.config.managementOption, value: "NONE" }
-    - { regex: oracle.install.config.omsHost, value: "" }
-    - { regex: oracle.install.config.omsPort, value: "0" }
-    - { regex: oracle.install.config.emAdminUser, value: "" }
-    - { regex: oracle.install.config.emAdminPassword, value: "" }
+    content: |
+       #oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0
+       ORACLE_HOSTNAME={{ ansible_hostname }}.{{ domain }}
+       INVENTORY_LOCATION={{ oracle_base }}/oraInventory
+       SELECTED_LANGUAGES=en
+       oracle.install.option={{ grid_install_mode }}
+       ORACLE_BASE={{ oracle_base }}
+       ORACLE_HOME={{ oracle_grid_home }}
+       oracle.install.asm.OSDBA={{ oracle_group }}
+       oracle.install.asm.OSOPER={{ oracle_group }}
+       oracle.install.asm.OSASM={{ oracle_group }}
+       oracle.install.crs.config.gpnp.scanName={{ scan_name }}
+       oracle.install.crs.config.gpnp.scanPort={{ scan_port }}
+       oracle.install.crs.config.ClusterType={{ cluster_type }}
+       oracle.install.crs.config.clusterName={{ cluster_name }}
+       oracle.install.crs.config.gpnp.configureGNS=false
+       oracle.install.crs.config.autoConfigureClusterNodeVIP=true
+       oracle.install.crs.config.gpnp.gnsOption=CREATE_NEW_GNS
+       oracle.install.crs.config.gpnp.gnsClientDataFile=
+       oracle.install.crs.config.gpnp.gnsSubDomain=
+       oracle.install.crs.config.gpnp.gnsVIPAddress=
+       oracle.install.crs.config.clusterNodes={{ cluster_nodes }}
+       oracle.install.crs.config.networkInterfaceList={{ crs_net_interfaces }}
+       oracle.install.crs.config.storageOption={{ grid_storage_type }}
+       oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations=
+       oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy=NORMAL
+       oracle.install.crs.config.sharedFileSystemStorage.ocrLocations=
+       oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy=NORMAL
+       oracle.install.crs.config.useIPMI=false
+       oracle.install.crs.config.ipmi.bmcUsername=
+       oracle.install.crs.config.ipmi.bmcPassword=
+       oracle.install.asm.SYSASMPassword={{ oracle_asm_syspass }}
+       oracle.install.asm.diskGroup.name={{ asm_disk_group }}
+       oracle.install.asm.diskGroup.redundancy=EXTERNAL
+       oracle.install.asm.diskGroup.AUSize=1
+       oracle.install.asm.diskGroup.diskDiscoveryString={{ asm_disk_location }}/*
+       oracle.install.asm.monitorPassword={{ oracle_asm_syspass }}
+       oracle.install.asm.ClientDataFile=
+       oracle.install.crs.config.ignoreDownNodes=false
+       oracle.install.config.managementOption=NONE
+       oracle.install.config.omsHost=
+       oracle.install.config.omsPort=0
+       oracle.install.config.emAdminUser=
+       oracle.install.config.emAdminPassword=
 
 - name: create configTool rsp file
   copy:
