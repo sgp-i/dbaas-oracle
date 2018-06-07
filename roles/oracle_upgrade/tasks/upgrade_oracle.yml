@@ -15,4 +15,3 @@
     done
   args:
     executable: /bin/bash
-    creates: "{{ oracle_home }}/bin/sqlplus"
