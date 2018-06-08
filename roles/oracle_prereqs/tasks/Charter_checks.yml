@@ -74,7 +74,9 @@
   when: umask_value.stdout | int != 22 or umask_value.stdout | int != 022 or umask_value.stdout | int != 0022
 
 
-- name: get ulimit value
+- name: get ulimit value (soft files)
+  become: yes
+  become_user: "{{ oracle_user[0].name }}"
   shell: ulimit -Sn
   register: ulimit_value
 
@@ -83,7 +85,9 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Sn,"
   when: ulimit_value.stdout | int != 2047
 
-- name: get ulimit value
+- name: get ulimit value (hard files)
+  become: yes
+  become_user: "{{ oracle_user[0].name }}"
   shell: ulimit -Hn
   register: ulimit_value
 
@@ -92,7 +96,9 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be 65536 for ulimit -Hn,"
   when: ulimit_value.stdout | int != 65536
 
-- name: get ulimit value
+- name: get ulimit value (hard procs)
+  become: yes
+  become_user: "{{ oracle_user[0].name }}"
   shell: ulimit -Hu
   register: ulimit_value
 
@@ -101,7 +107,9 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be 16384 for ulimit -Hu,"
   when: ulimit_value.stdout | int != 16384
 
-- name: get ulimit value
+- name: get ulimit value (soft stack)
+  become: yes
+  become_user: "{{ oracle_user[0].name }}"
   shell: ulimit -Ss
   register: ulimit_value
 
@@ -110,7 +118,9 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be 10240 for ulimit -Ss,"
   when: ulimit_value.stdout | int != 10240
 
-- name: get ulimit value
+- name: get ulimit value (hard stack)
+  become: yes
+  become_user: "{{ oracle_user[0].name }}"
   shell: ulimit -Hs
   register: ulimit_value
 
