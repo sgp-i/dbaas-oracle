@@ -129,7 +129,9 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be unlimited for ulimit -Hs,"
   when: ulimit_value.stdout != "unlimited"
   
-- name: fail the tasks if the pre-requsites are not satisfied
-  fail: 
-    msg: The following pre-requesties are not met {{ failed_checks | string }}
-  when: failed_checks!=""
+- debug:
+    var: failed_checks
+# - name: fail the tasks if the pre-requsites are not satisfied
+#   fail: 
+#     msg: The following pre-requesties are not met {{ failed_checks | string }}
+#   when: failed_checks!=""
