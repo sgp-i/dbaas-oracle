@@ -7,10 +7,4 @@
   roles:
     - oracle_prereqs
     - oracle_asm_config
-  
-  #####################################################
-  ## Each Host should have the ASM Disk vars defined ##
-  #####################################################
-  # asm_disks - An array of disks to be used for ASM.  Format should be:
-  #   - { raw_disk: <<disk_path ie /dev/sdb1>>, label: <<asm_label>> }
-  
+    

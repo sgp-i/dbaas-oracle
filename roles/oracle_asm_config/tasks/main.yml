@@ -12,21 +12,15 @@
   command: oracleasm init
   ignore_errors: yes
 
-- name: initialize asm_disk_paths
-  set_fact:
-    asm_disk_paths: []
-    cacheable: true
-
-- include_tasks: create_disk_partitions.yml
-  loop: "{{ asm_disks }}"
-  loop_control:
-    loop_var: disk_info
+- name: get logical volumes for asm
+  find:
+    paths: "/dev/mapper"
+    file_type: any
+    patterns: ora--dg--*
+    use_regex: no
+  register: asm_disks
 
 - include_tasks: create_asm_disk.yml
-  loop: "{{ asm_disks }}"
+  loop: "{{ asm_disks.files }}"
   loop_control:
     loop_var: disk_info
-
-- name: Concatenate the asm_disk_paths
-  set_fact:
-    asm_disk_paths: "{{ asm_disk_paths | join(',') }}"

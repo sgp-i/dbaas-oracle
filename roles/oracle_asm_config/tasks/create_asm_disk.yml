@@ -1,9 +1,13 @@
 ---
 
+- name: set disk label
+  set_fact:
+    disk_label: "{{ disk_info.path | basename | regex_replace('ora--dg--([^-]*).*', '\\1') | upper }}"
+
 - name: create asm disk
-  command: oracleasm createdisk {{ disk_info.label }} {{ disk_info.raw_disk }}
+  command: oracleasm createdisk {{ disk_label }} {{ disk_info.path }}
   args:
-    creates: "{{ asm_disk_location }}/{{ disk_info.label }}"
+    creates: "{{ asm_disk_location }}/{{ disk_label }}"
   ignore_errors: yes
 
 - name: chown the asm disk
@@ -16,12 +20,7 @@
 - name: scan asm disks
   command: oracleasm scandisks
 
-- name: confirm {{ disk_info.label }} is found
-  shell: oracleasm listdisks | grep {{ disk_info.label }}
-  args:
-    executable: /bin/bash
-
-- name: add asm_disk_paths to host facts
-  set_fact:
-    asm_disk_paths: "{{ asm_disk_paths }} + [ '{{ asm_disk_location }}/{{ disk_info.label }}' ]"
-    cacheable: true
+- name: confirm {{ disk_label }} is found
+  command: oracleasm listdisks
+  register: disk_confirm
+  failed_when: 'disk_label not in disk_confirm.stdout_lines'
