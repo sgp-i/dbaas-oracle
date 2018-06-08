@@ -23,3 +23,5 @@
   args:
     executable: /bin/bash
   when: fixup_script.matched == 1
+
+  ## TODO: Re-run cluvfy and fail if script fails
