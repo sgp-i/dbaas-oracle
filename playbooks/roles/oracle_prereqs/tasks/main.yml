@@ -56,4 +56,23 @@
   include: swap_check.yml
   when: swapsize.stdout | int < 200000
 
+- name: make the NoZeroConf in /etc/sysconfig/network to yes
+  lineinfile:
+    path: /etc/sysconfig/network
+    line: 'NOZEROCONF=yes'
+
+- name: set ulimit
+  lineinfile:
+    path: /etc/profile
+    line: |
+        if [ $USER = "oracle" ]; then
+                if [ $SHELL = "/bin/ksh" ]; then
+                    ulimit -u 16384
+                    ulimit -n 65536
+                else
+                    ulimit -u 16384 -n 65536
+                fi
+            umask 022
+        fi
+
 - import_tasks: Charter_checks.yml

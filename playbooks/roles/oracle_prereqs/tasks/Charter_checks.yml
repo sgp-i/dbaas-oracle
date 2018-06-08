@@ -19,7 +19,7 @@
 
 - name: setting the fact 
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} memory,"
+    failed_checks: "{{ failed_checks | string }} no sufficient (396868032M ) memory,"
   when: total_memory.stdout | int < 396868032
 
 - name: check the swap size
@@ -37,22 +37,22 @@
   when: swap_memory.stdout < 32768 and total_memory.stdout | int > 256000000
 
 - name: check whether ssh service is running
-  shell: ps -ef| grep /usr/sbin/sshd | awk 'NR == 1 { print $2 } '
+  shell: grep /usr/sbin/sshd | wc -l
   register: process_id
 
 - name: setting the fact 
   set_fact:  
     failed_checks: "{{ failed_checks | string }} ssh process is not running,"
-  when: process_id.stdout==""
+  when: process_id.stdout | int != 2
 
 - name: check TMP directory
-  shell: df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F. '{print $1}'
+  shell: echo `df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F 'G' '{print $1}'`
   register: tmp_size
 
 - name: setting the fact 
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} TMP directory size should be more than 4GB,"
-  when: tmp_size.stdout | int < 4
+    failed_checks: "{{ failed_checks | string }} TMP directory size should be more than 4GB, {{ tmp_size.stdout | int | round }}"
+  when: tmp_size.stdout | int | round < 4
 
 - name: check the RW permission for all 
   shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
@@ -81,7 +81,7 @@
 - name: check the ulimit value
   set_fact:
    failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Sn,"
-  when: ulimit_value.stdout | int == 2047
+  when: ulimit_value.stdout | int != 2047
 
 - name: get ulimit value
   shell: ulimit -Hn
@@ -89,8 +89,8 @@
 
 - name: check the ulimit value
   set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Hn,"
-  when: ulimit_value.stdout | int == 65536
+   failed_checks: "{{ failed_checks | string }} ulimit value should be 65536 for ulimit -Hn,"
+  when: ulimit_value.stdout | int != 65536
 
 - name: get ulimit value
   shell: ulimit -Hu
@@ -98,8 +98,8 @@
 
 - name: check the ulimit value
   set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Hu,"
-  when: ulimit_value.stdout | int == 16384
+   failed_checks: "{{ failed_checks | string }} ulimit value should be 16384 for ulimit -Hu,"
+  when: ulimit_value.stdout | int != 16384
 
 - name: get ulimit value
   shell: ulimit -Ss
@@ -107,8 +107,8 @@
 
 - name: check the ulimit value
   set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Ss,"
-  when: ulimit_value.stdout | int == 10240
+   failed_checks: "{{ failed_checks | string }} ulimit value should be 10240 for ulimit -Ss,"
+  when: ulimit_value.stdout | int != 10240
 
 - name: get ulimit value
   shell: ulimit -Hs
@@ -116,11 +116,10 @@
 
 - name: check the ulimit value
   set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Hs,"
-  when: ulimit_value.stdout == "unlimited"
-
-
-
-- name: Show Failed Checks
-  debug: 
-    var: failed_checks
+   failed_checks: "{{ failed_checks | string }} ulimit value should be unlimited for ulimit -Hs,"
+  when: ulimit_value.stdout != "unlimited"
+  
+- name: fail the tasks if the pre-requsites are not satisfied
+  fail: 
+    msg: The following pre-requesties are not met {{ failed_checks | string }}
+  when: failed_checks!=""
