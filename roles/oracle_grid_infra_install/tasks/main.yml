@@ -17,6 +17,18 @@
 
 - include: run_cluvfy.yml
 
+- name: get asm disk paths
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_disk_group }}*"
+    use_regex: no
+  register: asm_disk_paths_find_result
+
+- name: set asm_disk_paths
+  set_fact:
+    asm_disk_paths: "{{ asm_disk_paths_find_result | json_query('files[].path') | join(',')}}"
+
 - include: prep_rsp_file.yml
 
 - include: grid_install.yml
