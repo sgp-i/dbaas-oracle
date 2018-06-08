@@ -47,6 +47,7 @@ private_net_interface: ""
 
 private_net_address: ""
 
+## TODO: Find way to make this dynamic
 crs_net_interfaces: "{{ public_net_interface }}:{{ public_net_address }}:1,{{ private_net_interface }}:{{ private_net_address }}:2"
 
 asm_disk_location: /dev/oracleasm/disks
