@@ -9,7 +9,6 @@
     - oracle_asm_config
     - oracle_grid_infra_install
   vars:
-    oracle_version: 12.1.0.2
     grid_version: 12.1.0.2
     grid_install_mode: HA_CONFIG
     oracle_db_name: demo

@@ -9,7 +9,6 @@
     - oracle_asm_config
     - oracle_grid_infra_install
   vars:
-    oracle_version: 11.2.0.4
     grid_version: 11.2.0.4
     oracle_db_name: demo
     domain: techlab.com
