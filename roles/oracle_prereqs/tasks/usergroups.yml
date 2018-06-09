@@ -33,7 +33,7 @@
   with_items:
     - "export TMP=/tmp"
     - "export TMPDIR=$TMP"
-    - "export ORACLE_HOSTNAME={{ oracle_hostname }}"
+    - "export ORACLE_HOSTNAME={{ inventory_hostname }}"
     - "export ORACLE_BASE={{ ora_user_env.ORACLE_BASE }}"
     - "export GRID_HOME=/u01/app/12.1.0.2/grid" # Perhaps a check for version before doing this one?
     - "export ORACLE_SID={{ ora_user_env.ORACLE_SID }}"

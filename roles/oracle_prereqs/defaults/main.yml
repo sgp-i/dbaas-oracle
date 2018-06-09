@@ -2,11 +2,6 @@
 
 oracle_version: 11.2.0.1
 
-oracle_hostname: "{{ inventory_hostname }}"
-
-# location for temporary installation files
-oracle_tmp: /u01/tmp/{{ oracle_version }}
-
 oracle_base: /u01/app
 
 oracle_db_home: db_1 
@@ -34,21 +29,6 @@ asm_admin_group:
 
 asm_dba_group: 
     - { name: asmdba, id: 54327 }
-
-oracle_pv: /dev/sdb
-
-oracle_vg: oravg
-
-oracle_bin_lv: orabinlv
-
-oracle_bin_fs: "{{ oracle_base }}/oracle"
-
-oracle_data_lv: oradatalv
-
-oracle_data_fs: "{{ oracle_base }}/data"
-
-#FSTYPE for Oracle filesystems.
-oracle_fstype: ext4
 
 oracle_swap_file: "/swapfile"
 

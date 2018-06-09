@@ -2,7 +2,7 @@
 
 # shell environment for the oracle user
 ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_BASE: "{{ oracle_base }}/oracle"
   ORACLE_SID: "{{ oracle_db_name }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"

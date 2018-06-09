@@ -1,5 +1,13 @@
 ---
 
+- name: create the oracle installer directory to the oracle user
+  file:
+    group: "{{ oracle_group[0].name }}"
+    owner: "{{ oracle_user[0].name }}"
+    path: "{{ oracle_tmp }}/database"
+    state: directory
+    recurse: yes
+
 - name: check for the marker
   stat:
     path: "{{ oracle_tmp }}/database/copied"
