@@ -9,8 +9,8 @@
        INVENTORY_LOCATION={{ oracle_base }}/oraInventory
        SELECTED_LANGUAGES=en
        oracle.install.option={{ grid_install_mode }}
-       ORACLE_BASE={{ oracle_base }}
-       ORACLE_HOME={{ oracle_grid_home }}
+       ORACLE_BASE={{ oracle_base }}/oracle
+       ORACLE_HOME={{ oracle_home }}
        oracle.install.asm.OSDBA={{ oracle_group }}
        oracle.install.asm.OSOPER={{ oracle_group }}
        oracle.install.asm.OSASM={{ oracle_group }}
