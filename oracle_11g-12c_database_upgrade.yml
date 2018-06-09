@@ -7,10 +7,6 @@
   roles:
     - oracle_upgrade
   vars:
-    oracle_edition: EE
-    current_oracle_version: 11.2.0.4
-    upgrade_oracle_version: 12.1.0.2
-    current_db_home: db_2
-    upgrade_db_home: db_1
-    oracle_db_name: test01
-    domain: techlab.com
+    oracle_version: 12.1.0.2
+    db_home: db_2
+    oracle_db_name: dummy

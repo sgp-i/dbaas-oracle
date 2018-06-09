@@ -1,10 +1,13 @@
 ---
 
-- name: check if db exists
-  command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
+- name: get db details
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
   ignore_errors: yes
-  register: oracle_installed
-  failed_when: oracle_installed.rc != 0
+  register: db_details
+
+- name: set original_oracle_home
+  set_fact:
+    current_oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
 - include: upgrade_oracle.yml
-  when: oracle_installed.rc == 0
+  when: db_details.rc == 0 and current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
