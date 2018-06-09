@@ -116,7 +116,7 @@
     - { regex: oracle.install.db.config.starterdb.globalDBName, value: "{{ oracle_db_name }}" }
     - { regex: oracle.install.db.config.starterdb.SID, value: "{{ oracle_db_name }}" }
     - { regex: oracle.install.db.config.starterdb.characterSet, value: AL32UTF8 }
-    - { regex: oracle.install.db.config.starterdb.memoryLimit, value: "2048" }
+    - { regex: oracle.install.db.config.starterdb.memoryLimit, value: "{{ oracle_db_mem }}" }
     - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
     - { regex: oracle.install.db.config.asm.diskGroup, value: "{{ asm_disk_group }}" }
     - { regex: oracle.install.db.config.asm.ASMSNMPPassword, value: "{{ oracle_asm_syspass }}" }

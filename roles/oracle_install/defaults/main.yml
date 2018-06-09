@@ -22,7 +22,7 @@ oracle_db_name: db
 # password for the sysdba
 oracle_db_syspass: password
 
-oracle_db_mem: "450"
+oracle_db_mem: "2048"
 
 oracle_user: oracle
 

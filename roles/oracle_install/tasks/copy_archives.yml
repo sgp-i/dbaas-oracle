@@ -2,8 +2,8 @@
 
 - name: create the oracle installer directory to the oracle user
   file:
-    group: "{{ oracle_group[0].name }}"
-    owner: "{{ oracle_user[0].name }}"
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
     path: "{{ oracle_tmp }}/database"
     state: directory
     recurse: yes
