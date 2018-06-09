@@ -14,7 +14,7 @@
     group: "{{ oracle_group[0].name }}"
     owner: "{{ oracle_user[0].name }}"
 
-# Unsure if we will need this
+## TODO: Create different packages list based on OS
 - include: packages.yml
 
 # Unsure if we will need this
