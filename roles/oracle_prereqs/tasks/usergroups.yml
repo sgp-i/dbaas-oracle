@@ -51,10 +51,8 @@
 - name: update PATH for oracle user
   lineinfile: 
     path: /home/{{ oracle_user[0].name }}/.bashrc
-    regexp: "^{{ item.regex }}"
-    line: "{{ item.regex }}={{ item.value }}"
-  with_items:
-    - { regex: export PATH=, value: "$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin" }
+    regexp: "^export PATH"
+    line: "export PATH=$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin"
 
 - name: copy grid_env file
   copy:
