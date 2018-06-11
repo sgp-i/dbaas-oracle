@@ -18,9 +18,16 @@
     dest: "{{ oracle_tmp }}/cluvfy_1st_stderr.err"
     content: "{{ cluvfy_results_1.stderr }}"
 
+- name: get cluvfy version
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy -version"
+  register: cluvfy_version
+
 - name: check for runfixup.sh
   find:
-    paths: "/tmp/CVU_12.2.0.1.0_oracle"
+    paths: "/tmp/CVU_{{ cluvfy_version.stdout | regex_replace('^(.*) Build.*', '\\1') }}_oracle"
     file_type: file
     patterns: runfixup.sh
     use_regex: no
