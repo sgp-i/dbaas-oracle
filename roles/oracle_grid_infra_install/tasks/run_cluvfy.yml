@@ -47,3 +47,26 @@
   copy:
     dest: "{{ oracle_tmp }}/fixup_stderr.err"
     content: "{{ fixup_results.stderr }}"
+
+- name: run cluvfy again
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }} -fixup -verbose"
+  ignore_errors: yes
+  register: cluvfy_results_2
+
+- name: save cluvfy 2nd stdout
+  copy:
+    dest: "{{ oracle_tmp }}/cluvfy_2nd_stdout.out"
+    content: "{{ cluvfy_results_2.stdout }}"
+
+- name: save cluvfy 2nd stderr
+  copy:
+    dest: "{{ oracle_tmp }}/cluvfy_2nd_stderr.err"
+    content: "{{ cluvfy_results_2.stderr }}"
+
+- name: Check if Cluster Verify Failed
+  fail:
+    msg: "Cluster Verify Failed"
+  when: cluvfy_results_2.rc != 0
