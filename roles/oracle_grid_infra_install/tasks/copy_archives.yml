@@ -15,12 +15,16 @@
     path: "{{ oracle_tmp }}/cluster_verify"
     state: directory
     recurse: yes
+  tags:
+    - cluvfy
 
 - name: check for cluvfy marker
   stat:
     path: "{{ oracle_tmp }}/cluster_verify/copied"
   register: cluvfy_unzipped
   ignore_errors: yes
+  tags:
+    - cluvfy
 
 - name: unzip cluvfy
   become_user: "{{ oracle_user }}"
@@ -30,12 +34,16 @@
     remote_src: yes 
     keep_newer: true 
   when: cluvfy_unzipped.stat.exists == false
+  tags:
+    - cluvfy
   
 - name: place a marker for the completion of cluvfy unzip
   file:
     path: "{{ oracle_tmp }}/cluster_verify/copied"
     state: touch
   when: cluvfy_unzipped.stat.exists == false
+  tags:
+    - cluvfy
 
 - name: check for grid marker
   stat:

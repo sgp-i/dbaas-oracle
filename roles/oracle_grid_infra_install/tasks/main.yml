@@ -16,6 +16,8 @@
     state: present
 
 - include: run_cluvfy.yml
+  tags:
+    - cluvfy
 
 - name: get asm disk paths
   find:
