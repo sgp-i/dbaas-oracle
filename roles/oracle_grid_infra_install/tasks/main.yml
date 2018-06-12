@@ -12,7 +12,7 @@
 
 - name: install cvuqdisk package
   yum: 
-    name: "{{ oracle_tmp }}/grid/rpm/{{ cvuqdisk_package.files[0].path | basename }}"
+    name: "{{ cvuqdisk_package.files[0].path }}"
     state: present
 
 - include: run_cluvfy.yml
