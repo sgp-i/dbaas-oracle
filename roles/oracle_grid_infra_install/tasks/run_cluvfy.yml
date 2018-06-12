@@ -1,5 +1,13 @@
 ---
 
+- name: set cvu_config settings
+  lineinfile: 
+    path: "{{ oracle_tmp }}/cluster_verify/cv/admin/cvu_config"
+    regexp: "^{{ item.regex }}"
+    line: "{{ item.regex }}={{ item.value }}"
+  with_items:
+    - { regex: CV_RAW_CHECK_ENABLED, value: 'FALSE' }
+
 - name: run cluvfy
   become: yes
   become_user: "{{ oracle_user }}"
