@@ -7,3 +7,11 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+
+known_cluvfy_issues: 
+  - "Swap Size"
+  - "Package: cvuqdisk"
+  - "Multicast check"
+  - "source"
+  - "NTP"
+  - "Domain Sockets"
