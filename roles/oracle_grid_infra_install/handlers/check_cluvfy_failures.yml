@@ -16,8 +16,9 @@
     line: "{{ item }} IGNORED"
   with_items: "{{ known_cluvfy_issues }}"
 
-- name: get cluvfy failures
+- name: Any non-ignorable failures?
   listen: check cluvfy failures
   command: "grep FAILED {{ oracle_tmp }}/cluvfy_2nd_stdout.out"
   register: cluvfy_failures
   failed_when: cluvfy_failures.stdout_lines | length > 0
+  changed_when: cluvfy_failures.rc != 0
