@@ -18,55 +18,9 @@
     dest: "{{ oracle_tmp }}/cluvfy_1st_stderr.err"
     content: "{{ cluvfy_results_1.stderr }}"
 
-- name: get cluvfy version
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy -version"
-  register: cluvfy_version
-
-- name: check for runfixup.sh
-  find:
-    paths: "/tmp/CVU_{{ cluvfy_version.stdout | regex_replace('^(.*) Build.*', '\\1') }}_oracle"
-    file_type: file
-    patterns: runfixup.sh
-    use_regex: no
-  register: fixup_script
-
-- name: execute runfixup.sh
-  command: "{{ fixup_script.files[0].path }}"
-  register: fixup_results
-  when: fixup_script.matched == 1
-
-- name: save runfixup.sh stdout
-  copy:
-    dest: "{{ oracle_tmp }}/fixup_stdout.out"
-    content: "{{ fixup_results.stdout }}"
-
-- name: save runfixup.sh stderr
-  copy:
-    dest: "{{ oracle_tmp }}/fixup_stderr.err"
-    content: "{{ fixup_results.stderr }}"
-
-- name: run cluvfy again
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }} -fixup -verbose"
-  ignore_errors: yes
-  register: cluvfy_results_2
-
-- name: save cluvfy 2nd stdout
-  copy:
-    dest: "{{ oracle_tmp }}/cluvfy_2nd_stdout.out"
-    content: "{{ cluvfy_results_2.stdout }}"
-
-- name: save cluvfy 2nd stderr
-  copy:
-    dest: "{{ oracle_tmp }}/cluvfy_2nd_stderr.err"
-    content: "{{ cluvfy_results_2.stderr }}"
-
-- name: Check if Cluster Verify Failed
-  fail:
-    msg: "Cluster Verify Failed"
-  when: cluvfy_results_2.rc != 0
+- name: Check for cluvfy failure
+  command: echo RC=$?
+  notify: 
+  - run fixup script
+  - re-run cluvfy
+  when: cluvfy_results_1.rc != 0
