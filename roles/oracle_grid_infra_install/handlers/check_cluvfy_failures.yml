@@ -20,5 +20,5 @@
   listen: check cluvfy failures
   command: "grep FAILED {{ oracle_tmp }}/cluvfy_2nd_stdout.out"
   register: cluvfy_failures
+  changed_when: false
   failed_when: cluvfy_failures.stdout_lines | length > 0
-  changed_when: cluvfy_failures.rc != 0
