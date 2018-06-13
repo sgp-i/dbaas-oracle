@@ -15,3 +15,4 @@ known_cluvfy_issues:
   - "source"
   - "NTP"
   - "Domain Sockets"
+  - "Physical Memory"
