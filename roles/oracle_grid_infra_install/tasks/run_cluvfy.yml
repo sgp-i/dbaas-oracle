@@ -26,9 +26,79 @@
     dest: "{{ oracle_tmp }}/cluvfy_1st_stderr.err"
     content: "{{ cluvfy_results_1.stderr }}"
 
-- name: Check for cluvfy failure
-  command: echo RC=$?
-  notify: 
-  - run fixup script
-  - re-run cluvfy
+- name: run fixup and re-check
+  block:
+  - name: get cluvfy version
+    become: yes
+    become_user: "{{ oracle_user }}"
+    environment: "{{ ora_user_env }}"
+    command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy -version"
+    register: cluvfy_version
+
+  - name: check for runfixup.sh
+    find:
+      paths: "/tmp/CVU_{{ cluvfy_version.stdout | regex_replace('^(.*) Build.*', '\\1') }}_oracle"
+      file_type: file
+      patterns: runfixup.sh
+      use_regex: no
+    register: fixup_script
+
+  - name: execute runfixup.sh
+    command: "{{ fixup_script.files[0].path }}"
+    ignore_errors: yes
+    register: fixup_results
+    when: fixup_script.matched == 1
+
+  - name: save runfixup.sh stdout
+    copy:
+      dest: "{{ oracle_tmp }}/fixup_stdout.out"
+      content: "{{ fixup_results.stdout }}"
+    when: fixup_results is defined
+
+  - name: save runfixup.sh stderr
+    copy:
+      dest: "{{ oracle_tmp }}/fixup_stderr.err"
+      content: "{{ fixup_results.stderr }}"
+    when: fixup_results is defined
+    
+  - name: run cluvfy again
+    become: yes
+    become_user: "{{ oracle_user }}"
+    environment: "{{ ora_user_env }}"
+    command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }}"
+    ignore_errors: yes
+    register: cluvfy_results_2
+
+  - name: save cluvfy 2nd stdout
+    copy:
+      dest: "{{ oracle_tmp }}/cluvfy_2nd_stdout.out"
+      content: "{{ cluvfy_results_2.stdout }}"
+
+  - name: save cluvfy 2nd stderr
+    copy:
+      dest: "{{ oracle_tmp }}/cluvfy_2nd_stderr.err"
+      content: "{{ cluvfy_results_2.stderr }}"
+    
+  - name: check failures
+    block: 
+    - name: cleanup cluvfy 2nd stdout
+      replace:
+        path: "{{ oracle_tmp }}/cluvfy_2nd_stdout.out"
+        regexp: 'FAILED'
+        replace: 'failed'
+        before: 'Failures were encountered during execution.*'
+
+    - name: ignore known cluvfy failures
+      lineinfile:
+        path: "{{ oracle_tmp }}/cluvfy_2nd_stdout.out"
+        regexp: ".*{{ item }}.*FAILED"
+        line: "{{ item }} IGNORED"
+      with_items: "{{ known_cluvfy_issues }}"
+
+    - name: Any non-ignorable failures?
+      command: "grep FAILED {{ oracle_tmp }}/cluvfy_2nd_stdout.out"
+      register: cluvfy_failures
+      changed_when: false
+      failed_when: cluvfy_failures.stdout_lines | length > 0
+    when: cluvfy_results_2.rc != 0
   when: cluvfy_results_1.rc != 0
