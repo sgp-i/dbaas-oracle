@@ -14,11 +14,7 @@
 - name: install x86 oracle dependencies for 11R2 (OEL)
   yum:
     name: oracle-rdbms-server-11gR2-preinstall.x86_64
-  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,
-    2}.[0-9]{1,
-    }.[0-9]{1,
-    })(.*)$',
-    '\g<1>') == "11.2.0"
+  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
 
 - name: install x86 oracle dependencies for 11g
   yum: 
@@ -67,20 +63,12 @@
 - name: install x86 oracle dependencies for 12R1 (OEL)
   yum:
     name: oracle-rdbms-server-12cR1-preinstall
-  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,
-    2}.[0-9]{1,
-    }.[0-9]{1,
-    })(.*)$',
-    '\g<1>') == "12.1.0"
+  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.1.0"
 
 - name: install x86 oracle dependencies for 12R2 (OEL)
   yum:
     name: oracle-database-server-12cR2-preinstall.x86_64
-  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,
-    2}.[0-9]{1,
-    }.[0-9]{1,
-    })(.*)$',
-    '\g<1>') == "12.2.0"
+  when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
 
 - name: install x86 oracle dependencies for 12c (RedHat)
   yum: 
