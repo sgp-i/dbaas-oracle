@@ -24,7 +24,7 @@
 - name: scan asm disks
   command: oracleasm scandisks
 
-- name: confirm {{ disk_label }} is found
-  command: oracleasm listdisks
+- name: confirm {{ disk_label }} is good
+  command: oracleasm querydisk {{ disk_label }}
   register: disk_confirm
-  failed_when: 'disk_label not in disk_confirm.stdout_lines'
+  failed_when: "'is a valid ASM disk' not in disk_confirm.stdout"
