@@ -8,8 +8,18 @@
   command: oracleasm createdisk {{ disk_label }} {{ disk_info.path }}
   args:
     creates: "{{ asm_disk_location }}/{{ disk_label }}"
+  register: asm_create_result
   ignore_errors: yes
-  notify: chown the asm disk
+
+- name: chown asm disks
+  block:
+    - name: chown asm disks
+      file:
+        group: "{{ oracle_group }}"
+        owner: "{{ oracle_user }}"
+        path: "{{ asm_disk_location }}/{{ disk_label }}"
+        state: file
+  when: asm_create_result.rc != 0
 
 - name: scan asm disks
   command: oracleasm scandisks

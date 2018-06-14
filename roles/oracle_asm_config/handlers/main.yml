@@ -1,8 +1,0 @@
----
-
-- name: chown the asm disk
-  file:
-    group: "{{ oracle_group }}"
-    owner: "{{ oracle_user }}"
-    path: "{{ asm_disk_location }}/{{ disk_label }}"
-    state: file
