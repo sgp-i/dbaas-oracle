@@ -5,29 +5,22 @@
     name: "{{ item.name }}"
     gid: "{{ item.id }}"
     state: present
-  with_items:
-    - "{{ oracle_group }}"
-    - "{{ oracle_dba_group }}"
-    - "{{ asm_oper_group }}"
-    - "{{ asm_admin_group }}"
-    - "{{ asm_dba_group }}"
+  with_items: "{{ oracle_groups }}"
 
 - name: create oracle user
   user:
-    name: "{{ item.name }}"
-    group: "{{ oracle_group[0].name }}"
-    uid: "{{ item.id }}"
-    groups: "{{ oracle_dba_group[0].name }}"
-    home: "/home/{{ item.name }}"
+    name: "{{ oracle_user.name }}"
+    group: "{{ oracle_groups[0].name }}"
+    uid: "{{ oracle_user.id }}"
+    groups: "{{ oracle_groups | json_query('[].name') | join(',')}}"
+    home: "/home/{{ oracle_user.name }}"
     shell: /bin/bash 
-    password: "{{ oracle_pass }}"
+    password: "{{ oracle_user.pass }}"
     append: yes
-  with_items:
-    - "{{ oracle_user }}"
 
 - name: set oracle user environment
   lineinfile:
-    dest: "/home/{{ oracle_user[0].name }}/.bashrc"
+    dest: "/home/{{ oracle_user.name }}/.bashrc"
     state: present
     line: "{{ item }}"
   with_items:
@@ -50,13 +43,13 @@
 
 - name: update PATH for oracle user
   lineinfile: 
-    path: /home/{{ oracle_user[0].name }}/.bashrc
+    path: /home/{{ oracle_user.name }}/.bashrc
     regexp: "^export PATH"
     line: "export PATH=$PATH:$ORACLE_HOME/bin:$BASE_PATH:$HOME/bin"
 
 - name: copy grid_env file
   copy:
-    dest: /home/{{ oracle_user[0].name }}/grid_env
+    dest: /home/{{ oracle_user.name }}/grid_env
     content: |
       export ORACLE_SID=+ASM 
       export ORACLE_HOME=$GRID_HOME 
@@ -67,7 +60,7 @@
       
 - name: copy db_env file
   copy:
-    dest: /home/{{ oracle_user[0].name }}/db_env
+    dest: /home/{{ oracle_user.name }}/db_env
     content: |
       export ORACLE_SID="{{ oracle_db_name }}"
       export ORACLE_HOME=$DB_HOME

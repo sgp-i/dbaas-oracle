@@ -10,24 +10,13 @@ oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db
 
 oracle_db_name: db
 
-oracle_user: 
-    - { name: oracle, id: 5001 }
+oracle_user: { name: oracle, id: 5001, pass: oracle123 }
 
-oracle_pass: "oracle123"
-
-oracle_group:   
+oracle_groups:   
     - { name: oinstall, id: 54321 }
-
-oracle_dba_group: 
-    - { name: dba, id: 54322 }
-
-asm_oper_group: 
-    - { name: asmoper, id: 54328 }
-
-asm_admin_group: 
+    - { name: dba, id: 54322 } 
+    - { name: asmoper, id: 54328 } 
     - { name: asmadmin, id: 54329 }
-
-asm_dba_group: 
     - { name: asmdba, id: 54327 }
 
 oracle_swap_file: "/swapfile"

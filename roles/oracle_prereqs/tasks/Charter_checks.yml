@@ -76,7 +76,7 @@
 
 - name: get ulimit value (soft files)
   become: yes
-  become_user: "{{ oracle_user[0].name }}"
+  become_user: "{{ oracle_user.name }}"
   shell: ulimit -Sn
   register: ulimit_value
 
@@ -87,7 +87,7 @@
 
 - name: get ulimit value (hard files)
   become: yes
-  become_user: "{{ oracle_user[0].name }}"
+  become_user: "{{ oracle_user.name }}"
   shell: ulimit -Hn
   register: ulimit_value
 
@@ -98,7 +98,7 @@
 
 - name: get ulimit value (hard procs)
   become: yes
-  become_user: "{{ oracle_user[0].name }}"
+  become_user: "{{ oracle_user.name }}"
   shell: ulimit -Hu
   register: ulimit_value
 
@@ -109,7 +109,7 @@
 
 - name: get ulimit value (soft stack)
   become: yes
-  become_user: "{{ oracle_user[0].name }}"
+  become_user: "{{ oracle_user.name }}"
   shell: ulimit -Ss
   register: ulimit_value
 
@@ -120,7 +120,7 @@
 
 - name: get ulimit value (hard stack)
   become: yes
-  become_user: "{{ oracle_user[0].name }}"
+  become_user: "{{ oracle_user.name }}"
   shell: ulimit -Hs
   register: ulimit_value
 

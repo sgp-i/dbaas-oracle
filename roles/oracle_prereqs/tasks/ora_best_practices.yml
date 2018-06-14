@@ -57,7 +57,7 @@
 
 - name: oracle-recommended security limits for 11g
   pam_limits:
-    domain: "{{ oracle_user[0].name }}"
+    domain: "{{ oracle_user.name }}"
     limit_type: "{{ item.type }}"
     limit_item: "{{ item.entry }}"
     value: "{{ item.setting }}"
@@ -74,7 +74,7 @@
   
 - name: oracle-recommended security limits for 12c
   pam_limits:
-    domain: "{{ oracle_user[0].name }}"
+    domain: "{{ oracle_user.name }}"
     limit_type: "{{ item.type }}"
     limit_item: "{{ item.entry }}"
     value: "{{ item.setting }}"

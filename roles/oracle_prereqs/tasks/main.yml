@@ -11,8 +11,8 @@
     mode: 0755
     path: "{{ oracle_base }}"
     state: directory
-    group: "{{ oracle_group[0].name }}"
-    owner: "{{ oracle_user[0].name }}"
+    group: "{{ oracle_groups[0].name }}"
+    owner: "{{ oracle_user.name }}"
 
 - include: packages.yml
 
