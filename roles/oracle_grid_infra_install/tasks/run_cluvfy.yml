@@ -12,7 +12,7 @@
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }} -fixup -verbose"
+  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ cluster_nodes | join(',') }} -fixup -verbose"
   ignore_errors: yes
   register: cluvfy_results_1
 
@@ -65,7 +65,7 @@
     become: yes
     become_user: "{{ oracle_user }}"
     environment: "{{ ora_user_env }}"
-    command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ ansible_hostname }}"
+    command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ cluster_nodes | join(',') }}"
     ignore_errors: yes
     register: cluvfy_results_2
 

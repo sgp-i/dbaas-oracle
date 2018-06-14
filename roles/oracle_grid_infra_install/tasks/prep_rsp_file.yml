@@ -1,5 +1,22 @@
 ---
  
+- name: get asm disk paths - {{ asm_disk_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_disk_group }}*"
+    use_regex: no
+  register: asm_disk_paths_find_result
+
+- name: get asm disk paths - {{ asm_ocr_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_ocr_group }}*"
+    use_regex: no
+  register: asm_ocr_paths_find_result
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
+
 - name: create grid_install rsp file (common)
   copy:
     dest: "{{ oracle_tmp }}/grid_install.rsp"
@@ -10,35 +27,35 @@
        SELECTED_LANGUAGES=en
        oracle.install.option={{ grid_install_mode }}
        ORACLE_BASE={{ oracle_base }}/oracle
-       ORACLE_HOME={{ oracle_home }}
+       ORACLE_HOME={{ oracle_grid_home }}
        oracle.install.asm.OSDBA={{ oracle_group }}
        oracle.install.asm.OSOPER={{ oracle_group }}
        oracle.install.asm.OSASM={{ oracle_group }}
-       oracle.install.crs.config.gpnp.scanName={{ scan_name }}
-       oracle.install.crs.config.gpnp.scanPort={{ scan_port }}
-       oracle.install.crs.config.ClusterType={{ cluster_type }}
-       oracle.install.crs.config.clusterName={{ cluster_name }}
-       oracle.install.crs.config.gpnp.configureGNS=false
-       oracle.install.crs.config.autoConfigureClusterNodeVIP=true
-       oracle.install.crs.config.gpnp.gnsOption=CREATE_NEW_GNS
+       oracle.install.crs.config.gpnp.scanName=
+       oracle.install.crs.config.gpnp.scanPort=
+       oracle.install.crs.config.ClusterType=
+       oracle.install.crs.config.clusterName=
+       oracle.install.crs.config.gpnp.configureGNS=
+       oracle.install.crs.config.autoConfigureClusterNodeVIP=
+       oracle.install.crs.config.gpnp.gnsOption=
        oracle.install.crs.config.gpnp.gnsClientDataFile=
        oracle.install.crs.config.gpnp.gnsSubDomain=
        oracle.install.crs.config.gpnp.gnsVIPAddress=
-       oracle.install.crs.config.clusterNodes={{ cluster_nodes }}
-       oracle.install.crs.config.networkInterfaceList={{ crs_net_interfaces }}
-       oracle.install.crs.config.storageOption={{ grid_storage_type }}
+       oracle.install.crs.config.clusterNodes=
+       oracle.install.crs.config.networkInterfaceList=
+       oracle.install.crs.config.storageOption=
        oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations=
-       oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy=NORMAL
+       oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy=
        oracle.install.crs.config.sharedFileSystemStorage.ocrLocations=
-       oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy=NORMAL
-       oracle.install.crs.config.useIPMI=false
+       oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy=
+       oracle.install.crs.config.useIPMI=
        oracle.install.crs.config.ipmi.bmcUsername=
        oracle.install.crs.config.ipmi.bmcPassword=
        oracle.install.asm.SYSASMPassword={{ oracle_asm_syspass }}
        oracle.install.asm.diskGroup.name={{ asm_disk_group }}
        oracle.install.asm.diskGroup.redundancy=EXTERNAL
        oracle.install.asm.diskGroup.AUSize=1
-       oracle.install.asm.diskGroup.disks={{ asm_disk_paths }}
+       oracle.install.asm.diskGroup.disks={{ asm_disk_paths_find_result | json_query('files[].path') | join(',') }}
        oracle.install.asm.diskGroup.diskDiscoveryString={{ asm_disk_location }}/*
        oracle.install.asm.monitorPassword={{ oracle_asm_syspass }}
        oracle.install.asm.ClientDataFile=
@@ -48,6 +65,29 @@
        oracle.install.config.omsPort=0
        oracle.install.config.emAdminUser=
        oracle.install.config.emAdminPassword=
+
+- name: set inline changes for RAC
+  lineinfile: 
+    path: "{{ oracle_tmp }}/grid_install.rsp"
+    regexp: "^{{ item.regex }}"
+    line: "{{ item.regex }}={{ item.value }}"
+  with_items:
+    - { regex: oracle.install.crs.config.gpnp.scanName, value: "{{ cluster_name }}.{{ domain }}" }
+    - { regex: oracle.install.crs.config.gpnp.scanPort, value: "{{ scan_port }}" }
+    - { regex: oracle.install.crs.config.ClusterType, value: "{{ cluster_type }}" }
+    - { regex: oracle.install.crs.config.clusterName, value: "{{ cluster_name }}" }
+    - { regex: oracle.install.crs.config.gpnp.configureGNS, value: "false" }
+    - { regex: oracle.install.crs.config.autoConfigureClusterNodeVIP, value: "true" }
+    - { regex: oracle.install.crs.config.gpnp.gnsOption, value: "CREATE_NEW_GNS" }
+    - { regex: oracle.install.crs.config.clusterNodes, value: "{{ cluster_nodes | join(',') }}" }
+    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ crs_net_interfaces }}" }
+    - { regex: oracle.install.crs.config.storageOption, value: "{{ grid_storage_type }}" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations, value: "" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy, value: "NORMAL" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrLocations, value: "{{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}" }
+    - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy, value: "NORMAL" }
+    - { regex: oracle.install.crs.config.useIPMI, value: "false" }
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
 
 - name: create configTool rsp file
   copy:

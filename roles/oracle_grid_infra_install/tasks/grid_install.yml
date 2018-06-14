@@ -3,7 +3,7 @@
 - name: install grid
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/grid_stderr.err >{{ oracle_tmp }}/grid_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignorePrereq -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/grid_stderr.err >{{ oracle_tmp }}/grid_stdout.out &
     sleep 30
     while true
     do 
@@ -14,6 +14,7 @@
   args:
     executable: /bin/bash
     creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
+  when: inventory_hostname == master_node
 
 - name: wait for orainstRoot.sh
   wait_for: 
@@ -42,3 +43,4 @@
     done
   args:
     executable: /bin/bash
+  when: inventory_hostname == master_node

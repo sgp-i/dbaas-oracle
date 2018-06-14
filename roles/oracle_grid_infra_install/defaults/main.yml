@@ -33,11 +33,11 @@ grid_storage_type: LOCAL_ASM_STORAGE
 
 domain: localdomain
 
-scan_name: "{{ ansible_hostname}}-scan.{{ domain }}"
-
 scan_port: 1521
 
-cluster_nodes: "{{ ansible_hostname }}.{{ domain }}:{{ ansible_hostname }}-vip.{{ domain }}"
+cluster_nodes: "{{ ansible_play_hosts }}"
+
+master_node: "{{ ansible_play_hosts | first }}"
 
 public_net_interface: ""
 
@@ -53,6 +53,8 @@ crs_net_interfaces: "{{ public_net_interface }}:{{ public_net_address }}:1,{{ pr
 asm_disk_location: /dev/oracleasm/disks
 
 asm_disk_group: DATA
+
+asm_ocr_group: OCR
 
 ## TODO: Get standard location where binaries can reliably be found
 # For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
