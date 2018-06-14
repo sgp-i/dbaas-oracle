@@ -15,7 +15,6 @@
     patterns: "{{ asm_ocr_group }}*"
     use_regex: no
   register: asm_ocr_paths_find_result
-  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
 
 - name: create grid_install rsp file (common)
   copy:
