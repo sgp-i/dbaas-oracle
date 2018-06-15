@@ -15,12 +15,15 @@
     executable: /bin/bash
     creates: "{{ oracle_home }}/bin/sqlplus"
 
-- name: wait for orainstRoot.sh
-  wait_for: 
-    path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
+## TODO: Dynamically pull which scripts need to run.
+
+# - name: wait for orainstRoot.sh
+#   wait_for: 
+#     path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
 
 - name: general oracle post-installation
   command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
+  ignore_errors: yes
 
 - name: wait for root.sh
   wait_for: 
