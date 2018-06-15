@@ -15,10 +15,16 @@
     name: "{{ cvuqdisk_package.files[0].path }}"
     state: present
 
-## TODO: Need to get the 'hosts' variable for this to work
-- name: run ssh setup
-  command: "{{ oracle_tmp}}/grid/sshsetup/sshUserSetup.sh -user {{ oracle_user }} -hosts '{{ hosts }}' -advanced -exverify -confirm"
-  when: grid_install_mode == CRS_CONFIG or grid_install_mode == CRS_SWONLY
+## TODO: figure out how to bypass the prompt for password
+# - name: run ssh setup
+#   command: "{{ oracle_tmp}}/grid/sshsetup/sshUserSetup.sh \
+#             -user {{ oracle_user }} \
+#             -hosts '{{ cluster_nodes | join(' ') }}' \
+#             -advanced \
+#             -exverify \
+#             -confirm \
+#             -noPromptPassphrase"
+#   when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
 
 - include: run_cluvfy.yml
   tags:
