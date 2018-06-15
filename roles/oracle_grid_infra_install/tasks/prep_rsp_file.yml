@@ -1,21 +1,5 @@
 ---
  
-- name: get asm disk paths - {{ asm_disk_group }}
-  find:
-    paths: "{{ asm_disk_location }}"
-    file_type: any
-    patterns: "{{ asm_disk_group }}*"
-    use_regex: no
-  register: asm_disk_paths_find_result
-
-- name: get asm disk paths - {{ asm_ocr_group }}
-  find:
-    paths: "{{ asm_disk_location }}"
-    file_type: any
-    patterns: "{{ asm_ocr_group }}*"
-    use_regex: no
-  register: asm_ocr_paths_find_result
-
 - name: create grid_install rsp file (common)
   copy:
     dest: "{{ oracle_tmp }}/grid_install.rsp"
