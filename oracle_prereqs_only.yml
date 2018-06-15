@@ -1,7 +1,7 @@
 ---
 
 - name: Oracle Pre-Reqs
-  hosts: oracle
+  hosts: '{{ host }}'
   become: yes
   become_method: sudo
   roles:

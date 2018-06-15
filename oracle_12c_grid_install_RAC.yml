@@ -1,7 +1,8 @@
 ---
 
-- name: install oracle 11g grid infrastructure
+- name: install oracle 12c grid infrastructure - RAC
   hosts: '{{ host }}'
+  any_errors_fatal: true
   become: yes
   become_method: sudo
   roles:
@@ -9,16 +10,15 @@
     - oracle_asm_config
     - oracle_grid_infra_install
   vars:
-    grid_version: 11.2.0.4
-    oracle_db_name: demo
+    grid_version: 12.1.0.2
+    grid_install_mode: CRS_CONFIG
     domain: techlab.com
+    cluster_name: scan2
 
     ##############################################
-    ## Each Host should have these vars defined ##
+    ## Master Node will need these vars set ##
     ##############################################
     # public_net_interface - The iterface name that will be used for the public network
     # public_net_address - The IP address that will be used for the public network
     # private_net_interface - The iterface name that will be used for the private network
     # private_net_address - The IP address that will be used for the private network
-    # asm_disks - An array of disks to be used for ASM.  Format should be:
-    #   - { raw_disk: <<disk_path ie /dev/sdb1>>, label: <<asm_label>> }
