@@ -30,8 +30,18 @@
   wait_for: 
     path: "{{ oracle_grid_home }}/root.sh"
 
-- name: db-specific oracle post-installation
+- name: db-specific oracle post-installation (Master)
   command: "{{ oracle_grid_home }}/root.sh"
+  when: inventory_hostname == master_node
+  tags: root_script
+
+- name: db-specific oracle post-installation (Remaining)
+  command: "{{ oracle_grid_home }}/root.sh"
+  when: 
+  - inventory_hostname != master_node
+  - inventory_hostname == item
+  loop: "{{ cluster_nodes }}"
+  tags: root_script
 
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
