@@ -10,6 +10,7 @@
     creates: "{{ asm_disk_location }}/{{ disk_label }}"
   register: asm_create_result
   ignore_errors: yes
+  when: inventory_hostname == master_node
 
 - name: chown asm disks
   block:
@@ -19,7 +20,9 @@
         owner: "{{ oracle_user }}"
         path: "{{ asm_disk_location }}/{{ disk_label }}"
         state: file
-  when: asm_create_result.rc != 0
+  when:
+  - inventory_hostname == master_node
+  - asm_create_result.rc != 0
 
 - name: scan asm disks
   command: oracleasm scandisks
