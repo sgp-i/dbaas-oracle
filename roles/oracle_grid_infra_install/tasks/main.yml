@@ -41,6 +41,11 @@
     use_regex: no
   register: asm_ocr_paths_find_result
 
+- name: set cluster_nodes_table
+  set_fact:
+    cluster_nodes_table: "{{ cluster_nodes_table | default([]) }} + [ '{{ item }}:{{ item | regex_replace('([^.]*)(.*)','\\1-vip\\2')}}' ]"
+  with_items: "{{ cluster_nodes }}"
+
 - include: prep_rsp_file.yml
   when: inventory_hostname == master_node
 
