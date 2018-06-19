@@ -16,7 +16,7 @@
     name: oracle-rdbms-server-11gR2-preinstall.x86_64
   when: ansible_distribution == "OracleLinux" and oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
 
-- name: install x86 oracle dependencies for 11g
+- name: install x86 oracle dependencies for 11g (RedHat)
   yum: 
    name: |
     binutils,
@@ -58,7 +58,7 @@
     zlib-devel,
     elfutils-libelf-devel
    state: present
-  when: ansible_distribution == "Red Hat Enterprise Linux" and oracle_version | regex_replace ('^([0-9]{1,2})(.*)$','\g<1>') == "11"
+  when: ansible_distribution == "RedHat" and oracle_version | regex_replace ('^([0-9]{1,2})(.*)$','\g<1>') == "11"
 
 - name: install x86 oracle dependencies for 12R1 (OEL)
   yum:
@@ -113,4 +113,6 @@
     zlib-devel,
     zlib-devel.i686
    state: present
-  when: ansible_distribution == "Red Hat Enterprise Linux" and oracle_version | regex_replace ('^([0-9]{1,2})(.*)$','\g<1>') == "12"
+  when: ansible_distribution == "RedHat" and oracle_version | regex_replace ('^([0-9]{1,2})(.*)$','\g<1>') == "12"
+  tags:
+  - yum
