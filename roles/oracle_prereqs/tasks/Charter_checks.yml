@@ -28,22 +28,22 @@
 
 - name: setting the fact 
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size is less than 16384M for the 64GB RAM or more,"
+    failed_checks: "{{ failed_checks | string }} swap size should be more than 16384M for the 64GB RAM or more,"
   when: swap_memory.stdout | int < 16384 and total_memory.stdout | int > 64000000
 
 - name: setting the fact 
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size is less than 32768M for the 256GB RAM or more,"
+    failed_checks: "{{ failed_checks | string }} swap size should be more than 32768M for the 256GB RAM or more,"
   when: swap_memory.stdout < 32768 and total_memory.stdout | int > 256000000
 
 - name: check whether ssh service is running
-  shell: grep /usr/sbin/sshd | wc -l
+  shell: ps -ef | grep sshd | wc -l
   register: process_id
 
 - name: setting the fact 
   set_fact:  
     failed_checks: "{{ failed_checks | string }} ssh process is not running,"
-  when: process_id.stdout | int != 2
+  when: process_id.stdout | int == 1
 
 - name: check TMP directory
   shell: echo `df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F 'G' '{print $1}'`
