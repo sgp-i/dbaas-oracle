@@ -1,0 +1,16 @@
+#!/usr/bin/expect
+spawn {{ oracle_tmp}}/grid/sshsetup/sshUserSetup.sh \
+        -user {{ oracle_user }} \
+        -hosts "{{ cluster_nodes | join(' ') }}" \
+        -advanced \
+        -exverify \
+        -confirm \
+        -noPromptPassphrase \
+        -logfile {{ oracle_tmp }}/sshUserSetup.log
+
+expect {
+    -re { password: $} {
+        send "{{ oracle_pass }}\r"
+        exp_continue
+    }
+}

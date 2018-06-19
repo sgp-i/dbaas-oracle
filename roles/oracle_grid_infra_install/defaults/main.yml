@@ -4,6 +4,8 @@ grid_version: 12.1.0.2
 
 oracle_user: oracle
 
+oracle_pass: oracle123
+
 oracle_group: oinstall
 
 # installation mode. Avaialable modes are : CRS_CONFIG | HA_CONFIG | UPGRADE | CRS_SWONLY | HA_SWONLY

@@ -15,16 +15,25 @@
     name: "{{ cvuqdisk_package.files[0].path }}"
     state: present
 
-## TODO: figure out how to bypass the prompt for password
-# - name: run ssh setup
-#   command: "{{ oracle_tmp}}/grid/sshsetup/sshUserSetup.sh \
-#             -user {{ oracle_user }} \
-#             -hosts '{{ cluster_nodes | join(' ') }}' \
-#             -advanced \
-#             -exverify \
-#             -confirm \
-#             -noPromptPassphrase"
-#   when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
+- name: ssh user equivalency
+  block:
+    - name: install expect if needed
+      yum:
+        name: expect
+        state: present
+
+    - name: copy in ssh_user_setup expect script
+      template:
+          src: ssh_user_setup.j2
+          dest: "{{ oracle_tmp }}/ssh_user_setup.sh"
+          mode: 0755
+
+    - name: execute ssh_user_setup script
+      command: "{{ oracle_tmp }}/ssh_user_setup.sh"
+      
+  when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
+  tags:
+    - ssh_setup
 
 - include: run_cluvfy.yml
   tags:
