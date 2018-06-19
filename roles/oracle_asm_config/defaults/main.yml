@@ -9,3 +9,5 @@ asm_disk_location: /dev/oracleasm/disks
 cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
+
+oracle_installer_path: "/ansible"

@@ -1,12 +1,30 @@
 ---
 
-- name: install oracleasm tools
+- name: install oracleasm tools (OEL)
   yum: 
    name: oracleasm,oracleasm-support
    state: present
+  when: ansible_distribution == "OracleLinux"
+
+- name: install oracleasm tools (RedHat)
+  yum: 
+    name: "{{ oracle_installer_path }}/{{ asm_package }}"
+    state: present
+  loop:
+    - oracleasm-support-2.1.8-3.el7.x86_64.rpm
+    - oracleasmlib-2.0.12-1.el7.x86_64.rpm
+  loop_control:
+    loop_var: asm_package
+  when: ansible_distribution == "RedHat"
+
 
 - name: configure oracleasm
   command: oracleasm configure -u {{ oracle_user }} -g {{ oracle_group }} -D {{ asm_disk_location}} -b -e
+  when: ansible_distribution == "OracleLinux"
+
+- name: configure oracleasm
+  command: oracleasm configure -u {{ oracle_user }} -g {{ oracle_group }} -b -e
+  when: ansible_distribution == "RedHat"
 
 - name: initialize oracleasm
   command: oracleasm init
