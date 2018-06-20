@@ -32,8 +32,6 @@
       command: "{{ oracle_tmp }}/ssh_user_setup.sh"
       
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
-  tags:
-    - ssh_setup
 
 - include: run_cluvfy.yml
   tags:

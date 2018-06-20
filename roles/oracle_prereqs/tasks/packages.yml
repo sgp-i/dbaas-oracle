@@ -114,5 +114,3 @@
     zlib-devel.i686
    state: present
   when: ansible_distribution == "RedHat" and oracle_version | regex_replace ('^([0-9]{1,2})(.*)$','\g<1>') == "12"
-  tags:
-  - yum

@@ -17,8 +17,6 @@
     shell: /bin/bash 
     password: "{{ oracle_user.hash }}"
     append: yes
-  tags:
-    - ssh_setup
 
 - name: set oracle user environment
   lineinfile:
