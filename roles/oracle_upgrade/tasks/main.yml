@@ -9,5 +9,14 @@
   set_fact:
     current_oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
+- name: ensure 12c is installed
+  stat:
+    path: "{{ oracle_home }}/bin/dbua"
+  register: ora_12c_installed
+  ignore_errors: yes
+
 - include: upgrade_oracle.yml
-  when: db_details.rc == 0 and current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
+  when: 
+    - db_details.rc == 0
+    - current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
+    - ora_12c_installed.stat.exists == true
