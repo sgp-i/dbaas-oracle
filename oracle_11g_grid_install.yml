@@ -10,15 +10,6 @@
     - oracle_grid_infra_install
   vars:
     grid_version: 11.2.0.4
-    oracle_db_name: demo
+    grid_install_mode: HA_CONFIG
     domain: techlab.com
-
-    ##############################################
-    ## Each Host should have these vars defined ##
-    ##############################################
-    # public_net_interface - The iterface name that will be used for the public network
-    # public_net_address - The IP address that will be used for the public network
-    # private_net_interface - The iterface name that will be used for the private network
-    # private_net_address - The IP address that will be used for the private network
-    # asm_disks - An array of disks to be used for ASM.  Format should be:
-    #   - { raw_disk: <<disk_path ie /dev/sdb1>>, label: <<asm_label>> }
+    
