@@ -63,7 +63,7 @@
     - { regex: oracle.install.crs.config.autoConfigureClusterNodeVIP, value: "true" }
     - { regex: oracle.install.crs.config.gpnp.gnsOption, value: "CREATE_NEW_GNS" }
     - { regex: oracle.install.crs.config.clusterNodes, value: "{{ cluster_nodes_table | join(',') }}" }
-    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ crs_net_interfaces }}" }
+    - { regex: oracle.install.crs.config.networkInterfaceList, value: "{{ crs_net_interfaces | join(',') }}" }
     - { regex: oracle.install.crs.config.storageOption, value: "{{ grid_storage_type }}" }
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations, value: "" }
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy, value: "NORMAL" }

@@ -13,7 +13,7 @@
   
   - name: set network details
     set_fact:
-      network_details: |
+      crs_net_interfaces: |
         {% if net_interface_detail['ipv4']['network'] == public_net -%}
           {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'1' ] %}
         {% elif net_interface_detail['ipv4']['network'] == private_net -%}
@@ -21,8 +21,8 @@
         {% else -%}
           {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'3' ] %}
         {%- endif %}
-        {% set network_details = network_details|default([]) + [ net_string | join(':') ] %}
-        {{ network_details }}
+        {% set crs_net_interfaces = crs_net_interfaces|default([]) + [ net_string | join(':') ] %}
+        {{ crs_net_interfaces }}
     when: net_interface_detail.ipv4 is defined
     loop: "{{ active_net_ifs }}"
     loop_control:
