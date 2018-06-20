@@ -25,13 +25,15 @@
 - name: general oracle post-installation
   command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
   ignore_errors: yes
+  when: grid_install_mode != "UPGRADE"
 
-- name: wait for root.sh
-  wait_for: 
-    path: "{{ oracle_grid_home }}/root.sh"
+# - name: wait for root.sh
+#   wait_for: 
+#     path: "{{ oracle_grid_home }}/root.sh"
 
 - name: db-specific oracle post-installation (Master)
   command: "{{ oracle_grid_home }}/root.sh"
+  ignore_errors: yes
   when: inventory_hostname == master_node
   tags: root_script
 

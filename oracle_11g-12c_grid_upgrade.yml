@@ -1,0 +1,14 @@
+---
+
+- name: upgrade oracle grid infrastructure from 11g to 12c
+  hosts: '{{ host }}'
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_prereqs
+    - oracle_asm_config
+    - oracle_grid_infra_install
+  vars:
+    grid_version: 12.1.0.2
+    grid_install_mode: UPGRADE
+    domain: techlab.com

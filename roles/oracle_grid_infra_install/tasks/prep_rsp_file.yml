@@ -70,7 +70,7 @@
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrLocations, value: "{{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}" }
     - { regex: oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy, value: "NORMAL" }
     - { regex: oracle.install.crs.config.useIPMI, value: "false" }
-  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE"
 
 - name: create configTool rsp file
   copy:
