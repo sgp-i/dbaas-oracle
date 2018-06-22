@@ -1,0 +1,30 @@
+---
+
+- name: run {{ script_name }} script for {{ oracle_db_name }}
+  environment: "{{ ora_user_env }}"
+  command: "sqlplus / as sysdba @/home/oracle/{{ script_name }}"
+  register: precheck_script
+
+- name: save stdout
+  copy:
+    dest: "{{ oracle_tmp }}/{{ script_name }}.out"
+    content: "{{ precheck_script.stdout }}"
+
+- name: save stderr
+  copy:
+    dest: "{{ oracle_tmp }}/{{ script_name }}.err"
+    content: "{{ precheck_script.stderr }}"
+
+- name: get preupgrade log
+  command: "cat {{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade.log"
+  register: preupgrade_log
+
+- name: get result counts
+  set_fact:
+    "{{ keyword }}_count": "{{ preupgrade_log.stdout | regex_search('[0-9]* ' + keyword) | regex_search('[0-9]*') }}"
+  loop:
+    - ERRORS
+    - WARNINGS
+    - INFORMATIONAL
+  loop_control:
+    loop_var: keyword
