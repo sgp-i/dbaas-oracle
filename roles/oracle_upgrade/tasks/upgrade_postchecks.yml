@@ -14,3 +14,18 @@
   copy:
     dest: "{{ oracle_tmp }}/{{ script_name }}.err"
     content: "{{ catuppst_script.stderr }}"
+
+- name: execute post-fixup
+  command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/postupgrade_fixups.sql
+  register: post-fixup_script
+  when: execute_post_fixup | lower == 'true'
+
+- name: save stdout
+  copy:
+    dest: "{{ oracle_tmp }}/postupgrade_fixups.sql.out"
+    content: "{{ post-fixup_script.stdout }}"
+
+- name: save stderr
+  copy:
+    dest: "{{ oracle_tmp }}/postupgrade_fixups.sql.err"
+    content: "{{ post-fixup_script.stderr }}"

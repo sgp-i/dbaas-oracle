@@ -12,3 +12,5 @@ oracle_db_name: db
 
 # password for the sysdba
 oracle_db_syspass: password
+
+execute_post_fixup: true
