@@ -1,0 +1,16 @@
+---
+
+- name: run {{ script_name }} script for {{ oracle_db_name }}
+  environment: "{{ ora_user_env }}"
+  command: "sqlplus / as sysdba @{{ oracle_home }}/rdbms/admin/catuppst.sql"
+  register: catuppst_script
+
+- name: save stdout
+  copy:
+    dest: "{{ oracle_tmp }}/{{ script_name }}.out"
+    content: "{{ catuppst_script.stdout }}"
+
+- name: save stderr
+  copy:
+    dest: "{{ oracle_tmp }}/{{ script_name }}.err"
+    content: "{{ catuppst_script.stderr }}"
