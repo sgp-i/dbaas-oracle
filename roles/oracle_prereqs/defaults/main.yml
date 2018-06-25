@@ -10,7 +10,9 @@ oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db
 
 oracle_db_name: db
 
-oracle_user: { name: oracle, id: 5001, pass: oracle123 }
+oracle_user: { name: oracle, id: 5001 }
+
+oracle_pass: oracle123
 
 oracle_groups:   
     - { name: oinstall, id: 54321 }
