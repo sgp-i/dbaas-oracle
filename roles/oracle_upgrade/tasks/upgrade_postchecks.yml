@@ -1,18 +1,18 @@
 ---
 
-- name: run {{ script_name }} script for {{ oracle_db_name }}
+- name: run catuppst.sql script for {{ oracle_db_name }}
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_home }}/rdbms/admin/catuppst.sql"
   register: catuppst_script
 
 - name: save stdout
   copy:
-    dest: "{{ oracle_tmp }}/{{ script_name }}.out"
+    dest: "{{ oracle_tmp }}/catuppst.sql.out"
     content: "{{ catuppst_script.stdout }}"
 
 - name: save stderr
   copy:
-    dest: "{{ oracle_tmp }}/{{ script_name }}.err"
+    dest: "{{ oracle_tmp }}/catuppst.sql.err"
     content: "{{ catuppst_script.stderr }}"
 
 - name: execute post-fixup

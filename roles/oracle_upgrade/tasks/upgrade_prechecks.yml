@@ -2,7 +2,7 @@
 
 - name: run {{ script_name }} script for {{ oracle_db_name }}
   environment: "{{ ora_user_env }}"
-  command: "sqlplus / as sysdba @/home/oracle/{{ script_name }}"
+  command: sqlplus / as sysdba @/home/oracle/{{ script_name }}
   register: precheck_script
 
 - name: save stdout
@@ -16,7 +16,7 @@
     content: "{{ precheck_script.stderr }}"
 
 - name: get preupgrade log
-  command: "cat {{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade.log"
+  command: cat {{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade.log
   register: preupgrade_log
 
 - name: get result counts
