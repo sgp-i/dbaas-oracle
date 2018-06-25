@@ -26,3 +26,8 @@
       warnings: "{{ preupgrade_log.stdout | regex_search('[0-9]* WARNINGS') | regex_search('[0-9]*') }}",
       informational: "{{ preupgrade_log.stdout | regex_search('[0-9]* INFORMATIONAL') | regex_search('[0-9]*') }}"
     }
+
+- name: execute pre-fixup
+  command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade_fixups.sql
+  register: pre-fixup_script
+  when: execute_pre_fixup | lower == 'true' and precheck_results_count.errors | int == 0
