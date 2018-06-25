@@ -8,11 +8,7 @@ oracle_base: /u01/app/oracle
 
 db_home: db_1 
 
-oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ db_home }}"
-
 oracle_db_name: db
 
 # password for the sysdba
 oracle_db_syspass: password
-
-oracle_user: oracle

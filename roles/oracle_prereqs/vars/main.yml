@@ -1,5 +1,16 @@
 ---
 
+oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+oracle_user: { name: oracle, id: 5001 }
+
+oracle_groups:   
+    - { name: oinstall, id: 54321 }
+    - { name: dba, id: 54322 } 
+    - { name: asmoper, id: 54328 } 
+    - { name: asmadmin, id: 54329 }
+    - { name: asmdba, id: 54327 }
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
@@ -7,35 +18,3 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
-
-
-hostname_entries:
-  public_ip: "<public_ip>"
-  public_ip_hostnames:
-    - "oel7-node1.localdomain"
-    - "oel7-node1"
-
-  private_ip: "<private_ip>"
-  private_ip_hostnames:
-    - "oel7-node1-priv.localdomain"
-    - "oel7-node1-priv"
-
-  listners:
-    - scan_ip: "<scan-ip1>"
-      scan_hostnames: 
-        - "oel7-scan.localdomain"
-        - "oel7-scan"
-    - scan_ip: "<scan-ip2>"
-      scan_hostnames: 
-        - "oel7-scan.localdomain"
-        - "oel7-scan"
-    - scan_ip: "<scan-ip>3"
-      scan_hostnames: 
-        - "oel7-scan.localdomain"
-        - "oel7-scan"
-
-resolv_ip: "<resolv_ip>"
-eth_onboot_status: "off"
-
-
-

@@ -15,20 +15,12 @@ oracle_base: /u01/app
 
 oracle_db_home: db_1 
 
-oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
-
 oracle_db_name: db
 
 # password for the sysdba
 oracle_db_syspass: password
 
 oracle_db_mem: "2048"
-
-oracle_user: oracle
-
-oracle_group: oinstall
-
-oracle_dba_group: dba
 
 # FILE_SYSTEM_STORAGE | ASM_STORAGE
 oracle_storage_type: ASM_STORAGE
@@ -40,13 +32,6 @@ asm_disk_group: DATA
 ## TODO: Get standard location where binaries can reliably be found
 # For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
 oracle_installer_path: "/ansible"
-
-# array  os images avaialbe
-oracle_images:
-    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_1of7.zip", version: "11.2.0.4" }
-    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_2of7.zip", version: "11.2.0.4" } 
-    - { image: "{{ oracle_installer_path }}/linuxamd64_12102_database_1of2.zip", version: "12.1.0.2" }
-    - { image: "{{ oracle_installer_path }}/linuxamd64_12102_database_2of2.zip", version: "12.1.0.2" } 
 
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false

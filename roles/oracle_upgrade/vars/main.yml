@@ -1,5 +1,9 @@
 ---
 
+oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ db_home }}"
+
+oracle_user: oracle
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
