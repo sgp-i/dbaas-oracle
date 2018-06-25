@@ -1,4 +1,7 @@
 #!/usr/bin/expect
+
+set timeout 120
+
 spawn {{ oracle_tmp}}/grid/sshsetup/sshUserSetup.sh \
         -user {{ oracle_user }} \
         -hosts "{{ cluster_nodes | join(' ') }}" \
