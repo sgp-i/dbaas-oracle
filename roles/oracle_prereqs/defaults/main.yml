@@ -10,8 +10,7 @@ oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db
 
 oracle_db_name: db
 
-## TODO: Passwd requires a 'hash' value so we need to dynmically generate the hash from the 'pass' string
-oracle_user: { name: oracle, id: 5001, pass: oracle123, hash: $6$.dG2.tTC$XxNPN0mzZqYvzbiJTc9GTVLbCRY.3Oe7C263gFOHzEf0df/Wvo3V91MkFx4HySx4g0PuIXVFwyX13YRoBwPyl/ }
+oracle_user: { name: oracle, id: 5001, pass: oracle123 }
 
 oracle_groups:   
     - { name: oinstall, id: 54321 }

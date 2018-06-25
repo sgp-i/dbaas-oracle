@@ -15,7 +15,7 @@
     groups: "{{ oracle_groups | json_query('[].name') | join(',')}}"
     home: "/home/{{ oracle_user.name }}"
     shell: /bin/bash 
-    password: "{{ oracle_user.hash }}"
+    password: "{{ oracle_user.pass | password_hash('sha512') }}"
     append: yes
 
 - name: set oracle user environment
