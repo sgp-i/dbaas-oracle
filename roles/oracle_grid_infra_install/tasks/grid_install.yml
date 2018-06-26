@@ -39,10 +39,8 @@
 
 - name: db-specific oracle post-installation (Remaining)
   command: "{{ oracle_grid_home }}/root.sh"
-  when: 
-  - inventory_hostname != master_node
-  - inventory_hostname == item
-  loop: "{{ cluster_nodes }}"
+  when: inventory_hostname == item
+  loop: "{{ cluster_nodes[1:] }}"
   tags: root_script
 
 - name: run grid configTool
