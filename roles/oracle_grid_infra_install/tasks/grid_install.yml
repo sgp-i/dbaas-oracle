@@ -19,13 +19,14 @@
 - name: get grid install stdout
   command: "cat {{ oracle_tmp }}/grid_stdout.out"
   register: grid_install
+  when: inventory_hostname == master_node
 
 - name: general oracle post-installation
   command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
   ignore_errors: yes
   when: 
   - grid_install_mode != "UPGRADE"
-  - 'oracle_base + "/oraInventory/orainstRoot.sh" in grid_install.stdout'
+  - 'oracle_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["grid_install"]["stdout"]'
 
 - name: execute root.sh script
   block:
@@ -40,7 +41,7 @@
     when: inventory_hostname == item
     loop: "{{ cluster_nodes[1:] }}"
     tags: root_script
-  when: 'oracle_grid_home + "/root.sh" in grid_install.stdout'
+  when: 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
 
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
