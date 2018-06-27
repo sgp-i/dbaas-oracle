@@ -15,22 +15,17 @@
     executable: /bin/bash
     creates: "{{ oracle_home }}/bin/sqlplus"
 
-## TODO: Dynamically pull which scripts need to run.
-
-# - name: wait for orainstRoot.sh
-#   wait_for: 
-#     path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
+- name: get db install stdout
+  command: "cat {{ oracle_tmp }}/db_stdout.out"
+  register: db_install
 
 - name: general oracle post-installation
   command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
-  ignore_errors: yes
-
-- name: wait for root.sh
-  wait_for: 
-    path: "{{ oracle_home }}/root.sh"
+  when: 'oracle_base + "/oraInventory/orainstRoot.sh" in db_install.stdout'
   
 - name: db-specific oracle post-installation
   command: "{{ oracle_home }}/root.sh"
+  when: 'oracle_home + "/root.sh" in db_install.stdout'
 
 - name: configure oracle for 12c only
   environment: "{{ ora_user_env }}"
