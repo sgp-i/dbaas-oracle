@@ -1,0 +1,128 @@
+oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0
+ORACLE_HOSTNAME={{ ansible_hostname }}.{{ domain }}
+INVENTORY_LOCATION={{ oracle_base }}/oraInventory
+SELECTED_LANGUAGES=en
+oracle.install.option={{ grid_install_mode }}
+ORACLE_BASE={{ oracle_base }}/oracle
+ORACLE_HOME={{ oracle_grid_home }}
+oracle.install.asm.OSDBA={{ oracle_group }}
+oracle.install.asm.OSOPER={{ oracle_group }}
+oracle.install.asm.OSASM={{ oracle_group }}
+oracle.install.crs.config.gpnp.scanName={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ cluster_name }}.{{ domain }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.gpnp.scanPort={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ scan_port }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.ClusterType={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ cluster_type }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.clusterName={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ cluster_name }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.gpnp.configureGNS={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}false
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.autoConfigureClusterNodeVIP={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}true
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.gpnp.gnsOption={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}CREATE_NEW_GNS
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.gpnp.gnsClientDataFile=
+oracle.install.crs.config.gpnp.gnsSubDomain=
+oracle.install.crs.config.gpnp.gnsVIPAddress=
+oracle.install.crs.config.clusterNodes={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ cluster_nodes_table | join(',') }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.networkInterfaceList={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ crs_net_interfaces | join(',') }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.storageOption={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ grid_storage_type }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations=
+oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}NORMAL
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.sharedFileSystemStorage.ocrLocations={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}{{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}NORMAL
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.useIPMI={% if (
+      grid_install_mode == "CRS_CONFIG" or
+      grid_install_mode == "CRS_SWONLY" or
+      grid_install_mode == "UPGRADE") -%}false
+{% else %}
+
+{% endif %}
+oracle.install.crs.config.ipmi.bmcUsername=
+oracle.install.crs.config.ipmi.bmcPassword=
+oracle.install.asm.SYSASMPassword={{ oracle_asm_syspass }}
+oracle.install.asm.diskGroup.name={{ asm_disk_group }}
+oracle.install.asm.diskGroup.redundancy=EXTERNAL
+oracle.install.asm.diskGroup.AUSize=1
+oracle.install.asm.diskGroup.disks={{ asm_disk_paths_find_result | json_query('files[].path') | join(',') }}
+oracle.install.asm.diskGroup.diskDiscoveryString={{ asm_disk_location }}/*
+oracle.install.asm.monitorPassword={{ oracle_asm_syspass }}
+oracle.install.asm.ClientDataFile=
+oracle.install.crs.config.ignoreDownNodes=false
+oracle.install.config.managementOption=NONE
+oracle.install.config.omsHost=
+oracle.install.config.omsPort=0
+oracle.install.config.emAdminUser=
+oracle.install.config.emAdminPassword=
