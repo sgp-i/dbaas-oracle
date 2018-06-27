@@ -16,32 +16,31 @@
     creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
   when: inventory_hostname == master_node
 
-## TODO: Dynamically pull which scripts need to run.
-
-# - name: wait for orainstRoot.sh
-#   wait_for: 
-#     path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
+- name: get grid install stdout
+  command: "cat {{ oracle_tmp }}/grid_stdout.out"
+  register: grid_install
 
 - name: general oracle post-installation
   command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
   ignore_errors: yes
-  when: grid_install_mode != "UPGRADE"
+  when: 
+  - grid_install_mode != "UPGRADE"
+  - 'oracle_base + "/oraInventory/orainstRoot.sh" in grid_install.stdout'
 
-# - name: wait for root.sh
-#   wait_for: 
-#     path: "{{ oracle_grid_home }}/root.sh"
+- name: execute root.sh script
+  block:
+  - name: db-specific oracle post-installation (Master)
+    command: "{{ oracle_grid_home }}/root.sh"
+    ignore_errors: yes
+    when: inventory_hostname == master_node
+    tags: root_script
 
-- name: db-specific oracle post-installation (Master)
-  command: "{{ oracle_grid_home }}/root.sh"
-  ignore_errors: yes
-  when: inventory_hostname == master_node
-  tags: root_script
-
-- name: db-specific oracle post-installation (Remaining)
-  command: "{{ oracle_grid_home }}/root.sh"
-  when: inventory_hostname == item
-  loop: "{{ cluster_nodes[1:] }}"
-  tags: root_script
+  - name: db-specific oracle post-installation (Remaining)
+    command: "{{ oracle_grid_home }}/root.sh"
+    when: inventory_hostname == item
+    loop: "{{ cluster_nodes[1:] }}"
+    tags: root_script
+  when: 'oracle_grid_home + "/root.sh" in grid_install.stdout'
 
 - name: run grid configTool
   environment: "{{ ora_user_env }}"
