@@ -10,3 +10,14 @@
     src: 12c_R1_db_rsp.j2
     dest: "{{ oracle_tmp }}/db_install.rsp"
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.1.0"
+
+- name: create configTool rsp file
+  copy:
+    dest: "{{ oracle_tmp }}/db_configTool.rsp"
+    content: |
+      oracle.assistants.server|S_SYSPASSWORD={{ oracle_db_syspass }}
+      oracle.assistants.server|S_SYSTEMPASSWORD={{ oracle_db_syspass }}
+      oracle.assistants.server|S_DBSNMPPASSWORD={{ oracle_db_syspass }}
+      oracle.assistants.server|S_PDBADMINPASSWORD={{ oracle_db_syspass }}
+      oracle.assistants.server|S_ASMSNMPPASSWORD={{ oracle_asm_syspass }}
+  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.1.0"

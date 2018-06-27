@@ -27,6 +27,23 @@
   command: "{{ oracle_home }}/root.sh"
   when: 'oracle_home + "/root.sh" in db_install.stdout'
 
+- name: run db configTool (12c R1 only)
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user }} -c "{{ oracle_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/db_configTool.rsp" 2>{{ oracle_tmp }}/db_config_stderr.err >{{ oracle_tmp }}/db_config_stdout.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep db_configTool.rsp | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash
+  when: 
+  - inventory_hostname == master_node
+  - oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.1.0"
+
 - name: configure oracle for 12c only
   environment: "{{ ora_user_env }}"
   shell: |
