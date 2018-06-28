@@ -1,18 +1,20 @@
 ---
 
-- name: run {{ script_name }} script for {{ oracle_db_name }}
+- import_tasks: copy_archives.yml
+
+- name: run preupgrd.sql script for {{ oracle_db_name }}
   environment: "{{ ora_user_env }}"
-  command: sqlplus / as sysdba @/home/oracle/{{ script_name }}
+  command: sqlplus / as sysdba @{{ oracle_tmp }}/db_precheck/preupgrd.sql
   register: precheck_script
 
 - name: save stdout
   copy:
-    dest: "{{ oracle_tmp }}/{{ script_name }}.out"
+    dest: "{{ oracle_tmp }}/preupgrd.sql.out"
     content: "{{ precheck_script.stdout }}"
 
 - name: save stderr
   copy:
-    dest: "{{ oracle_tmp }}/{{ script_name }}.err"
+    dest: "{{ oracle_tmp }}/preupgrd.sql.err"
     content: "{{ precheck_script.stderr }}"
 
 - name: get preupgrade log
@@ -30,4 +32,4 @@
 - name: execute pre-fixup
   command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade_fixups.sql
   register: pre-fixup_script
-  when: execute_pre_fixup | lower == 'true' and precheck_results_count.errors | int == 0
+  when: execute_pre_fixup | lower == 'true' and precheck_results_count.errors | int > 0
