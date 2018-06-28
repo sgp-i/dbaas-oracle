@@ -8,6 +8,13 @@
 
 - include: copy_archives.yml
 
+- name: create cluster_node_string
+  set_fact:
+    cluster_node_string: "{{ cluster_node_string | default([]) }} + [ '{{ node_name | regex_replace('([^\\.]*).*','\\1') }}' ]"
+  loop: "{{ cluster_nodes }}"
+  loop_control:
+    loop_var: node_name
+
 - include: prep_rsp_file.yml
   when: inventory_hostname == master_node
 

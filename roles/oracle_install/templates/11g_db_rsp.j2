@@ -13,7 +13,7 @@ oracle.install.db.DBA_GROUP={{ oracle_dba_group }}
 oracle.install.db.OPER_GROUP={{ oracle_dba_group }}
 oracle.install.db.CLUSTER_NODES={% if (
       install_mode == "INSTALL_DB_AND_CONFIG" and
-      rac_install == true) -%}{{ cluster_nodes | join(',') }}
+      rac_install == true) -%}{{ cluster_node_string | join(',') }}
 {% else %}
 
 {% endif %}

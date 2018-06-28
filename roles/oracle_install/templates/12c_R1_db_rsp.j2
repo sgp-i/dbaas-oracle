@@ -20,7 +20,7 @@ oracle.install.db.rac.configurationType={% if (
 {% endif %}
 oracle.install.db.CLUSTER_NODES={% if (
       install_mode == "INSTALL_DB_AND_CONFIG" and
-      rac_install == true) -%}{{ cluster_nodes | join(',') }}
+      rac_install == true) -%}{{ cluster_node_string | join(',') }}
 {% else %}
 
 {% endif %}
