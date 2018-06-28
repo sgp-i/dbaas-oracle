@@ -29,6 +29,8 @@ oracle_asm_syspass: Oracle123
 
 asm_disk_group: DATA
 
+rac_install: false
+
 ## TODO: Get standard location where binaries can reliably be found
 # For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
 oracle_installer_path: "/ansible"

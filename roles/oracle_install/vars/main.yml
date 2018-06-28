@@ -8,6 +8,10 @@ oracle_group: oinstall
 
 oracle_dba_group: dba
 
+cluster_nodes: "{{ ansible_play_hosts }}"
+
+master_node: "{{ ansible_play_hosts | first }}"
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
