@@ -1,0 +1,6 @@
+- name: checking api services for oracle
+  hosts: 'oracle-instances'
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_api_services

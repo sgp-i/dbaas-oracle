@@ -1,0 +1,17 @@
+{% for host in host_details %}
+{% if host.host_name == 'J2_DELETE_THIS' %}
+ {
+    "db_id": "{{ host.db_id }}",
+    "checklist_type": "{{ host.checklist_type }}", 
+    "post_build_status": "{{ host.post_build_status }}", 
+    "cluster_verify": "{{ host.cluster_verify }}", 
+    "gi_install_status": "{{ host.gi_install_status }}", 
+    "db_install_status": "{{ host.db_install_status }}",
+    "db_upgrade_status": "{{ host.db_upgrade_status }}",
+    "gi_upgrade_status": "{{ host.gi_upgrade_status }}", 
+    "migration_status": "{{ host.migration_status }}", 
+    "post_migration_status": "{{ host.post_migration_status }}", 
+    "execution_id": "{{ host.execution_id }}",
+ } 
+{% endif %}
+{% endfor %} 
