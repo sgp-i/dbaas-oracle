@@ -1,0 +1,15 @@
+
+- name: set a fact
+  set_fact: 
+    name: "{"
+- name: Form a Json
+  set_fact: 
+    name: '{{ name | string }} \"{{ item.db_column_name }}\": \"{{ item.value }}\"\,' 
+  with_items: "{{ xdddd }}"
+
+- name: remove the last comma
+  
+
+- name: echo
+  shell:  echo iiii {{ name }}
+

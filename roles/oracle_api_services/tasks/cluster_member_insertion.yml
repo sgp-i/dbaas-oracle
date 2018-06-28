@@ -1,0 +1,45 @@
+
+- include_vars: var_cluster_member_insertion.yml
+
+- name: Create A File For Inserting ID Details Formed In DB
+  lineinfile: 
+    path: /root/api_service/ansible_db_details.txt
+    line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
+    create: yes
+
+- name: check if cluster Member name exists
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ cluster_name }}*'
+  register: is_cl_name_exist
+  ignore_errors: yes
+
+- name: Insert Starting Part of the Cluster Name For Identification
+  lineinfile: 
+    path: /root/api_service/ansible_db_details.txt
+    line: "ID Of {{ cluster_name }}"
+  when: is_cl_name_exist.stdout == ""
+
+- name: Complete Tasks Of Cluster Member Insertion
+  block:
+    - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
+      uri:
+        url: https://apex.techlab.com:8443/ords/invent2/charter/insertclustermember
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: POST
+        body_format: json
+        body: {
+                "cluster_name": "{{ cluster_name }}",
+                "cluster_type": "{{ cluster_type }}",
+                "gi_version": "{{ gi_version }}",
+                "gi_current_patchset": "{{ gi_current_patchset }}",
+                "v_host_code": "{{ v_host_code }}"
+              }
+        headers:
+            Content-Type: "application/json"
+      register: v_cluster_membr_detail_insertion_response
+      
+    - name: Insert The cluster_name_id In ansible_db_details.txt File
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of {{ cluster_name }}*"
+        line: "ID Of {{ cluster_name }} = {{ v_cluster_membr_detail_insertion_response.json | json_query('ID') }}"
+  when: is_cl_name_exist.rc == 1

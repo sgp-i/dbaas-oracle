@@ -1,0 +1,47 @@
+- include_vars: var_db_checklist_insertion.yml
+
+- name: Create A File For Inserting ID Details Formed In DB
+  lineinfile: 
+    path: /root/api_service/ansible_db_details.txt
+    line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
+    create: yes
+
+- name: check if db checklist  name exists
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ db_id }}*'
+  register: is_db_chklst_name_exist
+  ignore_errors: yes
+
+- name: Insert Starting Part of the db checklist Name For Identification
+  lineinfile: 
+    path: /root/api_service/ansible_db_details.txt
+    line: "ID Of checklist for {{ db_id }}"
+  when: is_db_chklst_name_exist.stdout == ""
+
+- name: Complete Tasks Of DB Checklist Insertion
+  block: 
+    - name: convert to jinja
+      template:
+       src: ./db_checklist_insrt_body.j2
+       dest: /root/api_service/db_checklist_insrt_body.json
+
+    - name: cat out the created json
+      shell: cat /root/api_service/db_checklist_insrt_body.json
+      register: db_checklist_insrt_body
+
+    - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
+      uri:
+        url: https://apex.techlab.com:8443/ords/invent2/charter/insert_db_check_list
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: POST
+        body_format: json
+        body: "{{ db_checklist_insrt_body.stdout }}"
+        headers:
+            Content-Type: "application/json"
+      register: db_checklist_insrt_response
+
+    - name: Insert The Id Of DB Checklist In ansible_db_details.txt File
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of checklist for {{ db_id }}*"
+        line: "ID Of checklist for {{ db_id }} = {{ db_checklist_insrt_response.json | json_query('ID') }}"
+  when: is_db_chklst_name_exist.rc == 1

@@ -1,0 +1,24 @@
+{% for host in host_details %}
+{% if host.host_name == 'J2_DELETE_THIS' %}
+ {
+    "host_name": "{{ host.host_name }}",
+    "network_type": "{{ host.network_type }}", 
+    "core_count": "{{ host.core_count }}", 
+    "processor_config_speed": "{{ host.processor_config_speed}}", 
+    "server_model": "{{ host.server_model }}", 
+    "hardware_vendor": "{{ host.hardware_vendor }}", 
+    "os_type_version": "{{ host.os_type_version }}", 
+    "processor_bit": "{{ host.processor_bit }}", 
+    "phy_virt": "{{ host.phy_virt }}",
+    "dc_location": "{{ host.dc_location }}",
+    "global_zone_solaris": "{{ host.global_zone_solaris }}", 
+    "phy_memory": "{{ host.phy_memory }}", 
+    "server_monitoring_tool": "{{ host.server_monitoring_tool }}", 
+    "host_code": "{{ host.host_code }}",
+    "clustered": "{{ host.clustered }}", 
+    "os_type": "{{ host.os_type }}", 
+    "env_source": "{{ host.env_source }}"
+ } 
+{% endif %}
+{% endfor %} 
+
