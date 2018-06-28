@@ -5,6 +5,7 @@
   ignore_errors: yes
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
+  when: install_mode == "INSTALL_DB_AND_CONFIG"
 
 - include: copy_archives.yml
 
@@ -14,6 +15,7 @@
   loop: "{{ cluster_nodes }}"
   loop_control:
     loop_var: node_name
+  when: rac_install == true
 
 - include: prep_rsp_file.yml
   when: inventory_hostname == master_node
