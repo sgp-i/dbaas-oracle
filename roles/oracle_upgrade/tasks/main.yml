@@ -2,7 +2,6 @@
 
 - name: get db details
   command: grep "^{{ oracle_db_name }}:" /etc/oratab
-  ignore_errors: yes
   register: db_details
 
 - name: set original_oracle_home
@@ -13,10 +12,18 @@
   stat:
     path: "{{ oracle_home }}/bin/dbua"
   register: ora_12c_installed
-  ignore_errors: yes
+
+- import_tasks: upgrade_prechecks.yml
+
+- name: check for precheck failures
+  fail:
+    msg: There were {{ precheck_results_count.errors }} errors in the Precheck script
+  when: precheck_results_count.errors | int > 0
 
 - include: upgrade_oracle.yml
   when: 
     - db_details.rc == 0
     - current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
     - ora_12c_installed.stat.exists == true
+
+- import_tasks: upgrade_postchecks.yml
