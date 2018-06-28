@@ -6,7 +6,7 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_base: /u01/app/oracle
 
-db_home: db_1 
+oracle_db_home: db_1 
 
 oracle_db_name: db
 
