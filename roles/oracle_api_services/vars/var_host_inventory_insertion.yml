@@ -1,5 +1,5 @@
 host_details:
-  - host_name: "J2_DELETE_THIS"
+  - host_name: "dbtest04"
     yup_name: "DELETE_THIS1-HOS"
     network_type: ""
     core_count: 0  # number

@@ -1,7 +1,7 @@
 {% for host in host_details %}
-{% if host.host_name == 'J2_DELETE_THIS' %}
+{% if host.host_name == ansible_hostname %}
  {
-    "host_name": "{{ host.host_name }}",
+    "host_name": "DELTE_THIS",
     "network_type": "{{ host.network_type }}", 
     "core_count": "{{ host.core_count }}", 
     "processor_config_speed": "{{ host.processor_config_speed}}", 
