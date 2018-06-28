@@ -11,13 +11,6 @@
     # oracle_db_name: demo2
     oracle_tmp: /u01/tmp/{{ oracle_db_name }}
     execute_pre_fixup: true
-    ora_user_env:
-      ORACLE_BASE: /u01/app/oracle
-      ORACLE_SID: "{{ oracle_db_name }}"
-      ORACLE_UNQNAME: "{{ oracle_db_name }}"
-      ORACLE_HOME: "{{ oracle_home }}"
-      NLS_LANG: "American_America.UTF8"
-      PATH: "{{ ansible_env.PATH }}:{{ oracle_home }}/bin"
 
   tasks:
     - name: get db details
