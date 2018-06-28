@@ -1,5 +1,5 @@
 oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v12.1.0
-ORACLE_HOSTNAME={{ ansible_hostname }}.{{ domain }}
+ORACLE_HOSTNAME={{ ansible_fqdn }}
 INVENTORY_LOCATION={{ oracle_base }}/oraInventory
 SELECTED_LANGUAGES=en
 oracle.install.option={{ grid_install_mode }}
@@ -11,7 +11,7 @@ oracle.install.asm.OSASM={{ oracle_group }}
 oracle.install.crs.config.gpnp.scanName={% if (
       grid_install_mode == "CRS_CONFIG" or
       grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}{{ cluster_name }}.{{ domain }}
+      grid_install_mode == "UPGRADE") -%}{{ cluster_name }}.{{ ansible_domain }}
 {% else %}
 
 {% endif %}

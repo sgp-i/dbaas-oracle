@@ -11,5 +11,4 @@
   vars:
     grid_version: 11.2.0.4
     grid_install_mode: HA_CONFIG
-    domain: techlab.com
-    
+        

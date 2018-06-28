@@ -12,5 +12,4 @@
     install_mode: INSTALL_DB_AND_CONFIG
     oracle_db_home: db_2
     oracle_db_name: demo12
-    domain: techlab.com
     rac_install: true

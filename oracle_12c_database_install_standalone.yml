@@ -12,4 +12,3 @@
     install_mode: INSTALL_DB_AND_CONFIG
     oracle_db_home: db_3
     oracle_db_name: demo
-    domain: techlab.com

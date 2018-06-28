@@ -1,6 +1,6 @@
 oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v12.1.0
 oracle.install.option={{ install_mode }}
-ORACLE_HOSTNAME={{ ansible_hostname }}.{{ domain }}
+ORACLE_HOSTNAME={{ ansible_fqdn }}
 UNIX_GROUP_NAME={{ oracle_group }}
 INVENTORY_LOCATION={{ oracle_base }}/oraInventory
 SELECTED_LANGUAGES=en
@@ -30,7 +30,7 @@ oracle.install.db.rac.serverpoolName=
 oracle.install.db.rac.serverpoolCardinality=0
 oracle.install.db.config.starterdb.type=GENERAL_PURPOSE
 oracle.install.db.config.starterdb.globalDBName={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_name }}.{{ domain }}
+      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_name }}.{{ ansible_domain }}
 {% else %}
 
 {% endif %}

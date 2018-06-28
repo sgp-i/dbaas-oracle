@@ -16,8 +16,7 @@
 - name: install 12c sw_only if needed
   include_role: 
     name: oracle_install
-  vars:
-    domain: techlab.com
+
   when: ora_12c_installed.stat.exists == false
 
 - import_tasks: upgrade_prechecks.yml

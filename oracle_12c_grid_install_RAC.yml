@@ -12,5 +12,4 @@
   vars:
     grid_version: 12.1.0.2
     grid_install_mode: CRS_CONFIG
-    domain: techlab.com
     cluster_name: scan2
