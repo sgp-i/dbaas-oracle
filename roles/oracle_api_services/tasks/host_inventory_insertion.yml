@@ -24,7 +24,7 @@
       src: ./host_inventory_insrt_body.j2
       dest: /root/api_service/host_inventory_insrt_body.json
 
-    - name: cat out the created json
+   - name: cat out the created json
       shell: cat /root/api_service/host_inventory_insrt_body.json
       register: host_inventory_insrt_body
 
