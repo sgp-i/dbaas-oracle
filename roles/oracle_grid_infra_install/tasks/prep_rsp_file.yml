@@ -3,7 +3,7 @@
 - name: create grid install rsp file
   template:
     src: 12c_gi_rsp.j2
-    dest: "{{ oracle_tmp }}/grid_install_template.rsp"
+    dest: "{{ oracle_tmp }}/grid_install.rsp"
 
 - name: create configTool rsp file
   copy:
