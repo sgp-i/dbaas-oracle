@@ -3,6 +3,8 @@
 - import_tasks: copy_archives.yml
 
 - name: run preupgrd.sql script for {{ oracle_db_name }}
+  become_method: sudo
+  become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: sqlplus / as sysdba @{{ oracle_tmp }}/db_precheck/preupgrd.sql
   register: precheck_script
@@ -30,6 +32,9 @@
     }
 
 - name: execute pre-fixup
+  become_method: sudo
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
   command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade_fixups.sql
   register: pre-fixup_script
   when: execute_pre_fixup | lower == 'true' and precheck_results_count.errors | int > 0
