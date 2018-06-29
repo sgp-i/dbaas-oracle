@@ -3,7 +3,7 @@
     path: /root/api_service/ansible_db_details.txt
     line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
     create: yes
-
+    
 - include_vars: var_host_inventory_insertion.yml
 
 - name: check if host inventory name exists
@@ -11,14 +11,14 @@
   register: is_host_inv_name_exist
   ignore_errors: yes
 
-- name: Insert Starting Part of the Host Inventory Name For Identification
-  lineinfile: 
-    path: /root/api_service/ansible_db_details.txt
-    line: "ID Of {{ ansible_hostname }}"
-  when: is_host_inv_name_exist.stdout == ""
-
 - name: Complete Tasks Of Host Inventory Insertion
   block: 
+    - name: Insert Starting Part of the Host Inventory Name For Identification
+      lineinfile: 
+        path: /root/api_service/ansible_db_details.txt
+        line: "ID Of {{ ansible_hostname }}"
+      when: is_host_inv_name_exist.stdout == ""
+      
     - name: convert to jinja
       template:
        src: ./host_inventory_insrt_body.j2
@@ -38,38 +38,29 @@
         headers:
             Content-Type: "application/json"
       register: v_host_detail_insertion_response
+      ignore_errors: yes
+      
+    - name: CHECK POST CALL'S Success
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of {{ ansible_hostname }}*"
+        line: ""
+      when:  v_host_detail_insertion_response.status != 200
 
     - name: Insert The v_host_inventory_id In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
         regexp: "^ID Of {{ ansible_hostname }}*"
-        line: "ID Of {{ ansible_hostname }} = {{ v_host_detail_insertion_response.json | json_query('ID') }}"
+        line: "ID Of {{ ansible_hostname }}={{ v_host_detail_insertion_response.json | json_query('ID') }}"
+
+    - name: Insert The V_HOST_CODE In ansible_db_details.txt File
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        line: "V_HOST_CODE of {{ ansible_hostname }} is={{ item.host_code }}"
+      # when: item.host_details == ansible_hostname 
+      when: item.host_name == 'DEMO_TIME'
+      with_items: "{{ host_details }}"
+
   when: is_host_inv_name_exist.rc == 1
 
-  
-     
 
-
-
-
-
-  
-  
-
-        #  "host_name": "{{ host_name }}",
-        #         "network_type": "{{ network_type }}", 
-        #         "core_count": "{{ core_count }}", 
-        #         "processor_config_speed": "{{ processor_config_speed}}", 
-        #         "server_model": "{{ server_model }}", 
-        #         "hardware_vendor": "{{ hardware_vendor }}", 
-        #         "os_type_version": "{{ os_type_version }}", 
-        #         "processor_bit": "{{ processor_bit }}", 
-        #         "phy_virt": "{{ phy_virt }}",
-        #         "dc_location": "{{ dc_location }}", 
-        #         "global_zone_solaris": "{{ global_zone_solaris }}", 
-        #         "phy_memory": "{{ phy_memory }}", 
-        #         "server_monitoring_tool": "{{ server_monitoring_tool }}", 
-        #         "host_code": "{{ host_code }}",
-        #         "clustered": "{{ clustered }}", 
-        #         "os_type": "{{ os_type }}", 
-        #         "env_source": "{{ env_source }}"

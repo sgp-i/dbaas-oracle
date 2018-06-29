@@ -1,15 +1,32 @@
+- name: Make A Variable
+  set_fact:
+    app_json_body: "{"
 
-- name: set a fact
-  set_fact: 
-    name: "{"
 - name: Form a Json
   set_fact: 
-    name: '{{ name | string }} \"{{ item.db_column_name }}\": \"{{ item.value }}\"\,' 
-  with_items: "{{ xdddd }}"
+    app_json_body: '{{ app_json_body | string }} "{{ item.key }}": "{{ item.value }}"{{ item.delimiter }}' 
+  with_items: "{{ update_applicaton_body }}"
 
-- name: remove the last comma
-  
+- name: End the Variable
+  set_fact:
+    app_json_body: '{{ app_json_body | string }} }'
 
-- name: echo
-  shell:  echo iiii {{ name }}
+# - name: get applicaton id
+#   shell: 
+
+- name: update the json data
+  uri:
+    url: https://apex.techlab.com:8443/ords/invent2/charter/applicationdetail/148488331883071123039517634427588628650
+    validate_certs: no  # should be removed after https certs becomes renewed
+    method: PUT
+    body_format: json
+    body: "{{ app_json_body }}"
+    headers:
+      Content-Type: "application/json"
+
+
+
+
+
+
 

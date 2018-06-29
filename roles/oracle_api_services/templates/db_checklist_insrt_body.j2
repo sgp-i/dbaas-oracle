@@ -1,17 +1,17 @@
-{% for host in host_details %}
-{% if host.host_name == 'J2_DELETE_THIS' %}
+{% for chklist in checklist_details %}
+{% if chklist.host_name == ansible_hostname %}
  {
-    "db_id": "{{ host.db_id }}",
-    "checklist_type": "{{ host.checklist_type }}", 
-    "post_build_status": "{{ host.post_build_status }}", 
-    "cluster_verify": "{{ host.cluster_verify }}", 
-    "gi_install_status": "{{ host.gi_install_status }}", 
-    "db_install_status": "{{ host.db_install_status }}",
-    "db_upgrade_status": "{{ host.db_upgrade_status }}",
-    "gi_upgrade_status": "{{ host.gi_upgrade_status }}", 
-    "migration_status": "{{ host.migration_status }}", 
-    "post_migration_status": "{{ host.post_migration_status }}", 
-    "execution_id": "{{ host.execution_id }}",
+    "host_id": "{{ host_id }}",
+    "checklist_type": "{{ chklist.checklist_type }}", 
+    "post_build_status": "{{ chklist.post_build_status }}", 
+    "cluster_verify": "{{ chklist.cluster_verify }}", 
+    "gi_install_status": "{{ chklist.gi_install_status }}", 
+    "db_install_status": "{{ chklist.db_install_status }}",
+    "db_upgrade_status": "{{ chklist.db_upgrade_status }}",
+    "gi_upgrade_status": "{{ chklist.gi_upgrade_status }}", 
+    "migration_status": "{{ chklist.migration_status }}", 
+    "post_migration_status": "{{ chklist.post_migration_status }}", 
+    "execution_id": "{{ chklist.execution_id }}"
  } 
 {% endif %}
 {% endfor %} 

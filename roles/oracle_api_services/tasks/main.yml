@@ -1,3 +1,41 @@
-- include_vars: var_host_inventory_insertion.yml    
-- include: host_inventory_insertion.yml
+# - include: application_details_insertion.yml
+
+# - include: application_details_update.yml
+#   vars:
+#    update_applicaton_body:
+#      - { key: application_name , value : "DELETE_THIS_UP_1" , delimiter: ","}
+#      - { key: tech_contact_email , value: "hey@there.com" , delimiter: ""}
+
+
+
+# - include: host_inventory_update.yml
+#   vars:
+#     update_host_inv_body:
+#       - { key: network_type , value: "PLS_DELETE_THIS" , delimiter: "" , host_name: ""  }
+#       - { key: network_type , value: "PLS_DELETE_THIS-dbtest04" , delimiter: "," , host_name: "dbtest04"  }
+#       - { key: network_type , value: "PLS_DELETE_THIS-dbtest04" , delimiter: "" , host_name: "dbtest04"  }
+#     specific_host_update: true
+
+# - name: get id
+#   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
+#   register: host_inv_id
+
+# - include: db_checklist_insertion.yml
+#   vars:
+#    host_id: "{{ host_inv_id.stdout }}"
+
+
+# - include: host_inventory_insertion.yml
+- include: cluster_member_insertion.yml
+
+- name: get cluster_id
+  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of cluster' | awk -F '=' '{print $2}'
+  register: cluster_id
+  
+- include: host_inventory_update.yml
+  vars:
+    update_host_inv_body:
+      - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" , host_name: ""  }
+    specific_host_update: false
+
 

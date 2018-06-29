@@ -1,5 +1,6 @@
-cluster_name: "DELETE_THIS1-CLUS"
-cluster_type: ""
-gi_version: ""
-gi_current_patchset: ""
-v_host_code: ""
+cluster_details:
+    - host_name: 'dbtest04'
+      cluster_name: "DELETE_THIS2-CLUS"
+      cluster_type: ""
+      gi_version: ""
+      gi_current_patchset: ""  # v_host_code is sent as variable

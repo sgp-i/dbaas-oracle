@@ -1,7 +1,7 @@
 {% for host in host_details %}
-{% if host.host_name == ansible_hostname %}
+{% if host.host_name == 'DEMO_TIME' %}
  {
-    "host_name": "DELTE_THIS",
+    "host_name": "{{ host.host_name }}",
     "network_type": "{{ host.network_type }}", 
     "core_count": "{{ host.core_count }}", 
     "processor_config_speed": "{{ host.processor_config_speed}}", 

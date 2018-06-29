@@ -1,6 +1,25 @@
 host_details:
-  - host_name: "dbtest04"
-    yup_name: "DELETE_THIS1-HOS"
+  - host_name: "DEMO_TIME"
+    network_type: ""
+    core_count: 0  # number
+    processor_config_speed: ""
+    server_model: ""
+    hardware_vendor: ""
+    os_type_version: ""
+    processor_bit: ""
+    server_creation_date: ""  #date
+    phy_virt: ""
+    dc_location: ""
+    global_zone_solaris: ""
+    phy_memory: ""  # number
+    server_monitoring_tool: ""
+    host_code: "ORA1234"
+    db_id: 0 # number
+    cluster_id: 0 # number
+    clustered: ""
+    os_type: ""
+    env_source: ""
+  - host_name: "dbtest05" 
     network_type: ""
     core_count: 0  # number
     processor_config_speed: ""

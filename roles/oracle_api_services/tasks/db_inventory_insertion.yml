@@ -12,14 +12,15 @@
   register: is_db_inv_name_exist
   ignore_errors: yes
 
-- name: Insert Starting Part of the Host Inventory Name For Identification
-  lineinfile: 
-    path: /root/api_service/ansible_db_details.txt
-    line: "ID Of {{ database_name }}"
-  when: is_db_inv_name_exist.stdout == ""
 
 - name: Complete Tasks Of DB Inventory Insertion
   block:
+    - name: Insert Starting Part of the Host Inventory Name For Identification
+      lineinfile: 
+        path: /root/api_service/ansible_db_details.txt
+        line: "ID Of {{ database_name }}"
+      when: is_db_inv_name_exist.stdout == ""
+      
     # "app_id" is a fk and needs to discussed and is not in body of post call
     - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
       uri:
@@ -58,9 +59,16 @@
             Content-Type: "application/json"
       register: v_db_inventory_insertion_response
 
+    - name: CHECK POST CALL'S Success
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of {{ database_name }}*"
+        line: ""
+      when:  v_db_inventory_insertion_response.status != 200
+
     - name: Insert The db_member_id In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
         regexp: "^ID Of {{ database_name }}*"
-        line: "ID Of {{ database_name }} = {{ v_db_inventory_insertion_response.json | json_query('ID') }}"
+        line: "ID Of {{ database_name }}={{ v_db_inventory_insertion_response.json | json_query('ID') }}"
   when: is_db_inv_name_exist.rc == 1
