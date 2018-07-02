@@ -29,7 +29,9 @@ domain: localdomain
 
 scan_port: 1521
 
-asm_disk_location: /dev/oracleasm/disks
+asm_disk_location: "{% if ansible_distribution == 'OracleLinux' -%}/dev/oracleasm/disks
+{%- elif ansible_distribution == 'RedHat' -%}/dev/mapper
+{%- endif %}"
 
 asm_disk_group: DATA
 

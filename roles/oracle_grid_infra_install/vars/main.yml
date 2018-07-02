@@ -33,6 +33,7 @@ grid_images:
 
 known_cluvfy_issues: 
   - "Swap Size"
+  - "/dev/shm mounted"
   - "Package: cvuqdisk"
   - "Multicast check"
   - "source"

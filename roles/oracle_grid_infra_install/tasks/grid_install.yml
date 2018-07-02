@@ -3,7 +3,7 @@
 - name: install grid
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignorePrereq -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>{{ oracle_tmp }}/grid_stderr.err >{{ oracle_tmp }}/grid_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignorePrereq -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>&1 | tee {{ oracle_tmp }}/grid_stdout.out &
     sleep 30
     while true
     do 
@@ -14,11 +14,8 @@
   args:
     executable: /bin/bash
     creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
-  when: inventory_hostname == master_node
-
-- name: get grid install stdout
-  command: "cat {{ oracle_tmp }}/grid_stdout.out"
   register: grid_install
+  failed_when: '"[FATAL]" in grid_install.stdout'
   when: inventory_hostname == master_node
 
 - name: general oracle post-installation

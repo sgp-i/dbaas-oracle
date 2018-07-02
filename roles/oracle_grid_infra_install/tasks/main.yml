@@ -44,7 +44,9 @@
   find:
     paths: "{{ asm_disk_location }}"
     file_type: any
-    patterns: "{{ asm_disk_group }}*"
+    patterns: "{% if ansible_distribution == 'RedHat' -%}ora--dg--{{ asm_disk_group | lower }}*
+      {%- else -%}{{ asm_disk_group }}*
+      {%- endif %}"
     use_regex: no
   register: asm_disk_paths_find_result
 
@@ -52,7 +54,9 @@
   find:
     paths: "{{ asm_disk_location }}"
     file_type: any
-    patterns: "{{ asm_ocr_group }}*"
+    patterns: "{% if ansible_distribution == 'RedHat' -%}ora--dg--{{ asm_ocr_group | lower }}*
+      {%- else -%}{{ asm_ocr_group }}*
+      {%- endif %}"
     use_regex: no
   register: asm_ocr_paths_find_result
 

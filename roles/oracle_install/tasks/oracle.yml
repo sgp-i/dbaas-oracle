@@ -3,7 +3,7 @@
 - name: install oracle
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/db_stderr.err >{{ oracle_tmp }}/db_stdout.out &
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
     sleep 30
     while true
     do 
@@ -14,11 +14,8 @@
   args:
     executable: /bin/bash
     creates: "{{ oracle_home }}/bin/sqlplus"
-  when: inventory_hostname == master_node
-
-- name: get db install stdout
-  command: "cat {{ oracle_tmp }}/db_stdout.out"
   register: db_install
+  failed_when: '"[FATAL]" in db_install.stdout'
   when: inventory_hostname == master_node
 
 - name: general oracle post-installation
