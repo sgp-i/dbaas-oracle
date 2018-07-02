@@ -1,26 +1,42 @@
-database_name: "DELETE_THIS10" 
-application_name: ""
-environment: ""
-oracle_version: ""
-rac_type: ""
-business_unit: "" 
-appliance: ""
-database_role: "" 
-pci_required: ""
-sox_required: ""
-encryption_required: "" 
-dataguard: ""
-golden_gate: ""
-backup_enabled: "" 
-end_of_life: ""
-db_monitoring_tool: "" 
-monitoring: ""
-comments: ""
-instance_count: 0  # number
-db_source: ""
-dr_solution: ""
-dr_location: ""
-env_category: ""
-host_code: ""
-app_id: ""
-storage_type: ""
+# YML Structure For This File
+# db_details:
+#   - host_name: << host_name >>
+#     databases:
+#     - database_name: << database_name >>
+#     - .......
+#     - database_name: << database_name >>
+#     - .......
+#   - host_name: << host_name >>
+#     databases:
+#     - database_name: << database_name >>
+#     - .......
+
+db_details: 
+  - host_name: "dbtest04"
+    databases:
+    - database_name: "DELETE_TS_LOOP1"
+      application_name: ""
+      environment: ""
+      oracle_version: ""
+      rac_type: ""
+      business_unit: "" 
+      appliance: ""
+      database_role: "" 
+      pci_required: ""
+      sox_required: ""
+      encryption_required: "" 
+      dataguard: ""
+      golden_gate: ""
+      backup_enabled: "" 
+      end_of_life: ""
+      db_monitoring_tool: "" 
+      monitoring: ""
+      comments: ""
+      instance_count: 0  # number
+      db_source: ""
+      dr_solution: ""
+      dr_location: ""
+      env_category: ""
+      host_code: ""
+      app_id: ""   
+      storage_type: ""

@@ -1,7 +1,7 @@
 {% for chklist in checklist_details %}
 {% if chklist.host_name == ansible_hostname %}
  {
-    "host_id": "{{ host_id }}",
+    "host_id": "{{ host_id.stdout }}",
     "checklist_type": "{{ chklist.checklist_type }}", 
     "post_build_status": "{{ chklist.post_build_status }}", 
     "cluster_verify": "{{ chklist.cluster_verify }}", 
@@ -12,6 +12,7 @@
     "migration_status": "{{ chklist.migration_status }}", 
     "post_migration_status": "{{ chklist.post_migration_status }}", 
     "execution_id": "{{ chklist.execution_id }}"
+    "db_id": "{{ dbid }}"
  } 
 {% endif %}
 {% endfor %} 

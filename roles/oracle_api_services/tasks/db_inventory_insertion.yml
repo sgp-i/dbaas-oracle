@@ -8,7 +8,7 @@
     create: yes
 
 - name: check if db inventory name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ database_name }}*'
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ db_values.database_name }}*'
   register: is_db_inv_name_exist
   ignore_errors: yes
 
@@ -18,43 +18,26 @@
     - name: Insert Starting Part of the Host Inventory Name For Identification
       lineinfile: 
         path: /root/api_service/ansible_db_details.txt
-        line: "ID Of {{ database_name }}"
+        line: "ID Of {{ db_values.database_name }}"
       when: is_db_inv_name_exist.stdout == ""
+
+    - name: convert to jinja
+      template:
+       src: ./db_inventory_insrtion_body.j2
+       dest: /root/api_service/db_inventory_insrtion/body_of_{{ db_values.database_name }}.json
+
+    - name: cat out the created json
+      shell: cat /root/api_service/db_inventory_insrtion/body_of_{{ db_values.database_name }}.json
+      register: db_inventory_insrtion_body
       
-    # "app_id" is a fk and needs to discussed and is not in body of post call
+  #  "app_id" is a fk and needs to discussed and is not in body of post call
     - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
       uri:
         url: https://apex.techlab.com:8443/ords/invent2/charter/insert_db_inventory
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: {
-            "database_name": "{{ database_name }}", 
-            "application_name": "{{ application_name }}", 
-            "environment": "{{ environment }}", 
-            "oracle_version": "{{ oracle_version }}", 
-            "rac_type": "{{ rac_type }}", 
-            "business_unit": "{{ business_unit }}", 
-            "appliance": "{{ appliance }}", 
-            "database_role": "{{ database_role }}", 
-            "pci_required": "{{ pci_required }}", 
-            "sox_required": "{{ sox_required }}", 
-            "encryption_required": "{{ encryption_required }}", 
-            "dataguard": "{{ dataguard }}", 
-            "golden_gate": "{{ golden_gate }}", 
-            "backup_enabled": "{{ backup_enabled }}", 
-            "end_of_life": "{{ end_of_life }}", 
-            "db_monitoring_tool": "{{ db_monitoring_tool }}", 
-            "monitoring": "{{ monitoring }}", 
-            "comments": "{{ comments }}",
-            "instance_count": "{{ instance_count }}", 
-            "db_source": "{{ db_source }}", 
-            "dr_solution": "{{ dr_solution }}", 
-            "dr_location": "{{ dr_location }}", 
-            "env_category": "{{ env_category }}", 
-            "host_code": "{{ host_code }}", 
-            "storage_type": "{{ storage_type }}"
-            }
+        body: "{{ db_inventory_insrtion_body.stdout }}"
         headers:
             Content-Type: "application/json"
       register: v_db_inventory_insertion_response
@@ -62,13 +45,14 @@
     - name: CHECK POST CALL'S Success
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ database_name }}*"
+        regexp: "^ID Of {{ db_values.database_name }}*"
         line: ""
       when:  v_db_inventory_insertion_response.status != 200
 
     - name: Insert The db_member_id In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ database_name }}*"
-        line: "ID Of {{ database_name }}={{ v_db_inventory_insertion_response.json | json_query('ID') }}"
+        regexp: "^ID Of {{ db_values.database_name }}*"
+        line: "ID Of {{ db_values.database_name }} database={{ v_db_inventory_insertion_response.json | json_query('ID') }}"
   when: is_db_inv_name_exist.rc == 1
+

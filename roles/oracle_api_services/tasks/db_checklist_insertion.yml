@@ -6,26 +6,43 @@
     line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
     create: yes
 
-- name: check if db checklist  name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ ansible_hostname }}*'
+- name: get Db ID 
+  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $1 }'
+  register: dbid
+
+- name: get Db Name
+  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $2 }'
+  register: dbname
+
+- name: set db name and Id
+  set_fact:
+    dbid: "{{ dbid.stdout }}"
+    dbname: "{{ dbname.stdout }}"
+   
+- name: check if db checklist name exists
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ dbname }} db*'
   register: is_db_chklst_name_exist
   ignore_errors: yes
+
+- name: get host_id
+  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}*' | awk -F '=' '{print $2}'
+  register: host_id
 
 - name: Complete Tasks Of DB Checklist Insertion
   block: 
     - name: Insert Starting Part of the db checklist Name For Identification
       lineinfile: 
         path: /root/api_service/ansible_db_details.txt
-        line: "ID Of checklist for {{ ansible_hostname }}"
+        line: "ID Of checklist for {{ dbname }} db"
       when: is_db_chklst_name_exist.stdout == ""
 
     - name: convert to jinja
       template:
         src: ./db_checklist_insrt_body.j2
-        dest: /root/api_service/db_checklist_insrt_body.json
+        dest: /root/api_service/db_checklist_insrtion/cklst_body_of_{{ dbname }}.json
 
     - name: cat out the created json
-      shell: cat /root/api_service/db_checklist_insrt_body.json
+      shell: cat /root/api_service/db_checklist_insrtion/cklst_body_of_{{ dbname }}.json
       register: db_checklist_insrt_body
 
     - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
@@ -42,13 +59,13 @@
     - name: CHECK POST CALL'S Success
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ ansible_hostname }}*"
+        regexp: "^ID Of checklist for {{ dbname }} db*"
         line: ""
       when:  db_checklist_insrt_response.status != 200
 
     - name: Insert The Id Of DB Checklist In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ ansible_hostname }}*"
-        line: "ID Of checklist for {{ ansible_hostname }}={{ db_checklist_insrt_response.json | json_query('ID') }}"
+        regexp: "^ID Of checklist for {{ dbname }} db*"
+        line: "ID Of checklist for {{ dbname }} db={{ db_checklist_insrt_response.json | json_query('ID') }}"
   when: is_db_chklst_name_exist.rc == 1
