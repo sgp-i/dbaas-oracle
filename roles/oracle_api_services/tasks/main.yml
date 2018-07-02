@@ -44,16 +44,14 @@
 #     specific_host_update: false
 # ---- host inventory update ----
 
-#------- demo one ---------
+
+#---- db inventory table insertion ------
 # - include_vars: var_db_inventory_insertion.yml
 # - name: set a variable of db's specific to host
 #   set_fact:
 #     host_specific_dbs: "{{ item.databases }}"
 #   when: item.host_name == ansible_hostname
 #   with_items: "{{ db_details }}"
-#------- demo one ---------
-
-#---- db inventory table insertion ------
 # - include: db_inventory_insertion.yml db_values="{{ item }}"
 #   with_items: "{{ host_specific_dbs }}"
 #---- db inventory table insertion ------
