@@ -1,18 +1,14 @@
-{% for chklist in checklist_details %}
-{% if chklist.host_name == ansible_hostname %}
- {
-    "host_id": "{{ host_id.stdout }}",
-    "checklist_type": "{{ chklist.checklist_type }}", 
-    "post_build_status": "{{ chklist.post_build_status }}", 
-    "cluster_verify": "{{ chklist.cluster_verify }}", 
-    "gi_install_status": "{{ chklist.gi_install_status }}", 
-    "db_install_status": "{{ chklist.db_install_status }}",
-    "db_upgrade_status": "{{ chklist.db_upgrade_status }}",
-    "gi_upgrade_status": "{{ chklist.gi_upgrade_status }}", 
-    "migration_status": "{{ chklist.migration_status }}", 
-    "post_migration_status": "{{ chklist.post_migration_status }}", 
-    "execution_id": "{{ chklist.execution_id }}"
-    "db_id": "{{ dbid }}"
- } 
-{% endif %}
-{% endfor %} 
+{
+"host_id": "{{ host_id.stdout }}",
+"checklist_type": "{{ checklist_details.checklist_type }}", 
+"post_build_status": "{{ checklist_details.post_build_status }}", 
+"cluster_verify": "{{ checklist_details.cluster_verify }}", 
+"gi_install_status": "{{ checklist_details.gi_install_status }}", 
+"db_install_status": "{{ checklist_details.db_install_status }}",
+"db_upgrade_status": "{{ checklist_details.db_upgrade_status }}",
+"gi_upgrade_status": "{{ checklist_details.gi_upgrade_status }}", 
+"migration_status": "{{ checklist_details.migration_status }}", 
+"post_migration_status": "{{ checklist_details.post_migration_status }}", 
+"execution_id": "{{ checklist_details.execution_id }}"
+"db_id": "{{ dbid }}"
+}

@@ -1,5 +1,4 @@
 checklist_details:
-    - host_name: "dbtest04"
       checklist_type: ""
       post_build_status: "" 
       cluster_verify: ""
