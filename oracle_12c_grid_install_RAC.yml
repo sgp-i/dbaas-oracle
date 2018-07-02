@@ -5,10 +5,16 @@
   any_errors_fatal: true
   become: yes
   become_method: sudo
-  roles:
-    - oracle_prereqs
-    - oracle_asm_config
-    - oracle_grid_infra_install
+  tasks:
+    - import_role:
+        name: oracle_prereqs
+
+    - import_role:
+        name: oracle_asm_config
+      when: ansible_distribution == "OracleLinux"
+
+    - import_role:
+        name: oracle_grid_infra_install
   vars:
     grid_version: 12.1.0.2
     grid_install_mode: CRS_CONFIG
