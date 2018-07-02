@@ -1,6 +1,16 @@
 - name: checking api services for oracle
-  hosts: 'oracle-instances'
+  hosts: "{{ host }}"
   become: yes
   become_method: sudo
-  roles:
-    - oracle_api_services
+
+  tasks:
+    - import_role:
+        name: oracle_api_services
+        tasks_from: host_inventory_insertion.yml
+    - debug:
+        msg: Host inserted
+    - import_role:
+        name: oracle_api_services
+        tasks_from: host_inventory_update.yml
+  vars:
+    host_code: scottTest1
