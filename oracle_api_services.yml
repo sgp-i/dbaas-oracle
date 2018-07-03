@@ -1,6 +1,6 @@
 ---
 
-  - name: checking api services for oracle
+- name: checking api services for oracle
   hosts: "{{ host }}"
   become: yes
   become_method: sudo

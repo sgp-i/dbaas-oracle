@@ -1,18 +1,17 @@
 ---
 
+- name: get id
+  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
+  register: host_inv_id
+  failed_when: host_inv_id.stdout == ""
+
 - name: generate json_body
   set_fact: 
     host_inv_json_body: '{{ host_inv_json_body | default({}) | combine({ item.key: item.value }) }}'
   when:  item.host_name == "" or item.host_name == ansible_hostname 
   with_items: "{{ update_host_inv_body }}"
-- debug:
-        var: host_inv_json_body
 
-- name: get id
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
-  register: host_inv_id
-
-- name: update the Host Inventory
+- name: execute 'update the Host Inventory' API call
   uri:
     url: https://apex.techlab.com:8443/ords/invent2/charter/host_inventory/{{ host_inv_id.stdout }}
     validate_certs: no  # should be removed after https certs becomes renewed
@@ -21,4 +20,3 @@
     body: "{{ host_inv_json_body }}"
     headers:
       Content-Type: "application/json"
-  when: host_inv_id.stdout != ""
