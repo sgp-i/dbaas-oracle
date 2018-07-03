@@ -1,12 +1,6 @@
 
 - include_vars: var_db_inventory_insertion.yml
 
-- name: Create A File For Inserting ID Details Formed In DB
-  lineinfile: 
-    path: /root/api_service/ansible_db_details.txt
-    line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
-    create: yes
-
 - name: check if db inventory name exists
   shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ db_values.database_name }}*'
   register: is_db_inv_name_exist
@@ -20,15 +14,6 @@
         path: /root/api_service/ansible_db_details.txt
         line: "ID Of {{ db_values.database_name }}"
       when: is_db_inv_name_exist.stdout == ""
-
-    - name: convert to jinja
-      template:
-       src: ./db_inventory_insrtion_body.j2
-       dest: /root/api_service/db_inventory_insrtion/body_of_{{ db_values.database_name }}.json
-
-    - name: cat out the created json
-      shell: cat /root/api_service/db_inventory_insrtion/body_of_{{ db_values.database_name }}.json
-      register: db_inventory_insrtion_body
       
   #  "app_id" is a fk and needs to discussed and is not in body of post call
     - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
@@ -37,10 +22,38 @@
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: "{{ db_inventory_insrtion_body.stdout }}"
+        # body: "{{ db_inventory_insrtion_body.stdout }}"
+        body: { 
+              "database_name": "{{ db_values.database_name }}", 
+              "application_name": "{{ db_values.application_name }}", 
+              "environment": "{{ db_values.environment }}", 
+              "oracle_version": "{{ db_values.oracle_version }}", 
+              "rac_type": "{{ db_values.rac_type }}", 
+              "business_unit": "{{ db_values.business_unit }}", 
+              "appliance": "{{ db_values.appliance }}", 
+              "database_role": "{{ db_values.database_role }}", 
+              "pci_required": "{{ db_values.pci_required }}", 
+              "sox_required": "{{ db_values.sox_required }}", 
+              "encryption_required": "{{ db_values.encryption_required }}", 
+              "dataguard": "{{ db_values.dataguard }}", 
+              "golden_gate": "{{ db_values.golden_gate }}", 
+              "backup_enabled": "{{ db_values.backup_enabled }}", 
+              "end_of_life": "{{ db_values.end_of_life }}", 
+              "db_monitoring_tool": "{{ db_values.db_monitoring_tool }}", 
+              "monitoring": "{{ db_values.monitoring }}", 
+              "comments": "{{ db_values.comments }}",
+              "instance_count": "{{ db_values.instance_count }}", 
+              "db_source": "{{ db_values.db_source }}", 
+              "dr_solution": "{{ db_values.dr_solution }}", 
+              "dr_location": "{{ db_values.dr_location }}", 
+              "env_category": "{{ db_values.env_category }}", 
+              "host_code": "{{ db_values.host_code }}", 
+              "storage_type": "{{ db_values.storage_type }}"
+          }
         headers:
             Content-Type: "application/json"
       register: v_db_inventory_insertion_response
+      ignore_errors: true
 
     - name: CHECK POST CALL'S Success
       lineinfile:

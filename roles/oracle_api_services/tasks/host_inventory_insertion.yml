@@ -38,7 +38,15 @@
         headers:
             Content-Type: "application/json"
       register: v_host_detail_insertion_response
-      
+      ignore_errors: true
+
+    - name: CHECK POST CALL'S Success
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of {{ ansible_hostname }}*"
+        line: ""
+      when: v_host_detail_insertion_response.status != 200
+
     - name: Insert The v_host_inventory_id In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt

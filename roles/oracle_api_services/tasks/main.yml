@@ -6,16 +6,6 @@
 #      - { key: application_name , value : "DELETE_THIS_UP_1" , delimiter: ","}
 #      - { key: tech_contact_email , value: "hey@there.com" , delimiter: ""}
 
-
-
-# - include: host_inventory_update.yml
-#   vars:
-#     update_host_inv_body:
-#       - { key: network_type , value: "PLS_DELETE_THIS" , delimiter: "" , host_name: ""  }
-#       - { key: network_type , value: "PLS_DELETE_THIS-dbtest04" , delimiter: "," , host_name: "dbtest04"  }
-#       - { key: network_type , value: "PLS_DELETE_THIS-dbtest04" , delimiter: "" , host_name: "dbtest04"  }
-#     specific_host_update: true
-
 # - name: get id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
 #   register: host_inv_id
@@ -36,12 +26,10 @@
 # - name: get cluster_id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of cluster' | awk -F '=' '{print $2}'
 #   register: cluster_id
-  
 # - include: host_inventory_update.yml
 #   vars:
 #     update_host_inv_body:
-#       - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" , host_name: ""  }
-#     specific_host_update: false
+#       - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" }
 # ---- host inventory update ----
 
 
@@ -71,11 +59,12 @@
 # - name: get the db_name and id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of .* database' | awk -F ' ' '{split($4,a,"="); print a[2]  " "  $3}'
 #   register: db_details
+  
 # - include: db_checklist_update.yml db_name_and_id="{{ item }}"
 #   vars:
 #     update_db_cklist_body:
-#       - { key: checklist_type , value: "it is working XD !!!!" , delimiter: "," }
-#       - { key: db_install_status , value: "working buddy -_-" , delimiter: "" }
+#       - { key: checklist_type , value: "testing" , delimiter: "," }
+#       - { key: db_install_status , value: "Done" , delimiter: "" }
 #   with_items: "{{ db_details.stdout_lines }}"
 #   when: db_details.stdout != ""
 #---db_checklist_update----

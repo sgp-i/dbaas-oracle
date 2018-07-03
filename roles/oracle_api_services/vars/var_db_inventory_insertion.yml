@@ -14,7 +14,7 @@
 db_details: 
   - host_name: "dbtest04"
     databases:
-    - database_name: "DELETE_TS_LOOP1"
+    - database_name: "DEL_TS_no_jinja"
       application_name: ""
       environment: ""
       oracle_version: ""

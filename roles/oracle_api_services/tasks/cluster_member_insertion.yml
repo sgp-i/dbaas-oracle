@@ -1,12 +1,6 @@
 
 - include_vars: var_cluster_member_insertion.yml
 
-- name: Create A File For Inserting ID Details Formed In DB
-  lineinfile: 
-    path: /root/api_service/ansible_db_details.txt
-    line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
-    create: yes
-
 - name: check if cluster Member name exists
   shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of cluster*'
   register: is_cl_name_exist
@@ -47,6 +41,7 @@
         headers:
             Content-Type: "application/json"
       register: v_cluster_membr_detail_insertion_response
+      ignore_errors: true
       
     - name: CHECK POST CALL'S Success
       lineinfile:
