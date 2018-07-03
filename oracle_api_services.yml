@@ -1,4 +1,6 @@
-- name: checking api services for oracle
+---
+
+  - name: checking api services for oracle
   hosts: "{{ host }}"
   become: yes
   become_method: sudo
@@ -13,7 +15,8 @@
         tasks_from: host_inventory_update.yml
       vars:
         update_host_inv_body:
-        - { key: network_type , value: RED , delimiter: "" , host_name: ""  }
-        specific_host_update: true
+        - { key: server_monitoring_tool , value: "Cool Tool" , delimiter: "" , host_name: ""  }
+        - { key: network_type , value: "RED" , delimiter: "" , host_name: "dbtest02"  }
+        - { key: network_type , value: "BLUE" , delimiter: "" , host_name: "dbtest03"  }
   vars:
     host_code: scottTest1

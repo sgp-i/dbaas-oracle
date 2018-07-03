@@ -1,3 +1,5 @@
+---
+
 - include_vars: var_application_details_insertion.yml
 
 - name: Create A File For Inserting ID Details Formed In DB

@@ -1,4 +1,6 @@
 
+---
+
 - include_vars: var_db_inventory_insertion.yml
 
 - name: Create A File For Inserting ID Details Formed In DB
