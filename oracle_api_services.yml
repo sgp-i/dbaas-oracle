@@ -7,10 +7,13 @@
     - import_role:
         name: oracle_api_services
         tasks_from: host_inventory_insertion.yml
-    - debug:
-        msg: Host inserted
+
     - import_role:
         name: oracle_api_services
         tasks_from: host_inventory_update.yml
+      vars:
+        update_host_inv_body:
+        - { key: network_type , value: RED , delimiter: "" , host_name: ""  }
+        specific_host_update: true
   vars:
     host_code: scottTest1
