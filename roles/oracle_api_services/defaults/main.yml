@@ -1,17 +1,7 @@
 ---
 
 network_type: ""
-processor_bit: "0"
-phy_virt: "{% if ansible_product_name == 'VMware Virtual Platform' -%}VIRTUAL
-           {%- else -%}PHYSICAL
-           {%- endif %}"
 dc_location: ""
-global_zone_solaris: ""
+global_zone_solaris: "N/A"
 server_monitoring_tool: ""
-host_code: ""
-clustered: ""
-os_type: "{% if ansible_os_family | lower == 'windows' -%}WINDOWS
-          {%- elif ansible_os_family | lower == 'solaris' -%}SOLARIS
-          {%- else -%}LINUX
-          {%- endif %}"
-env_source: ""
+clustered: "Y"
