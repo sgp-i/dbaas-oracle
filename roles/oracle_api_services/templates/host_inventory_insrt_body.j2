@@ -1,5 +1,5 @@
 {% for host in host_details %}
-{% if host.host_name == 'DEMO_TIME' %}
+{% if host.host_name == "DL_TEST_01" %}
  {
     "host_name": "{{ host.host_name }}",
     "network_type": "{{ host.network_type }}", 
@@ -13,11 +13,17 @@
     "dc_location": "{{ host.dc_location }}",
     "global_zone_solaris": "{{ host.global_zone_solaris }}", 
     "phy_memory": "{{ host.phy_memory }}", 
-    "server_monitoring_tool": "{{ host.server_monitoring_tool }}", 
-    "host_code": "{{ host.host_code }}",
+    "server_monitoring_tool": "{{ host.server_monitoring_tool }}",
     "clustered": "{{ host.clustered }}", 
     "os_type": "{{ host.os_type }}", 
-    "env_source": "{{ host.env_source }}"
+    {% if host_code_output.stdout != "" %}
+    {
+    "env_source": "{{ host.env_source }}",
+    "host_code": "{{ host_code_output.stdout }}"
+    }
+    {% else %}
+      "env_source": "{{ host.env_source }}"
+    {% endif %}
  } 
 {% endif %}
 {% endfor %} 

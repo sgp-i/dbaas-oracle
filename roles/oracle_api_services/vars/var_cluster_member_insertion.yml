@@ -1,6 +1,7 @@
 cluster_details:
     - host_name: 'dbtest04'
-      cluster_name: "DELETE_THIS2-CLUS"
-      cluster_type: ""
-      gi_version: ""
-      gi_current_patchset: ""  # v_host_code is sent as variable
+      cluster_name: "DELETE_THIS3-CLUS"
+      cluster_type: "RAC"
+      gi_version: "12.1.2.0"
+      gi_current_patchset: ""
+      env_source: "TWC"

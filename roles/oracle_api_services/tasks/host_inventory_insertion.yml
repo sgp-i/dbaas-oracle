@@ -18,11 +18,20 @@
         path: /root/api_service/ansible_db_details.txt
         line: "ID Of {{ ansible_hostname }}"
       when: is_host_inv_name_exist.stdout == ""
-      
+
+    - name: Check Whether HOST_CODE Exist or Not
+      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE'
+      register: is_host_code_exist
+      ignore_errors: yes
+
+    - name: Get The Host Code
+      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE' | awk -F '=' '{ print $2 }'
+      register: host_code_output
+
     - name: convert to jinja
       template:
-       src: ./host_inventory_insrt_body.j2
-       dest: /root/api_service/host_inventory_insrt_body.json
+        src: ./host_inventory_insrt_body.j2
+        dest: /root/api_service/host_inventory_insrt_body.json
 
     - name: cat out the created json
       shell: cat /root/api_service/host_inventory_insrt_body.json
@@ -38,14 +47,6 @@
         headers:
             Content-Type: "application/json"
       register: v_host_detail_insertion_response
-      ignore_errors: true
-
-    - name: CHECK POST CALL'S Success
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ ansible_hostname }}*"
-        line: ""
-      when: v_host_detail_insertion_response.status != 200
 
     - name: Insert The v_host_inventory_id In ansible_db_details.txt File
       lineinfile:
@@ -56,10 +57,8 @@
     - name: Insert The V_HOST_CODE In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        line: "V_HOST_CODE of {{ ansible_hostname }} is={{ item.host_code }}"
-      # when: item.host_details == ansible_hostname 
-      when: item.host_name == 'DEMO_TIME'
-      with_items: "{{ host_details }}"
+        line: "V_HOST_CODE of {{ ansible_hostname }} is={{ v_host_detail_insertion_response.json | json_query('HOST_CODE') }}"
+      when: is_host_code_exist.rc == 1 
 
   rescue:
     - name: remove entry for failed host

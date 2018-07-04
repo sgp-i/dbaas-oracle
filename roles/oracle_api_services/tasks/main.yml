@@ -15,7 +15,7 @@
 #    host_id: "{{ host_inv_id.stdout }}"
 
 #--- host inventory insertion ---
-# - include: host_inventory_insertion.yml
+- include: host_inventory_insertion.yml
 #--- host inventory insertion ---
 
 #---- cluster member insertion ---
