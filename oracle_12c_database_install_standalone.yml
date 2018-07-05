@@ -7,8 +7,38 @@
   roles:
     - oracle_install
   vars:
-    oracle_edition: EE
     oracle_version: 12.1.0.2
-    install_mode: INSTALL_DB_AND_CONFIG
-    oracle_db_home: db_3
-    oracle_db_name: demo
+    
+    ## Required Vars for All
+    # install_mode: either INSTALL_DB_SWONLY or INSTALL_DB_AND_CONFIG
+    # oracle_db_home: db_3
+
+    ## Required Vars for "INSTALL_DB_AND_CONFIG"
+    # oracle_db_name
+    # application_name
+    # business_unit
+    # technical_contact
+    # tech_contact_email
+    # app_desc
+    # app_owner
+    # app_owner_email
+    # environment
+    # database_role 
+    # pci_required
+    # sox_required
+    # encryption_required 
+    # dataguard
+    # golden_gate
+    # backup_enabled 
+    # end_of_life
+    # db_monitoring_tool 
+    # monitoring
+    # comments
+    # instance_count
+    # db_source
+    # dr_solution
+    # dr_location
+    # env_category
+    # host_code
+    # app_id   
+    # storage_type
