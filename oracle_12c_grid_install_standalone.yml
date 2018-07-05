@@ -6,6 +6,13 @@
   become_method: sudo
   tasks:
     - import_role:
+        name: oracle_api_services
+        tasks_from: host_inventory_insertion.yml
+      vars:
+        clustered: N
+        env_source: "{{ env_source | mandatory }}"  ## must be passed in
+
+    - import_role:
         name: oracle_prereqs
 
     - import_role:
