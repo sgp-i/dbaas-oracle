@@ -1,7 +1,12 @@
 ---
 
+## Host Defaults
 network_type: ""
 dc_location: ""
 global_zone_solaris: "N/A"
 server_monitoring_tool: ""
 clustered: "Y"
+
+## Cluster Defaults
+cluster_type: RAC
+gi_current_patchset: ""

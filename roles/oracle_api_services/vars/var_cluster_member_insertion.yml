@@ -1,15 +1,10 @@
 ---
+
+master_node: "{{ ansible_play_hosts | first }}"
+
 cluster_membr_body:
-    cluster_name: "DELETE_THIS_NO_J2"
-    cluster_type: "RAC"
-    gi_version: "12.1.2.0"
-    gi_current_patchset: ""
-    env_source: "{{ env_source }}" # should be set via inventory file variable
-
-
-
-# cluster_name: "DELETE_THIS3-CLUS"
-# cluster_type: "RAC"
-# gi_version: "12.1.2.0"
-# gi_current_patchset: ""
-# env_source: "TWC"
+    cluster_name: "{{ cluster_name | mandatory }}"
+    cluster_type: "{{ cluster_type }}"
+    gi_version: "{{ grid_version | mandatory}}"
+    gi_current_patchset: "{{ gi_current_patchset }}"
+    env_source: "{{ env_source | mandatory }}" 
