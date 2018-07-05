@@ -26,6 +26,11 @@
         headers:
             Content-Type: "application/json"
       register: v_cluster_membr_detail_insertion_response
+      when: inventory_hostname == master_node
+
+    - name: save results to all nodes
+      set_fact:
+        v_cluster_membr_detail_insertion_response: "{{ hostvars[master_node].v_cluster_membr_detail_insertion_response }}"
     
     - name: Check Whether HOST_CODE Exist or Not
       shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE'
