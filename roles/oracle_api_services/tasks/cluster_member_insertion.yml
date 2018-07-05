@@ -50,10 +50,14 @@
         line: "ID Of cluster={{ v_cluster_membr_detail_insertion_response.json | json_query('ID') }}"
 
   rescue:
-     - name: Remove the ID String Since POST call Didn't Succeed
-       lineinfile:
+    - name: Remove the ID String Since POST call Didn't Succeed
+      lineinfile:
         path: /root/api_service/ansible_db_details.txt
         regexp: "^ID Of cluster*"
         state: absent
+
+    - name: POST Failed
+      fail:
+        msg: Cluster Member POST call failed
 
   when: is_cl_name_exist.rc == 1

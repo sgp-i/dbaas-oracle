@@ -65,6 +65,10 @@
         regexp: "^ID Of {{ ansible_hostname }}*"
         state: absent
 
+    - name: POST Failed
+      fail:
+        msg: Host Inventory POST call failed
+
   when: is_host_inv_name_exist.rc == 1
 
 
