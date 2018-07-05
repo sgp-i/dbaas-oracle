@@ -1,0 +1,9 @@
+---
+
+- name: install oracle 12c grid infrastructure - RAC
+  hosts: '{{ host }}'
+  become: yes
+  become_method: sudo
+  tasks:
+  - import_role:
+      name: oracle_create_db

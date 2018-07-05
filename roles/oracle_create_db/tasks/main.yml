@@ -1,0 +1,41 @@
+---
+
+- name: check if db has already been installed
+  command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
+  ignore_errors: yes
+  register: oracle_installed
+  failed_when: oracle_installed.rc == 0
+
+- import_role:
+    name: oracle_install
+    tasks_from: update_inventory.yml
+
+- name: create tmp dir
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+
+- name: create 'create_db' rsp file
+  template:
+    owner: "{{ oracle_user }}"
+    src: 12c_create_db_rsp.j2
+    dest: "{{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp"
+
+- name: create database
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: |
+    nohup dbca -silent -responseFile {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp 2>&1 | tee {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep dbca | grep {{ oracle_db_name }} | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash

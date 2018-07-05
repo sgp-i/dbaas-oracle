@@ -1,0 +1,22 @@
+---
+
+oracle_group: oinstall
+
+oracle_version: 12.1.0.2
+
+oracle_base: /u01/app/oracle
+
+oracle_db_home: db_1 
+
+oracle_db_name: db
+
+# password for the sysdba
+oracle_db_syspass: password
+
+oracle_system_pass: OraPasswd1
+
+asm_disk_group: DATA
+
+oracle_pdb_name: pdb2
+
+oracle_pdb_passwd: PraPasswd1
