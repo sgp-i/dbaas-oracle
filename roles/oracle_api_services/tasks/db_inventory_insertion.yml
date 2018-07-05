@@ -24,7 +24,6 @@
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        # body: "{{ db_inventory_insrtion_body.stdout }}"
         body: { 
               "database_name": "{{ db_values.database_name }}", 
               "application_name": "{{ db_values.application_name }}", 
