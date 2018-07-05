@@ -1,42 +1,40 @@
 - include_vars: var_db_checklist_insertion.yml
 
-- name: Make A Variable
-  set_fact:
-    chklst_json_body: "{"
 
-- name: Form a Json
-  set_fact: 
-    chklst_json_body: '{{ chklst_json_body | string }} "{{ item.key }}": "{{ item.value }}"{{ item.delimiter }}' 
-  with_items: "{{ update_db_cklist_body }}"
+- name: Complete Block Of DB Checklist update
+  block:  
+    - name: generate json_body
+      set_fact: 
+        chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
+      with_items: "{{ update_db_cklist_body }}"
 
-- name: End the Variable
-  set_fact:
-    chklst_json_body: '{{ chklst_json_body | string }} }'
+    - name: get Db ID 
+      shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $1 }'
+      register: dbid
 
-- name: get Db ID 
-  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $1 }'
-  register: dbid
+    - name: get Db Name
+      shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $2 }'
+      register: dbname
 
-- name: get Db Name
-  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $2 }'
-  register: dbname
+    - name: set db name and Id
+      set_fact:
+        dbid: "{{ dbid.stdout }}"
+        dbname: "{{ dbname.stdout }}"
 
-- name: set db name and Id
-  set_fact:
-    dbid: "{{ dbid.stdout }}"
-    dbname: "{{ dbname.stdout }}"
+    - name: get id of the checklist using the db name
+      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ dbname }} db' | awk -F '=' '{print $2}'
+      register: checklist_id
 
-- name: get id of the checklist using the db name
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ dbname }} db' | awk -F '=' '{print $2}'
-  register: checklist_id
+    - name: update the json data
+      uri:
+        url:  https://apex.techlab.com:8443/ords/invent2/charter/db_check_list/{{ checklist_id.stdout }}
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: PUT
+        body_format: json
+        body: "{{ chklst_json_body }}"
+        headers:
+            Content-Type: "application/json"
+        when: checklist_id.stdout != ""
+  when: update == "db_inventory"  
 
-- name: update the json data
-  uri:
-    url:  https://apex.techlab.com:8443/ords/invent2/charter/db_check_list/{{ checklist_id.stdout }}
-    validate_certs: no  # should be removed after https certs becomes renewed
-    method: PUT
-    body_format: json
-    body: "{{ chklst_json_body }}"
-    headers:
-        Content-Type: "application/json"
-    when: checklist_id.stdout != ""
+- name: Complete Block Of Host Checklist Update

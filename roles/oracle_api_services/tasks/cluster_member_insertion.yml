@@ -15,30 +15,13 @@
         line: "ID Of cluster"
       when: is_cl_name_exist.stdout == ""
 
-    # - name: Get The HOST_CODE Of The Host
-    #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE' | awk -F '=' '{print $2}'
-    #   register: v_host_code_value
-
-    # - name: set the v_host_code_variable
-    #   set_fact:
-    #     v_host_code: "{{ v_host_code_value.stdout }}"
-
-    - name: convert to jinja
-      template:
-       src: ./cluster_member_insrt_body.j2
-       dest: /root/api_service/cluster_member_insrt_body.json
-
-    - name: cat out the created json
-      shell: cat /root/api_service/cluster_member_insrt_body.json
-      register: cluster_member_insrt_body
-
     - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
       uri:
         url: https://apex.techlab.com:8443/ords/invent2/charter/insertclustermember
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: "{{ cluster_member_insrt_body.stdout }}"
+        body: "{{ cluster_membr_body }}"
         headers:
             Content-Type: "application/json"
       register: v_cluster_membr_detail_insertion_response

@@ -15,7 +15,7 @@
 #    host_id: "{{ host_inv_id.stdout }}"
 
 #--- host inventory insertion ---
-- include: host_inventory_insertion.yml
+# - include: host_inventory_insertion.yml
 #--- host inventory insertion ---
 
 #---- cluster member insertion ---
@@ -29,7 +29,10 @@
 # - include: host_inventory_update.yml
 #   vars:
 #     update_host_inv_body:
-#       - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" }
+#     - { key: "server_monitoring_tool" , value: "Cool Tool" }
+#     - { key: "network_type" , value: "RED" }
+#     - { key: "network_type" , value: "BLUE" }
+#     - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" }
 # ---- host inventory update ----
 
 
@@ -45,17 +48,24 @@
 #---- db inventory table insertion ------
 
 #----db_checklist_insertion-------
-# note: change the variable yml structure , not host specific
+# FOR DB INVENTORY CHECKLIST INSERTION
 # - name: get the db_name and id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of .* database' | awk -F ' ' '{split($4,a,"="); print a[2]  " "  $3}'
 #   register: db_details
 # - include: db_checklist_insertion.yml db_name_and_id="{{ item }}"
+#   vars:
+#     insert: db_inventory
 #   with_items: "{{ db_details.stdout_lines }}"
 #   when: db_details.stdout != ""
+# FOR HOST INVENTORY CHECKLIST INSERTION
+# - include: host_checklist_insertion.yml
+# FOR CLUSTER INVENTORY CHECKLIST INSERTION
+# - include: cluster_checklist_insertion.yml
 #----db_checklist_insertion-------
 
 
 #---db_checklist_update----
+# FOR DB CHECKLIST UPDATE
 # - name: get the db_name and id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of .* database' | awk -F ' ' '{split($4,a,"="); print a[2]  " "  $3}'
 #   register: db_details
@@ -63,10 +73,18 @@
 # - include: db_checklist_update.yml db_name_and_id="{{ item }}"
 #   vars:
 #     update_db_cklist_body:
-#       - { key: checklist_type , value: "testing" , delimiter: "," }
-#       - { key: db_install_status , value: "Done" , delimiter: "" }
+#       - { key: checklist_type , value: "test" }
+#       - { key: db_install_status , value: "awesome" }
+#     update: db_inventory
 #   with_items: "{{ db_details.stdout_lines }}"
 #   when: db_details.stdout != ""
+# FOR HOST CHECKLIST UPDATE
+# - include: db_checklist_update.yml db_name_and_id="{{ item }}"
+#   vars:
+#     update_db_cklist_body:
+#       - { key: checklist_type , value: "test" }
+#       - { key: db_install_status , value: "awesome" }
+#     update: host_inventory
 #---db_checklist_update----
 
 

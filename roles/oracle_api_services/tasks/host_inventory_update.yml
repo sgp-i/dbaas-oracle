@@ -6,7 +6,6 @@
 - name: generate json_body
   set_fact: 
     host_inv_json_body: '{{ host_inv_json_body | default({}) | combine({ item.key: item.value }) }}'
-  when:  item.host_name == "" or item.host_name == ansible_hostname 
   with_items: "{{ update_host_inv_body }}"
 
 - name: execute 'update the Host Inventory' API call

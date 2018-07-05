@@ -1,5 +1,4 @@
 ---
-
 host_code_check: "{% if clustered == 'Y' -%}{{ host_code | mandatory }}
               {%- else -%}
               {%- endif %}"
@@ -9,7 +8,7 @@ env_source_check: "{% if clustered == 'N' -%}{{ env_source | mandatory }}
              {%- endif %}"
 
 host_inventory_insrt_body:
-  host_name: "{{ ansible_hostname}}"
+  host_name: "{{ ansible_hostname }}"
   network_type: "{{ network_type }}" # Possibly HostVar?
   core_count: "{{ ansible_processor_cores * ansible_processor_count }}"
   processor_config_speed: "{{ ansible_processor[2] | regex_replace('^.*@ (.*$)','\\1') }}"

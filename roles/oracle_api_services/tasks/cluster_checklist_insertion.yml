@@ -1,0 +1,54 @@
+
+- include_vars: var_db_checklist_insertion.yml
+- name: check if cluster checklist name exists
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for cluster*'
+  register: is_cluster_chklst_name_exist
+  ignore_errors: yes
+
+- name: Complete Block Of Cluster CheckList Insertion
+  block:
+     - name: Insert Starting Part of the cluster checklist Name For Identification
+       lineinfile: 
+         path: /root/api_service/ansible_db_details.txt
+         line: "ID Of checklist for cluster"
+       when: is_cluster_chklst_name_exist.stdout == ""
+
+     - name: Get The Cluster ID
+       shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of cluster*' | awk -F '=' '{ print $2 }'
+       register: cluster_id
+
+     - name: Make A POST Call To Insert Cluster Checklist Details In V_DB_CHECK_LIST
+       uri:
+        url: https://apex.techlab.com:8443/ords/invent2/charter/insert_db_check_list
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: POST
+        body_format: json
+        body: {
+            "cluster_id": "{{ cluster_id.stdout }}",
+            "checklist_type": "{{ checklist_details.checklist_type }}", 
+            "post_build_status": "{{ checklist_details.post_build_status }}", 
+            "cluster_verify": "{{ checklist_details.cluster_verify }}", 
+            "gi_install_status": "{{ checklist_details.gi_install_status }}", 
+            "db_install_status": "{{ checklist_details.db_install_status }}",
+            "db_upgrade_status": "{{ checklist_details.db_upgrade_status }}",
+            "gi_upgrade_status": "{{ checklist_details.gi_upgrade_status }}", 
+            "migration_status": "{{ checklist_details.migration_status }}", 
+            "post_migration_status": "{{ checklist_details.post_migration_status }}", 
+            "execution_id": "{{ checklist_details.execution_id }}"
+            }
+        headers:
+            Content-Type: "application/json"
+       register: cluster_checklist_insrt_response
+
+     - name: Insert The Id Of Cluster Checklist In ansible_db_details.txt File
+       lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of checklist for cluster*"
+        line: "ID Of checklist for cluster={{ cluster_checklist_insrt_response.json | json_query('ID') }}"  
+  rescue:
+    - name: Remove the ID String Since POST call Didn't Succeed
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of checklist for cluster*"
+        state: absent    
+  when: is_cluster_chklst_name_exist.rc == 1

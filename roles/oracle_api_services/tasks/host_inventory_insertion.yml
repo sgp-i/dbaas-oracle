@@ -5,7 +5,16 @@
     path: /root/api_service/ansible_db_details.txt
     line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
     create: yes
-    
+
+- name: Get The Host Code
+  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE' | awk -F '=' '{ print $2 }'
+  register: host_code_output
+
+- name: set host_code and env_source
+  set_fact:
+    host_code: "{{ host_code_output.stdout }}"
+  when: host_code_output.stdout != ""
+
 - include_vars: var_host_inventory_insertion.yml
 
 - name: check if host inventory name exists
@@ -30,22 +39,13 @@
       shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE' | awk -F '=' '{ print $2 }'
       register: host_code_output
 
-    - name: convert to jinja
-      template:
-        src: ./host_inventory_insrt_body.j2
-        dest: /root/api_service/host_inventory_insrt_body.json
-
-    - name: cat out the created json
-      shell: cat /root/api_service/host_inventory_insrt_body.json
-      register: host_inventory_insrt_body
-
     - name: Make a POST call to insert host details in V_HOST_INV_TBL
       uri:
         url: https://apex.techlab.com:8443/ords/invent2/charter/insert_host_inventory
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: "{{ host_inventory_insrt_body.stdout }}"
+        body: "{{ host_inventory_insrt_body }}"
         headers:
             Content-Type: "application/json"
       register: v_host_detail_insertion_response
