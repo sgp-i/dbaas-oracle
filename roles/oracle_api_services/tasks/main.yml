@@ -16,7 +16,7 @@
 #     - { key: "server_monitoring_tool" , value: "Cool Tool" }
 #     - { key: "network_type" , value: "RED" }
 #     - { key: "network_type" , value: "BLUE" }
-#     - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" , delimiter: "" }
+#     - { key: cluster_id , value: "{{ cluster_id.stdout | int }}" }
 # ---- host inventory update ----
 
 
@@ -51,22 +51,25 @@
 # - name: get the db_name and id
 #   shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of .* database' | awk -F ' ' '{split($4,a,"="); print a[2]  " "  $3}'
 #   register: db_details
-  
 # - include: db_checklist_update.yml db_name_and_id="{{ item }}"
 #   vars:
 #     update_db_cklist_body:
-#       - { key: checklist_type , value: "test" }
-#       - { key: db_install_status , value: "awesome" }
-#     update: db_inventory
+#       - { key: checklist_type , value: "DEMO_TOMORROW" }
+#       - { key: db_install_status , value: "DEL_THIS" }
 #   with_items: "{{ db_details.stdout_lines }}"
 #   when: db_details.stdout != ""
 # FOR HOST CHECKLIST UPDATE
-# - include: db_checklist_update.yml db_name_and_id="{{ item }}"
+# - include: host_checklist_update.yml
 #   vars:
-#     update_db_cklist_body:
+#     update_host_cklist_body:
 #       - { key: checklist_type , value: "test" }
 #       - { key: db_install_status , value: "awesome" }
-#     update: host_inventory
+# FOR CLUSTER CHECKLIST UPDATE
+# - include: cluster_checklist_update.yml
+#   vars:
+#     update_cluster_cklist_body:
+#       - { key: checklist_type , value: "test" }
+#       - { key: db_install_status , value: "awesome" }
 #---db_checklist_update----
 
 
