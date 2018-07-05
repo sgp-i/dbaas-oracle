@@ -1,5 +1,3 @@
-
-- include_vars: var_db_checklist_insertion.yml
 - name: check if host checklist name exists
   shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ ansible_hostname }}*'
   register: is_host_chklst_name_exist
@@ -14,7 +12,7 @@
       when: is_host_chklst_name_exist.stdout == ""
 
     - name: Get The HOST ID
-      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ anible_hostname }}*' | awk -F '=' '{ print $2 }'
+      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}*' | awk -F '=' '{ print $2 }'
       register: host_id
 
     - name: Make A POST Call To Insert HOST Checklist Details In V_DB_CHECK_LIST
@@ -24,17 +22,7 @@
         method: POST
         body_format: json
         body: {
-            "host_id": "{{ host_id.stdout }}",
-            "checklist_type": "{{ checklist_details.checklist_type }}", 
-            "post_build_status": "{{ checklist_details.post_build_status }}", 
-            "cluster_verify": "{{ checklist_details.cluster_verify }}", 
-            "gi_install_status": "{{ checklist_details.gi_install_status }}", 
-            "db_install_status": "{{ checklist_details.db_install_status }}",
-            "db_upgrade_status": "{{ checklist_details.db_upgrade_status }}",
-            "gi_upgrade_status": "{{ checklist_details.gi_upgrade_status }}", 
-            "migration_status": "{{ checklist_details.migration_status }}", 
-            "post_migration_status": "{{ checklist_details.post_migration_status }}", 
-            "execution_id": "{{ checklist_details.execution_id }}"
+            "host_id": "{{ host_id.stdout }}"
             }
         headers:
             Content-Type: "application/json"
