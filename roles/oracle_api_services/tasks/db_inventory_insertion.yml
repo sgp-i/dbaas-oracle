@@ -4,7 +4,7 @@
 - include_vars: var_db_inventory_insertion.yml
 
 - name: check if db inventory name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ db_values.database_name }}*'
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ db_values.database_name }}'
   register: is_db_inv_name_exist
   ignore_errors: yes
 
@@ -16,7 +16,7 @@
         path: /root/api_service/ansible_db_details.txt
         line: "ID Of {{ db_values.database_name }}"
       when: is_db_inv_name_exist.stdout == ""
-      
+
   #  "app_id" is a fk and needs to discussed and is not in body of post call
     - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
       uri:
