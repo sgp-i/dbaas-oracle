@@ -13,32 +13,38 @@
 #     - database_name: << database_name >>
 #     - .......
 
-db_details: 
-  - host_name: "dbtest04"
-    databases:
-    - database_name: "DEL_TS_no_jinja"
-      application_name: ""
-      environment: ""
-      oracle_version: ""
-      rac_type: ""
-      business_unit: "" 
-      appliance: ""
-      database_role: "" 
-      pci_required: ""
-      sox_required: ""
-      encryption_required: "" 
-      dataguard: ""
-      golden_gate: ""
-      backup_enabled: "" 
-      end_of_life: ""
-      db_monitoring_tool: "" 
-      monitoring: ""
-      comments: ""
-      instance_count: 0  # number
-      db_source: ""
-      dr_solution: ""
-      dr_location: ""
-      env_category: ""
-      host_code: ""
-      app_id: ""   
-      storage_type: ""
+## I didn't understand the purpose of this YAML and it was causing errors
+## I have commented out and switched to a direct list of vars
+# db_details: 
+#   - host_name: "{{ ansible_hostname }}"
+#     databases:
+    # - database_name: "{{ oracle_db_name }}"
+db_values:
+  database_name: "{{ oracle_db_name }}"
+  application_name: "{{ application_name }}"
+  environment: "{{ db_environment }}"
+  oracle_version: "{{ oracle_version }}"
+  rac_type: "{% if rac_install == 'true' -%}RAC
+              {%- else -%}STANDALONE
+              {%- endif %}"
+  business_unit: "{{ business_unit }}" 
+  appliance: "{{ appliance }}"
+  database_role: "{{ database_role }}" 
+  pci_required: "{{ pci_required }}"
+  sox_required: "{{ sox_required }}"
+  encryption_required: "{{ encryption_required }}" 
+  dataguard: "{{ dataguard }}"
+  golden_gate: "{{ golden_gate }}"
+  backup_enabled: "{{ backup_enabled }}" 
+  end_of_life: "{{ end_of_life }}"
+  db_monitoring_tool: "{{ db_monitoring_tool }}" 
+  monitoring: "{{ monitoring }}"
+  comments: "{{ comments }}"
+  instance_count: "{{ instance_count }}"
+  db_source: "{{ db_source }}"
+  dr_solution: "{{ dr_solution }}"
+  dr_location: "{{ dr_location }}"
+  env_category: "{{ env_category }}"
+  host_code: "{{ host_code }}"
+  app_id: "{{ app_id }}"   
+  storage_type: "{{ storage_type }}"

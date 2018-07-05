@@ -1,10 +1,10 @@
 ---
 
 application_details:
-    - application_name: "DELETE_THIS1"
-      business_unit: ""
-      technical_contact: "" 
-      tech_contact_email: ""
-      app_desc: ""
-      app_owner: ""
-      app_owner_email: ""
+  - application_name: "{{ application_name }}"
+    business_unit: "{{ business_unit }}"
+    technical_contact: "{{ technical_contact }}" 
+    tech_contact_email: "{{ tech_contact_email }}"
+    app_desc: "{{ app_desc }}"
+    app_owner: "{{ app_owner }}"
+    app_owner_email: "{{ app_owner_email }}"
