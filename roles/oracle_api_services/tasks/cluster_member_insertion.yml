@@ -13,6 +13,7 @@
       lineinfile: 
         path: /root/api_service/ansible_db_details.txt
         line: "ID Of cluster"
+        create: yes
       when: is_cl_name_exist.stdout == ""
 
     - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
