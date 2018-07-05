@@ -1,0 +1,7 @@
+---
+
+network_type: ""
+dc_location: ""
+global_zone_solaris: "N/A"
+server_monitoring_tool: ""
+clustered: "Y"

@@ -1,6 +1,22 @@
+---
+
 - name: checking api services for oracle
-  hosts: 'oracle-instances'
+  hosts: "{{ host }}"
   become: yes
   become_method: sudo
-  roles:
-    - oracle_api_services
+
+  tasks:
+    - import_role:
+        name: oracle_api_services
+        tasks_from: host_inventory_insertion.yml
+
+    - import_role:
+        name: oracle_api_services
+        tasks_from: host_inventory_update.yml
+      vars:
+        update_host_inv_body:
+        - { key: server_monitoring_tool , value: "Cool Tool" , delimiter: "" , host_name: ""  }
+        - { key: network_type , value: "RED" , delimiter: "" , host_name: "dbtest02"  }
+        - { key: network_type , value: "BLUE" , delimiter: "" , host_name: "dbtest03"  }
+  vars:
+    host_code: scottTest1

@@ -1,3 +1,5 @@
+---
+
 cluster_details:
     - host_name: 'dbtest04'
       cluster_name: "DELETE_THIS3-CLUS"
