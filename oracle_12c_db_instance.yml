@@ -7,3 +7,36 @@
   tasks:
   - import_role:
       name: oracle_create_db
+  
+  ## Required Vars:
+  # oracle_db_home
+  # oracle_db_name
+  # oracle_pdb_name
+  # oracle_pdb_passwd
+  # application_name
+  # business_unit
+  # technical_contact
+  # tech_contact_email
+  # app_desc
+  # app_owner
+  # app_owner_email
+  # environment
+  # database_role 
+  # pci_required
+  # sox_required
+  # encryption_required 
+  # dataguard
+  # golden_gate
+  # backup_enabled 
+  # end_of_life
+  # db_monitoring_tool 
+  # monitoring
+  # comments
+  # instance_count
+  # db_source
+  # dr_solution
+  # dr_location
+  # env_category
+  # host_code
+  # app_id   
+  # storage_type
