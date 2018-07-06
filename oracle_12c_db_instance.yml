@@ -11,9 +11,11 @@
   ## Required Vars:
   # oracle_db_home
   # oracle_db_name
+  # application_name
+
+  ## Optional Vars:
   # oracle_pdb_name
   # oracle_pdb_passwd
-  # application_name
   # business_unit
   # technical_contact
   # tech_contact_email
@@ -36,7 +38,5 @@
   # db_source
   # dr_solution
   # dr_location
-  # env_category
-  # host_code
-  # app_id   
+  # env_category 
   # storage_type
