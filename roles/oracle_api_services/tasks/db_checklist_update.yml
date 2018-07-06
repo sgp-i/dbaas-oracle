@@ -3,16 +3,8 @@
     chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
   with_items: "{{ update_db_cklist_body }}"
 
-- name: get Db Name
-  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $2 }'
-  register: dbname
-
-- name: set db name 
-  set_fact:
-    dbname: "{{ dbname.stdout }}"
-
 - name: get id of the checklist using the db name
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ dbname }} db' | awk -F '=' '{print $2}'
+  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ oracle_db_name }} db' | awk -F '=' '{print $2}'
   register: checklist_id
 
 - name: update the json data using PUT call

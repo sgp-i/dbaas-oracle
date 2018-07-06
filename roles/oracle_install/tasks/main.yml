@@ -20,8 +20,22 @@
 - include: prep_rsp_file.yml
   when: inventory_hostname == master_node
 
-- name: Update APEX (Install and Config ONLY)
-  include_tasks: update_inventory.yml
+- block:
+  - name: Update APEX (Install and Config ONLY)
+    include_tasks: update_inventory.yml
+
+  - import_role:
+      name: oracle_api_services
+      tasks_from: db_checklist_insertion.yml
+
+  - import_role:
+      name: oracle_api_services
+      tasks_from: db_checklist_update.yml
+    vars:
+      update_db_cklist_body:
+        - { key: checklist_type , value: "Provisioning - DB" }
+        - { key: db_install_status , value: "IN PROGRESS" }
+        
   when: install_mode == "INSTALL_DB_AND_CONFIG"
 
 - include: oracle.yml

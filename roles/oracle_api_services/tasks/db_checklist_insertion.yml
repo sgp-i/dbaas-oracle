@@ -1,19 +1,14 @@
 ---
-- name: get Db ID 
-  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $1 }'
-  register: dbid
+- name: get Db ID line
+  command: grep -e '^ID Of {{ oracle_db_name }} database' /root/api_service/ansible_db_details.txt
+  register: db_line
 
-- name: get Db Name
-  shell: echo "{{ db_name_and_id }}" | awk -F " " '{ print $2 }'
-  register: dbname
-  
-- name: set db name and Id
+- name: set db_id
   set_fact:
-    dbid: "{{ dbid.stdout }}"
-    dbname: "{{ dbname.stdout }}"
+    db_id: "{{ db_line.stdout  | regex_replace('.*=(.*)','\\1')}}"
     
 - name: check if db checklist name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ dbname }} db*'
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ oracle_db_name }} db*'
   register: is_db_chklst_name_exist
   ignore_errors: yes
 
@@ -22,7 +17,7 @@
     - name: Insert Starting Part of the db checklist Name For Identification
       lineinfile: 
         path: /root/api_service/ansible_db_details.txt
-        line: "ID Of checklist for {{ dbname }} db"
+        line: "ID Of checklist for {{ oracle_db_name }} db"
       when: is_db_chklst_name_exist.stdout == ""
 
     - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
@@ -32,7 +27,7 @@
         method: POST
         body_format: json
         body: {
-            "db_id": "{{ dbid }}"
+            "db_id": "{{ db_id }}"
             }
         headers:
             Content-Type: "application/json"
@@ -41,13 +36,13 @@
     - name: Insert The Id Of DB Checklist In ansible_db_details.txt File
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ dbname }} db*"
-        line: "ID Of checklist for {{ dbname }} db={{ db_checklist_insrt_response.json | json_query('ID') }}"
+        regexp: "^ID Of checklist for {{ oracle_db_name }} db*"
+        line: "ID Of checklist for {{ oracle_db_name }} db={{ db_checklist_insrt_response.json | json_query('ID') }}"
 
   rescue:
     - name: Remove the ID String Since POST call Didn't Succeed
       lineinfile:
         path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ dbname }} db*"
+        regexp: "^ID Of checklist for {{ oracle_db_name }} db*"
         state: absent
   when: is_db_chklst_name_exist.rc == 1
