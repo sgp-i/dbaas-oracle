@@ -1,24 +1,5 @@
 ---
 
-# YML Structure For This File
-# db_details:
-#   - host_name: << host_name >>
-#     databases:
-#     - database_name: << database_name >>
-#     - .......
-#     - database_name: << database_name >>
-#     - .......
-#   - host_name: << host_name >>
-#     databases:
-#     - database_name: << database_name >>
-#     - .......
-
-## I didn't understand the purpose of this YAML and it was causing errors
-## I have commented out and switched to a direct list of vars
-# db_details: 
-#   - host_name: "{{ ansible_hostname }}"
-#     databases:
-    # - database_name: "{{ oracle_db_name }}"
 db_values:
   database_name: "{{ oracle_db_name }}"
   application_name: "{{ application_name }}"
