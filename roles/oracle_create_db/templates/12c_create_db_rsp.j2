@@ -1,5 +1,7 @@
+[GENERAL]
 RESPONSEFILE_VERSION = "12.1.0"
 OPERATION_TYPE = "createDatabase"
+[CREATEDATABASE]
 GDBNAME = "{{ oracle_db_name }}"
 SID = "{{ oracle_db_name }}"
 CREATEASCONTAINERDATABASE = true
@@ -10,12 +12,21 @@ TEMPLATENAME = "General_Purpose.dbc"
 SYSPASSWORD = "{{ oracle_system_pass }}"
 SYSTEMPASSWORD = "{{ oracle_system_pass }}"
 STORAGETYPE=ASM
-DISKGROUPNAME="{{ asm_disk_group }}"
+DISKGROUPNAME={{ asm_disk_group }}
 CHARACTERSET = "AL32UTF8"
 MEMORYPERCENTAGE = "10"
 DATABASETYPE = "MULTIPURPOSE"
 AUTOMATICMEMORYMANAGEMENT = "FALSE"
+[createTemplateFromDB]
+[createCloneTemplate]
+[DELETEDATABASE]
+[generateScripts]
 TEMPLATENAME = "New Database"
 GDBNAME = "{{ oracle_db_name }}.{{ ansible_domain }}"
+[CONFIGUREDATABASE]
+[ADDINSTANCE]
 SYSDBAUSERNAME = "sys"
 SYSDBAPASSWORD = "{{ oracle_db_syspass }}"
+[CREATEPLUGGABLEDATABASE]
+[DELETEPLUGGABLEDATABASE]
+[CONFIGUREPLUGGABLEDATABASE]
