@@ -1,0 +1,26 @@
+- name: generate json_body
+  set_fact: 
+    chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
+  with_items: "{{ update_gi_cklist_body }}"
+
+- block:
+  - name: get id of the checklist
+    shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ ansible_hostname }} gi' | awk -F '=' '{print $2}'
+    register: checklist_id_cat
+    failed_when: checklist_id_cat.stdout == ""
+
+  - name: set checklist_id
+    set_fact:
+      checklist_id: "{{ checklist_id_cat.stdout }}"
+  when: checklist_id is not defined
+
+- name: update the json data using PUT call
+  uri:
+    url:  https://apex.techlab.com:8443/ords/invent2/charter/db_check_list/{{ checklist_id }}
+    validate_certs: no  # should be removed after https certs becomes renewed
+    method: PUT
+    body_format: json
+    body: "{{ chklst_json_body }}"
+    headers:
+        Content-Type: "application/json"
+  when: checklist_id != ""

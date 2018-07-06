@@ -1,5 +1,13 @@
 ---
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: gi_checklist_update.yml
+  vars:
+    update_gi_cklist_body:
+      - { key: checklist_type , value: "Pre-check GI" }
+      - { key: gi_install_status, value: "PENDING"}
+
 - include: copy_archives.yml
 
 - name: get cvuqdisk package name

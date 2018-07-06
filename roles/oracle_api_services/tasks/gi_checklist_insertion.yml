@@ -1,0 +1,54 @@
+---
+
+- block:
+  - name: get host_code
+    shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
+    register: host_code_cat
+    failed_when: host_code_cat.stdout == ""
+
+  - name: set host_code
+    set_fact:
+      host_code: host_code_cat.stdout
+  when: host_code is not defined
+
+- name: check if GI checklist name exists
+  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ ansible_hostname }} gi'
+  register: is_gi_chklst_name_exist
+  ignore_errors: yes
+
+- name: Complete Tasks Of GI Checklist Insertion
+  block:
+    - name: Insert Starting Part of the db checklist Name For Identification
+      lineinfile: 
+        path: /root/api_service/ansible_db_details.txt
+        line: "ID Of checklist for {{ ansible_hostname }} gi"
+      when: is_gi_chklst_name_exist.stdout == ""
+
+    - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
+      uri:
+        url: https://apex.techlab.com:8443/ords/invent2/charter/insert_db_check_list
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: POST
+        body_format: json
+        body: {
+            "host_code": "{{ host_code }}"
+            }
+        headers:
+            Content-Type: "application/json"
+      register: db_checklist_insrt_response
+      
+    - name: Insert The Id Of DB Checklist In ansible_db_details.txt File
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of checklist for {{ ansible_hostname }} gi"
+        line: "ID Of checklist for {{ ansible_hostname }} gi={{ db_checklist_insrt_response.json | json_query('ID') }}"
+
+  rescue:
+    - debug:
+        var: host_code
+    - name: Remove the ID String Since POST call Didn't Succeed
+      lineinfile:
+        path: /root/api_service/ansible_db_details.txt
+        regexp: "^ID Of checklist for {{ ansible_hostname }} gi"
+        state: absent
+  when: is_gi_chklst_name_exist.rc == 1
