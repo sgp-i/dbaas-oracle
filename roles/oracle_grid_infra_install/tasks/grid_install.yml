@@ -64,7 +64,7 @@
       executable: /bin/bash
     when: inventory_hostname == master_node
   
-- rescue:
+  rescue:
   - import_role:
       name: oracle_api_services
       tasks_from: gi_checklist_update.yml
