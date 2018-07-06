@@ -10,6 +10,10 @@
     name: oracle_install
     tasks_from: update_inventory.yml
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_insertion.yml
+
 - name: create tmp dir
   file:
     group: "{{ oracle_group }}"
@@ -24,18 +28,46 @@
     src: 12c_create_db_rsp.j2
     dest: "{{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp"
 
-- name: create database
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: |
-    nohup dbca -silent -responseFile {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp 2>&1 | tee {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.out &
-    sleep 30
-    while true
-    do 
-      c=$(ps -ef | grep -v grep | grep dbca | grep {{ oracle_db_name }} | grep java | wc -l)
-      [ $c -eq 0 ] && break
-      sleep 10
-    done
-  args:
-    executable: /bin/bash
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    update_db_cklist_body:
+      - { key: checklist_type , value: "Instance Creation" }
+      - { key: db_install_status , value: "IN PROGRESS" }
+
+- block:  
+  - name: create database
+    become: yes
+    become_user: "{{ oracle_user }}"
+    environment: "{{ ora_user_env }}"
+    shell: |
+      nohup dbca -silent -responseFile {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp 2>&1 | tee {{ oracle_tmp }}/create_db_{{ oracle_db_name }}.out &
+      sleep 30
+      while true
+      do 
+        c=$(ps -ef | grep -v grep | grep dbca | grep {{ oracle_db_name }} | grep java | wc -l)
+        [ $c -eq 0 ] && break
+        sleep 10
+      done
+    args:
+      executable: /bin/bash
+
+  rescue:
+  - import_role:
+      name: oracle_api_services
+      tasks_from: db_checklist_update.yml
+    vars:
+      update_db_cklist_body:
+        - { key: db_install_status , value: "FAILED" }
+  
+  - name: Instance Creation Failed
+    fail:
+      msg: Creation of {{ oracle_db_name }} failed
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    update_db_cklist_body:
+      - { key: db_install_status , value: "SUCCESSFUL" }
