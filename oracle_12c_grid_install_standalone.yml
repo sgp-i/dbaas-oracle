@@ -29,4 +29,10 @@
   vars:
     grid_version: 12.1.0.2
     grid_install_mode: HA_CONFIG
+
+  ## Input vars
+  # env_source - REQUIRED - Must be passed in or could be HostVar
+  # network_type - OPTIONAL - Possibly HostVar?
+  # global_zone_solaris - OPTIONAL - Possibly HostVar?
+  # server_monitoring_tool - OPTIONAL - Possibly HostVar?
     
