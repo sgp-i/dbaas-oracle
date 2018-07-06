@@ -12,13 +12,15 @@
   set_fact:
     app_id: "{{ app_id_line.stdout | regex_replace('^.*=([0-9]*)','\\1') }}"
 
-- name: get Host ID
-  command: grep 'V_HOST_CODE of {{ ansible_hostname }}' /root/api_service/ansible_db_details.txt
-  register: host_id_line
+- block:
+  - name: get Host ID
+    command: grep 'V_HOST_CODE of {{ ansible_hostname }}' /root/api_service/ansible_db_details.txt
+    register: host_id_line
 
-- name: set host_code
-  set_fact:
-    host_code: "{{ host_id_line.stdout | regex_replace('^.*=(.*)','\\1') }}"
+  - name: set host_code
+    set_fact:
+      host_code: "{{ host_id_line.stdout | regex_replace('^.*=(.*)','\\1') }}"
+  when: host_code is not defined
 
 - include_role:
     name: oracle_api_services
