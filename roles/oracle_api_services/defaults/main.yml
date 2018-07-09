@@ -22,7 +22,6 @@ app_owner_email: ""
 
 ## DB Defaults
 db_environment: ""
-business_unit: "" 
 appliance: "N"
 database_role: "" 
 pci_required: ""
