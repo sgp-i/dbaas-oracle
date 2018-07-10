@@ -135,3 +135,9 @@
 #   fail: 
 #     msg: The following pre-requesties are not met {{ failed_checks | string }}
 #   when: failed_checks!=""
+
+## Additional Checks from updated doc
+# huge_pages
+# /dev/shm
+# pbis/user-ignore
+# OS Filesystem Local Disks size
