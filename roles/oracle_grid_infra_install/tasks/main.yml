@@ -25,6 +25,7 @@
     state: present
   when: grid_install_mode != "UPGRADE"
 
+# TODO: Needs to switch to full Bash Script that creates the SSH Keys on each server and scp's them around to the others
 - name: ssh user equivalency
   block:
     - name: install expect if needed
