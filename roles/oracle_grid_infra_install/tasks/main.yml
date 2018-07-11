@@ -25,51 +25,7 @@
     state: present
   when: grid_install_mode != "UPGRADE"
 
-- name: check whether ssh key exist
-  stat:
-    path: "{{ oracle_home }}/.ssh/id_rsa"
-  register: is_priv_key_exist
-  become: yes
-  become_user: oracle      
-
-- name: generate ssh keys 
-  command: ssh-keygen -q -b 4096 -t rsa -f {{ oracle_home }}/.ssh/id_rsa -N "" -C ""
-  when: is_priv_key_exist.stat.exists ==  False
-  become: yes
-  become_user: oracle
-
-- name: get the public key
-  command: cat {{ oracle_home }}/.ssh/id_rsa.pub
-  register: public_key
-  no_log: True
-  become: yes
-  become_user: oracle
-
-- name: put public key in authorized_keys 
-  authorized_key:
-    user: oracle
-    state: present
-    key: "{{ hostvars[item]['public_key']['stdout'] }}"
-  no_log: True  
-  when: inventory_hostname != item
-  loop: "{{ cluster_nodes }}"
-
-- name: ssh user equivalency
-  block:
-    - name: install expect if needed
-      yum:
-        name: expect
-        state: present
-
-    - name: copy in ssh_user_setup expect script
-      template:
-          src: ssh_user_setup.j2
-          dest: "{{ oracle_tmp }}/ssh_user_setup.sh"
-          mode: 0755
-
-    - name: execute ssh_user_setup script
-      command: "{{ oracle_tmp }}/ssh_user_setup.sh"
-      
+- include_tasks: setup_ssh_user_equivalency.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
 
 - include: run_cluvfy.yml
