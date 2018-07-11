@@ -24,7 +24,7 @@
   known_hosts:
     name: "{{ hostvars[current_node]['ansible_hostname'] }}"
     key: "{{ hostvars[current_node]['ansible_hostname'] }},{{ hostvars[current_node]['ansible_default_ipv4']['address'] }} ssh-rsa {{ hostvars[current_node]['ansible_ssh_host_key_rsa_public'] }}"
-  # no_log: True
+  no_log: True
   loop: "{{ cluster_nodes }}"
   loop_control:
     loop_var: current_node
@@ -35,7 +35,7 @@
   known_hosts:
     name: "{{ hostvars[current_node]['ansible_fqdn'] }}"
     key: "{{ hostvars[current_node]['ansible_fqdn'] }},{{ hostvars[current_node]['ansible_default_ipv4']['address'] }} ssh-rsa {{ hostvars[current_node]['ansible_ssh_host_key_rsa_public'] }}"
-  # no_log: True
+  no_log: True
   loop: "{{ cluster_nodes }}"
   loop_control:
     loop_var: current_node
