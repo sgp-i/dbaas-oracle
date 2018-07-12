@@ -1,5 +1,5 @@
 oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v12.1.0
-oracle.install.option={{ install_mode }}
+oracle.install.option=INSTALL_DB_SWONLY
 ORACLE_HOSTNAME={{ ansible_fqdn }}
 UNIX_GROUP_NAME={{ oracle_group }}
 INVENTORY_LOCATION={{ oracle_base }}/oraInventory
@@ -12,52 +12,22 @@ oracle.install.db.OPER_GROUP={{ oracle_dba_group }}
 oracle.install.db.BACKUPDBA_GROUP={{ oracle_group }}
 oracle.install.db.DGDBA_GROUP={{ oracle_group }}
 oracle.install.db.KMDBA_GROUP={{ oracle_group }}
-oracle.install.db.rac.configurationType={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG" and
-      rac_install == true) -%}ADMIN_MANAGED
-{% else %}
-
-{% endif %}
-oracle.install.db.CLUSTER_NODES={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG" and
-      rac_install == true) -%}{{ cluster_node_string | join(',') }}
-{% else %}
-
-{% endif %}
+oracle.install.db.rac.configurationType=
+oracle.install.db.CLUSTER_NODES={{ cluster_node_string | join(',') }}
 oracle.install.db.isRACOneInstall=false
 oracle.install.db.racOneServiceName=
 oracle.install.db.rac.serverpoolName=
 oracle.install.db.rac.serverpoolCardinality=0
 oracle.install.db.config.starterdb.type=GENERAL_PURPOSE
-oracle.install.db.config.starterdb.globalDBName={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_name }}.{{ ansible_domain }}
-{% else %}
-
-{% endif %}
-oracle.install.db.config.starterdb.SID={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_name }}
-{% else %}
-
-{% endif %}
+oracle.install.db.config.starterdb.globalDBName=
+oracle.install.db.config.starterdb.SID=
 oracle.install.db.ConfigureAsContainerDB=false
 oracle.install.db.config.PDBName=
-oracle.install.db.config.starterdb.characterSet={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}AL32UTF8
-{% else %}
-
-{% endif %}
+oracle.install.db.config.starterdb.characterSet=
 oracle.install.db.config.starterdb.memoryOption=false
-oracle.install.db.config.starterdb.memoryLimit={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_mem }}
-{% else %}
-
-{% endif %}
+oracle.install.db.config.starterdb.memoryLimit=
 oracle.install.db.config.starterdb.installExampleSchemas=false
-oracle.install.db.config.starterdb.password.ALL={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_db_syspass }}
-{% else %}
-
-{% endif %}
+oracle.install.db.config.starterdb.password.ALL=
 oracle.install.db.config.starterdb.password.SYS=
 oracle.install.db.config.starterdb.password.SYSTEM=
 oracle.install.db.config.starterdb.password.DBSNMP=
@@ -68,23 +38,11 @@ oracle.install.db.config.starterdb.omsPort=0
 oracle.install.db.config.starterdb.emAdminUser=
 oracle.install.db.config.starterdb.emAdminPassword=
 oracle.install.db.config.starterdb.enableRecovery=false
-oracle.install.db.config.starterdb.storageType={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_storage_type }}
-{% else %}
-
-{% endif %}
+oracle.install.db.config.starterdb.storageType=
 oracle.install.db.config.starterdb.fileSystemStorage.dataLocation=
 oracle.install.db.config.starterdb.fileSystemStorage.recoveryLocation=
-oracle.install.db.config.asm.diskGroup={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ asm_disk_group }}
-{% else %}
-
-{% endif %}
-oracle.install.db.config.asm.ASMSNMPPassword={% if (
-      install_mode == "INSTALL_DB_AND_CONFIG") -%}{{ oracle_asm_syspass }}
-{% else %}
-
-{% endif %}
+oracle.install.db.config.asm.diskGroup=
+oracle.install.db.config.asm.ASMSNMPPassword=
 MYORACLESUPPORT_USERNAME=
 MYORACLESUPPORT_PASSWORD=
 SECURITY_UPDATES_VIA_MYORACLESUPPORT=false

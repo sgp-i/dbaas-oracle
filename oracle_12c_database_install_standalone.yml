@@ -11,39 +11,9 @@
   
   - import_role:
       name: oracle_install
+
   vars:
     oracle_version: 12.1.0.2
     
     ## Required Vars for All
-    # install_mode: either INSTALL_DB_SWONLY or INSTALL_DB_AND_CONFIG
-    # oracle_db_home: db_3
-
-    ## Required Vars for "INSTALL_DB_AND_CONFIG"
-    # oracle_db_name
-    # application_name
-
-    ## Optional Vars
-    # business_unit
-    # technical_contact
-    # tech_contact_email
-    # app_desc
-    # app_owner
-    # app_owner_email
-    # environment
-    # database_role 
-    # pci_required
-    # sox_required
-    # encryption_required 
-    # dataguard
-    # golden_gate
-    # backup_enabled 
-    # end_of_life
-    # db_monitoring_tool 
-    # monitoring
-    # comments
-    # instance_count
-    # db_source
-    # dr_solution
-    # dr_location
-    # env_category
-    # storage_type
+    # oracle_db_home (e.g. db_1) 

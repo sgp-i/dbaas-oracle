@@ -5,9 +5,6 @@ oracle_version: 11.2.0.1
 # Oracle Editions avaialble: EE, SEONE, SE
 oracle_edition: EE
 
-# installation mode. Avaialable modes are : INSTALL_DB_SWONLY, INSTALL_DB_AND_CONFIG
-install_mode: INSTALL_DB_SWONLY
-
 # location for temporary installation files
 oracle_tmp: /u01/tmp/{{ oracle_version }}
 

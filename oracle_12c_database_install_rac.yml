@@ -7,9 +7,5 @@
   roles:
     - oracle_install
   vars:
-    oracle_edition: EE
     oracle_version: 12.1.0.2
-    install_mode: INSTALL_DB_AND_CONFIG
-    oracle_db_home: db_2
-    oracle_db_name: demo12
     rac_install: true
