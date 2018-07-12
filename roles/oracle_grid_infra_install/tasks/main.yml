@@ -33,23 +33,27 @@
     - cluvfy
   when: inventory_hostname == master_node and grid_install_mode != "UPGRADE"
 
-- name: get asm disk paths - {{ asm_disk_group }}
+- name: get asm disk paths - {{ asm_data_group }}
   find:
     paths: "{{ asm_disk_location }}"
     file_type: any
-    patterns: "{% if ansible_distribution == 'RedHat' -%}ora--dg--{{ asm_disk_group | lower }}*
-      {%- else -%}{{ asm_disk_group }}*
-      {%- endif %}"
+    patterns: "{{ asm_data_pattern }}"
     use_regex: no
-  register: asm_disk_paths_find_result
+  register: asm_data_paths_find_result
+
+- name: get asm disk paths - {{ asm_reco_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_paths_find_result
 
 - name: get asm disk paths - {{ asm_ocr_group }}
   find:
     paths: "{{ asm_disk_location }}"
     file_type: any
-    patterns: "{% if ansible_distribution == 'RedHat' -%}ora--dg--{{ asm_ocr_group | lower }}*
-      {%- else -%}{{ asm_ocr_group }}*
-      {%- endif %}"
+    patterns: "{{ asm_ocr_pattern }}"
     use_regex: no
   register: asm_ocr_paths_find_result
 

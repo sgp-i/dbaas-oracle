@@ -29,13 +29,19 @@ domain: localdomain
 
 scan_port: 1521
 
-asm_disk_location: "{% if ansible_distribution == 'OracleLinux' -%}/dev/oracleasm/disks
-{%- elif ansible_distribution == 'RedHat' -%}/dev/mapper
-{%- endif %}"
+asm_disk_location: /dev/oracleasm/disks
 
-asm_disk_group: DATA
+asm_data_group: DATA
+
+asm_data_pattern: D*
+
+asm_reco_group: RECO
+
+asm_reco_pattern: R*
 
 asm_ocr_group: OCR
+
+asm_orc_pattern: GRID_DISK*
 
 ## TODO: Get standard location where binaries can reliably be found
 # For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)

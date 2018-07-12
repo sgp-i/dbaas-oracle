@@ -24,7 +24,7 @@ oracle_storage_type: ASM_STORAGE
 
 oracle_asm_syspass: Oracle123
 
-asm_disk_group: DATA
+asm_data_group: DATA
 
 rac_install: false
 

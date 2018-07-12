@@ -15,7 +15,7 @@ oracle_db_syspass: password
 
 oracle_system_pass: OraPasswd1
 
-asm_disk_group: DATA
+asm_data_group: DATA
 
 oracle_pdb_name: pdb2
 
