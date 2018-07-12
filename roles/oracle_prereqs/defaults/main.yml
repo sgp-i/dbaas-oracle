@@ -16,3 +16,14 @@ oracle_swap_file: "/swapfile"
 oracle_swap_size: 524288 #512MB
 
 selinux_mode: permissive
+
+
+pbis:
+    ignored_users:
+        - root
+        - oracle
+    ignored_groups:
+        - tty
+        - root
+        - oinstall
+        - dba

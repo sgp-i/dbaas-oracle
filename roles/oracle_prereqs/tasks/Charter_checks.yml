@@ -128,16 +128,60 @@
   set_fact:
    failed_checks: "{{ failed_checks | string }} ulimit value should be unlimited for ulimit -Hs,"
   when: ulimit_value.stdout != "unlimited"
-  
+
+- name: Get the Memory Detail of the Instance
+  shell: free -k | awk ' $1 == "Mem:" {print $2}'
+  register: Total_Ram_size
+
+- name: Get The Huge Page Total Size
+  shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
+  register: huge_page_total_size
+
+- name: Check The Huge Page Total Size
+  set_fact:
+    failed_checks: "{{ failed_checks | string }} Huge Page size should be half of the RAM size,"
+  when: huge_page_total_size.stdout | int < {{ (Total_Ram_size.stdout | int) / 2 }}
+
+- name: Get The Ignored Users In pbis
+  shell: cat /etc/pbis/user-ignore
+  register: pbis_ignored_users_in_srvr
+
+- name: Check The Ignored Users List In pbis
+  set_fact:
+    failed_checks: "{{ failed_checks | string }} user ->{{ ignored_user }} is not in pbis ignored user list, "
+  when: ignored_user not in pbis_ignored_users_in_srvr.stdout_lines
+  loop: "{{ pbis.ignored_users }}"
+  loop_control:
+    loop_var: ignored_user
+
+- name: Get The Ignored Group In pbis
+  shell: cat /etc/pbis/group-ignore
+  register: pbis_ignored_group_in_srvr
+
+- name: Check The Ignored Users List In pbis
+  set_fact:
+    failed_checks: "{{ failed_checks | string }} group --> {{ ignored_group }} is not in pbis ignored group list, "
+  when: ignored_group not in pbis_ignored_group_in_srvr.stdout_lines
+  loop: "{{ pbis.ignored_groups }}"
+  loop_control:
+    loop_var: ignored_group
+
+- name: Get Local Storage Filesystem Size
+  shell: df -h /u01 | awk 'NR == 2 { print $2 }' | awk -F 'G' '{print $1}'
+  register: local_disk_size
+
+- name: Check Local Storage Filesystem Size
+  set_fact:
+    failed_checks: "{{ failed_checks | string }} | size of local filesystem should be greater than 300GB"
+
 - debug:
     var: failed_checks
+
 # - name: fail the tasks if the pre-requsites are not satisfied
 #   fail: 
 #     msg: The following pre-requesties are not met {{ failed_checks | string }}
 #   when: failed_checks!=""
 
 ## Additional Checks from updated doc
-# huge_pages
 # /dev/shm
-# pbis/user-ignore
 # OS Filesystem Local Disks size
