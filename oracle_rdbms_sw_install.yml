@@ -1,6 +1,6 @@
 ---
 
-- name: install oracle 12c database
+- name: install oracle database
   hosts: '{{ host }}'
   become: yes
   become_method: sudo
@@ -11,9 +11,10 @@
   
   - import_role:
       name: oracle_install
-
-  vars:
-    oracle_version: 12.1.0.2
     
-    ## Required Vars for All
-    # oracle_db_home (e.g. db_1) 
+  ## Required Vars
+  # oracle_db_home (e.g. db_1) 
+
+  ## Optional vars
+  # oracle_version (default: 12.1.0.2) 
+  # rac_install (default: false)

@@ -1,6 +1,6 @@
 ---
 
-oracle_version: 11.2.0.1
+oracle_version: 12.1.0.2
 
 # Oracle Editions avaialble: EE, SEONE, SE
 oracle_edition: EE
