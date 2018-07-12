@@ -5,7 +5,7 @@
     tasks_from: gi_checklist_update.yml
   vars:
     update_gi_cklist_body:
-      - { key: checklist_type , value: "ASM setup" }
+      - { key: checklist_type , value: "3" }
       
 - name: install oracleasm tools
   yum: 

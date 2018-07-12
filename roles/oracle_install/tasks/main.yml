@@ -33,7 +33,7 @@
       tasks_from: db_checklist_update.yml
     vars:
       update_db_cklist_body:
-        - { key: checklist_type , value: "Provisioning - DB" }
+        - { key: checklist_type , value: "2" }
         - { key: db_install_status , value: "IN PROGRESS" }
         
   when: install_mode == "INSTALL_DB_AND_CONFIG"

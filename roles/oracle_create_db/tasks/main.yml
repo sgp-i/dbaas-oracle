@@ -33,7 +33,7 @@
     tasks_from: db_checklist_update.yml
   vars:
     update_db_cklist_body:
-      - { key: checklist_type , value: "Instance Creation" }
+      - { key: checklist_type , value: "8" }
       - { key: db_install_status , value: "IN PROGRESS" }
 
 - block:  
