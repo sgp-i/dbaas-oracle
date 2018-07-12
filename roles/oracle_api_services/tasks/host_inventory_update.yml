@@ -10,7 +10,7 @@
 
 - name: execute 'update the Host Inventory' API call
   uri:
-    url: https://apex.techlab.com:8443/ords/invent2/charter/host_inventory/{{ host_inv_id.stdout }}
+    url: "{{ apex_url }}/host_inventory/{{ host_inv_id.stdout }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json

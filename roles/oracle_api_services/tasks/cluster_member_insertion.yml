@@ -18,7 +18,7 @@
 
     - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
       uri:
-        url: https://apex.techlab.com:8443/ords/invent2/charter/insertclustermember
+        url: "{{ apex_url }}/insertclustermember"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json

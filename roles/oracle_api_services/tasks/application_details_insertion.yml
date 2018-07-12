@@ -24,7 +24,7 @@
       
     - name: Make A POST Call To Insert Application Details In V_APPLICATION_DETAILS_TBL
       uri:
-        url: https://apex.techlab.com:8443/ords/invent2/charter/insertapplicationdetail
+        url: "{{ apex_url }}/insertapplicationdetail"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json

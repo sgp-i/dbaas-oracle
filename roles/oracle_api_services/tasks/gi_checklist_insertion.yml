@@ -26,7 +26,7 @@
 
     - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
       uri:
-        url: https://apex.techlab.com:8443/ords/invent2/charter/insert_db_check_list
+        url: "{{ apex_url }}/insert_db_check_list"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json

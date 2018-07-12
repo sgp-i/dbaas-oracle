@@ -18,7 +18,7 @@
 
 - name: update the json data
   uri:
-    url: https://apex.techlab.com:8443/ords/invent2/charter/applicationdetail/148488331883071123039517634427588628650
+    url: "{{ apex_url }}/applicationdetail/148488331883071123039517634427588628650"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json

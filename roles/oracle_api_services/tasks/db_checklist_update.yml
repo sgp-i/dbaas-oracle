@@ -9,7 +9,7 @@
 
 - name: update the json data using PUT call
   uri:
-    url:  https://apex.techlab.com:8443/ords/invent2/charter/db_check_list/{{ checklist_id.stdout }}
+    url:  "{{ apex_url }}/db_check_list/{{ checklist_id.stdout }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json
