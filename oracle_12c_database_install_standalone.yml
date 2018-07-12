@@ -4,8 +4,13 @@
   hosts: '{{ host }}'
   become: yes
   become_method: sudo
-  roles:
-    - oracle_install
+  tasks:
+  - import_role:
+      name: oracle_prereqs
+      tasks_from: Charter_checks
+  
+  - import_role:
+      name: oracle_install
   vars:
     oracle_version: 12.1.0.2
     
