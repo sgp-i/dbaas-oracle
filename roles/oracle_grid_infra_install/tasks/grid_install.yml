@@ -29,25 +29,47 @@
 
   - name: general oracle post-installation
     command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
-    ignore_errors: yes
+    register: orainstroot_script
     when: 
     - grid_install_mode != "UPGRADE"
     - 'oracle_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["grid_install"]["stdout"]'
+
+  - name: save orainstroot script stdout
+    copy:
+      dest: "{{ oracle_tmp }}/orainstroot_script_stdout.out"
+      content: "{{ orainstroot_script.stdout }}"
+
+  - name: save orainstroot script  stderr
+    copy:
+      dest: "{{ oracle_tmp }}/orainstroot_script_stderr.err"
+      content: "{{ orainstroot_script.stderr }}" 
+
 
   - name: execute root.sh script
     block:
     - name: db-specific oracle post-installation (Master)
       command: "{{ oracle_grid_home }}/root.sh"
-      ignore_errors: yes
+      register: root_script
       when: inventory_hostname == master_node
       tags: root_script
 
     - name: db-specific oracle post-installation (Remaining)
       command: "{{ oracle_grid_home }}/root.sh"
+      register: root_script
       when: inventory_hostname == item
       loop: "{{ cluster_nodes[1:] }}"
       tags: root_script
     when: 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
+
+  - name: save root script stdout
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_stdout.out"
+      content: "{{ root_script.stdout }}"
+
+  - name: save root script  stderr
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_stderr.err"
+      content: "{{ root_script.stderr }}" 
 
   - name: run grid configTool
     environment: "{{ ora_user_env }}"
