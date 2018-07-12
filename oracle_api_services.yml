@@ -8,6 +8,13 @@
   tasks:
     - import_role:
         name: oracle_api_services
+        tasks_from: get_host_code.yml
+    
+    - debug:
+        var: host_code
+
+    - import_role:
+        name: oracle_api_services
         tasks_from: host_inventory_insertion.yml
 
     - import_role:
@@ -18,5 +25,3 @@
         - { key: server_monitoring_tool , value: "Cool Tool" , delimiter: "" , host_name: ""  }
         - { key: network_type , value: "RED" , delimiter: "" , host_name: "dbtest02"  }
         - { key: network_type , value: "BLUE" , delimiter: "" , host_name: "dbtest03"  }
-  vars:
-    host_code: scottTest1
