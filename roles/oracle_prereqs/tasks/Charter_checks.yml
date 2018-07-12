@@ -144,6 +144,7 @@
 
 - name: Get The Ignored Users In pbis
   shell: cat /etc/pbis/user-ignore
+  ignore_errors: yes
   register: pbis_ignored_users_in_srvr
 
 - name: Check The Ignored Users List In pbis
@@ -156,6 +157,7 @@
 
 - name: Get The Ignored Group In pbis
   shell: cat /etc/pbis/group-ignore
+  ignore_errors: yes
   register: pbis_ignored_group_in_srvr
 
 - name: Check The Ignored Users List In pbis
