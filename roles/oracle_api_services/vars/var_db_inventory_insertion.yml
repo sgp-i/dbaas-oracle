@@ -1,6 +1,6 @@
 ---
 
-db_values:
+db_invntry_insrtion_body:
   database_name: "{{ oracle_db_name }}"
   application_name: "{{ application_name }}"
   environment: "{{ db_environment }}"
