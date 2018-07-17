@@ -7,10 +7,9 @@
   tasks:
   - import_role:
       name: oracle_prereqs
-      tasks_from: Charter_checks
   
   - import_role:
-      name: oracle_install
+      name: oracle_rdbms_install
     
   ## Required Vars
   # oracle_db_home (e.g. db_1) 

@@ -9,6 +9,7 @@
     - oracle_asm_config
     - oracle_grid_infra_install
   vars:
-    grid_version: 12.1.0.2
     grid_install_mode: UPGRADE
-    
+
+  ## Optional vars:
+  # grid_version (default: 12.1.0.2)    

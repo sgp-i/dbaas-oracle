@@ -20,20 +20,18 @@
         name: oracle_prereqs
         tasks_from: Charter_checks
 
-    # - import_role:
-    #     name: oracle_asm_config
-    #   when: ansible_distribution == "OracleLinux"
-
     - import_role:
         name: oracle_grid_infra_install
 
   vars:
-    grid_version: 12.1.0.2
     grid_install_mode: HA_CONFIG
 
-  ## Input vars
-  # env_source - REQUIRED - Must be passed in or could be HostVar
-  # network_type - OPTIONAL - Possibly HostVar?
-  # global_zone_solaris - OPTIONAL - Possibly HostVar?
-  # server_monitoring_tool - OPTIONAL - Possibly HostVar?
+  ## Required vars:
+  # env_source - Must be passed in or could be HostVar
+  
+  ## Optional vars:
+  # grid_version (default: 12.1.0.2)
+  # network_type - Possibly HostVar?
+  # global_zone_solaris - Possibly HostVar?
+  # server_monitoring_tool - Possibly HostVar?
     

@@ -7,13 +7,14 @@
   tasks:
   - import_role:
       name: oracle_create_db
-  
+
   ## Required Vars:
-  # oracle_db_home
-  # oracle_db_name
+  # oracle_db_home - This is where the upgrade will be move to (e.g. db_1) 
+  # oracle_db_name - The db to be created
   # application_name
 
   ## Optional Vars:
+  # oracle_version (default: 12.1.0.2) 
   # oracle_pdb_name
   # oracle_pdb_passwd
   # business_unit
