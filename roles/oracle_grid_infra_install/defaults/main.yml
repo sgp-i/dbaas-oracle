@@ -41,7 +41,7 @@ asm_reco_pattern: R*
 
 asm_ocr_group: OCR
 
-asm_orc_pattern: GRID_DISK*
+asm_ocr_pattern: GRID_DISK*
 
 ## TODO: Get standard location where binaries can reliably be found
 # For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
