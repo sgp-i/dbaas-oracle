@@ -109,3 +109,5 @@
   vars:
     update_gi_cklist_body:
       - { key: cluster_verify , value: "Y" }
+  tags:
+  - apex_api

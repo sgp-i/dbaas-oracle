@@ -3,6 +3,8 @@
 - include_role:
     name: oracle_api_services
     tasks_from: application_details_insertion.yml
+    tags:
+    - apex_api
 
 - name: get App ID
   command: grep 'ID Of {{ application_name }}' /root/api_service/ansible_db_details.txt
@@ -25,3 +27,5 @@
 - include_role:
     name: oracle_api_services
     tasks_from: db_inventory_insertion.yml
+    tags:
+    - apex_api

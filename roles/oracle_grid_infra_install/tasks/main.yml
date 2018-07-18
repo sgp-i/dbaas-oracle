@@ -7,6 +7,8 @@
     update_gi_cklist_body:
       - { key: checklist_type , value: "5" }
       - { key: gi_install_status, value: "PENDING"}
+  tags:
+  - apex_api
 
 - include: copy_archives.yml
 

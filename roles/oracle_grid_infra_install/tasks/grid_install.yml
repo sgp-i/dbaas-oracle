@@ -7,6 +7,8 @@
     update_gi_cklist_body:
       - { key: checklist_type , value: "9" }
       - { key: gi_install_status, value: "IN PROGRESS"}
+  tags:
+  - apex_api
 
 - block:
   - name: install grid
@@ -93,6 +95,8 @@
     vars:
       update_gi_cklist_body:
         - { key: gi_install_status, value: "FAILED"}
+    tags:
+    - apex_api
   
   - name: Install Failed
     fail:
@@ -104,3 +108,5 @@
   vars:
     update_gi_cklist_body:
       - { key: gi_install_status, value: "SUCCESSFUL"}
+  tags:
+  - apex_api
