@@ -7,7 +7,7 @@
   failed_when: oracle_installed.rc == 0
 
 - import_role:
-    name: oracle_install
+    name: oracle_rdbms_install
     tasks_from: update_inventory.yml
 
 - import_role:
