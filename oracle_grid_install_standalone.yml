@@ -18,7 +18,6 @@
 
     - import_role:
         name: oracle_prereqs
-        tasks_from: Charter_checks
 
     - import_role:
         name: oracle_grid_infra_install
