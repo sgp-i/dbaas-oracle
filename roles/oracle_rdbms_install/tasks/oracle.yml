@@ -2,8 +2,10 @@
 
 - name: install oracle
   environment: "{{ ora_user_env }}"
+  become: yes
+  become_user: "{{ oracle_user }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
+    nohup {{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
     sleep 30
     while true
     do 
@@ -26,7 +28,7 @@
   loop: "{{ cluster_nodes }}"
   loop_control:
     loop_var: curr_host
-    tags: root_script
+  tags: root_script    
   when: 
   - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
   - inventory_hostname == curr_host
