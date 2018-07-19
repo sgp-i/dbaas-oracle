@@ -13,8 +13,10 @@
 - block:
   - name: install grid
     environment: "{{ ora_user_env }}"
+    become: yes
+    become_user: "{{ oracle_user }}"
     shell: |
-      su - {{ oracle_user }} -c "{{ oracle_tmp }}/grid/runInstaller -silent -force -ignorePrereq -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp" 2>&1 | tee {{ oracle_tmp }}/grid_stdout.out &
+      nohup {{ oracle_tmp }}/grid/runInstaller -silent -force -ignorePrereq -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/grid_install.rsp 2>&1 | tee {{ oracle_tmp }}/grid_stdout.out &
       sleep 30
       while true
       do 
@@ -75,8 +77,10 @@
 
   - name: run grid configTool
     environment: "{{ ora_user_env }}"
+    become: yes
+    become_user: "{{ oracle_user }}"
     shell: |
-      su - {{ oracle_user }} -c "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_configTool.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+      nohup {{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_configTool.rsp 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
       sleep 30
       while true
       do 
