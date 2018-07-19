@@ -10,12 +10,12 @@
 - always:
   - name: save root script stdout
     copy:
-      dest: "{{ oracle_tmp }}/root_script_stdout.out"
+      dest: "{{ oracle_tmp }}/root_script_grid.out"
       content: "{{ root_script.stdout | default('') }}"
     when: root_script.changed
 
   - name: save root script  stderr
     copy:
-      dest: "{{ oracle_tmp }}/root_script_stderr.err"
+      dest: "{{ oracle_tmp }}/root_script_grid.err"
       content: "{{ root_script.stderr | default('') }}"
     when: root_script.changed
