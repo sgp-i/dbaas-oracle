@@ -1,0 +1,19 @@
+---
+
+- block:
+  - name: db-specific oracle post-installation
+    command: "{{ oracle_home }}/root.sh"
+    register: root_script
+
+- always:
+  - name: save root script stdout
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_rdbms.out"
+      content: "{{ root_script.stdout | default('') }}"
+    when: root_script.changed
+
+  - name: save root script  stderr
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_rdbms.err"
+      content: "{{ root_script.stderr | default('') }}"
+    when: root_script.changed
