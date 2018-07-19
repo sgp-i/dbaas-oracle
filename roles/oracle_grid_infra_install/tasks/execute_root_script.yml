@@ -1,0 +1,21 @@
+---
+
+- block:
+  - name: db-specific oracle post-installation
+    command: "{{ oracle_grid_home }}/root.sh"
+    args:
+      creates: /etc/oratab
+    register: root_script
+
+- always:
+  - name: save root script stdout
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_stdout.out"
+      content: "{{ root_script.stdout | default('') }}"
+    when: root_script.changed
+
+  - name: save root script  stderr
+    copy:
+      dest: "{{ oracle_tmp }}/root_script_stderr.err"
+      content: "{{ root_script.stderr | default('') }}"
+    when: root_script.changed
