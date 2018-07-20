@@ -10,9 +10,6 @@
   
   - import_role:
       name: oracle_rdbms_install
-    
-  ## Required Vars
-  # oracle_db_home (e.g. db_1) 
 
   ## Optional vars
   # oracle_version (default: 12.1.0.2) 
