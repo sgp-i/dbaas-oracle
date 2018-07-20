@@ -13,7 +13,6 @@
         cluster_name: "{{ cluster_name | mandatory }}" ## must be passed in
         gi_version: "{{ grid_version }}"
         gi_current_patchset: ""
-        env_source: "{{ env_source | mandatory }}" ## must be passed in
       tags:
       - apex_api
 
@@ -38,6 +37,9 @@
         name: oracle_grid_infra_install
   vars:
     grid_install_mode: CRS_CONFIG
+
+  ## Required vars:
+  # cluster_name - Name of the cluster
 
   ## Optional vars:
   # grid_version (default: 12.1.0.2)
