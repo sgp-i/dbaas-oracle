@@ -20,3 +20,5 @@ asm_data_group: DATA
 oracle_pdb_name: pdb2
 
 oracle_pdb_passwd: PraPasswd1
+
+rac_install: false

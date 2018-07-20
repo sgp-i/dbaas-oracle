@@ -6,9 +6,9 @@
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
 
-- import_role:
-    name: oracle_rdbms_install
-    tasks_from: update_inventory.yml
+- include: update_inventory.yml
+  tags:
+  - apex_api
 
 - import_role:
     name: oracle_api_services
