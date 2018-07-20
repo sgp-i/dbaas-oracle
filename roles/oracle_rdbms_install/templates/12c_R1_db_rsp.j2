@@ -12,8 +12,16 @@ oracle.install.db.OPER_GROUP={{ oracle_dba_group }}
 oracle.install.db.BACKUPDBA_GROUP={{ oracle_group }}
 oracle.install.db.DGDBA_GROUP={{ oracle_group }}
 oracle.install.db.KMDBA_GROUP={{ oracle_group }}
-oracle.install.db.rac.configurationType=
-oracle.install.db.CLUSTER_NODES={{ cluster_node_string | join(',') }}
+oracle.install.db.rac.configurationType={% if (
+      rac_install == true) -%}ADMIN_MANAGED
+{% else %}
+
+{% endif %}
+oracle.install.db.CLUSTER_NODES={% if (
+      rac_install == true) -%}{{ cluster_node_string | join(',') }}
+{% else %}
+
+{% endif %}
 oracle.install.db.isRACOneInstall=false
 oracle.install.db.racOneServiceName=
 oracle.install.db.rac.serverpoolName=
