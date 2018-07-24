@@ -6,10 +6,12 @@
   become_method: sudo
   roles:
     - oracle_prereqs
-    - oracle_asm_config
     - oracle_grid_infra_install
   vars:
     grid_install_mode: UPGRADE
 
+  ## Required vars:
+  # cluster_name 
+  
   ## Optional vars:
   # grid_version (default: 12.1.0.2)    
