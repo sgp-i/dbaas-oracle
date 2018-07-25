@@ -3,17 +3,17 @@
     chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
   with_items: "{{ update_db_cklist_body }}"
 
-- name: get id of the checklist using the db name
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ oracle_db_name }} db' | awk -F '=' '{print $2}'
-  register: checklist_id
+- import_tasks: db_checklist_insertion.yml
 
 - name: update the json data using PUT call
   uri:
-    url:  "{{ apex_url }}/db_check_list/{{ checklist_id.stdout }}"
+    url:  "{{ apex_url }}/db_check_list/{{ checklist_id }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json
     body: "{{ chklst_json_body }}"
     headers:
         Content-Type: "application/json"
-    when: checklist_id.stdout != ""
+  when: 
+  - checklist_id is defined
+  - checklist_id != ""
