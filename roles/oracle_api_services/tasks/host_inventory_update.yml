@@ -1,7 +1,7 @@
-- name: get id
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}' | awk -F '=' '{print $2}'
-  register: host_inv_id
-  failed_when: host_inv_id.stdout == ""
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_id.yml
+  when: host_id is not defined
 
 - name: generate json_body
   set_fact: 
@@ -10,7 +10,7 @@
 
 - name: execute 'update the Host Inventory' API call
   uri:
-    url: "{{ apex_url }}/host_inventory/{{ host_inv_id.stdout }}"
+    url: "{{ apex_url }}/host_inventory/{{ host_id }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json
