@@ -5,25 +5,24 @@
     tasks_from: get_db_id.yml
   when: db_id is not defined
 
-- name: Complete Tasks Of DB Checklist Insertion
+- name: Checklist Insert
   block:
-    - name: Make A POST Call To Insert DB Checklist Details In V_DB_CHECK_LIST
+    - name: POST To Insert into Checklist Details
       uri:
         url: "{{ apex_url }}/insert_db_check_list"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: {
-            "db_id": "{{ db_id }}"
-            }
+        body:
+            db_id: "{{ db_id }}"
         status_code: 200,201
         headers:
-            Content-Type: "application/json"
-      register: db_checklist_insrt_response
+          Content-Type: "application/json"
+      register: checklist_insrt_response
       
-    - name: Insert The Id Of DB Checklist In ansible_db_details.txt File
+    - name: set checklist_id
       set_fact:
-        checklist_id: "{{ db_checklist_insrt_response.json | json_query('ID') }}"
+        checklist_id: "{{ checklist_insrt_response.json | json_query('ID') }}"
 
   rescue:
     - name: Store the Json If APEX Server Is Down
@@ -31,4 +30,4 @@
         path: /root/api_service/unsent_json_body/db_chklst_insertion_body.json
         line: '{"db_id" : "{{ db_id }}"}'
         create: yes
-      when: db_checklist_insrt_response.status == "500"
+      when: checklist_insrt_response.status == "500"

@@ -2,7 +2,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: gi_checklist_update.yml
+    tasks_from: host_checklist_update.yml
   vars:
     update_gi_cklist_body:
       - { key: checklist_type , value: "9" }
@@ -81,7 +81,7 @@
   rescue:
   - import_role:
       name: oracle_api_services
-      tasks_from: gi_checklist_update.yml
+      tasks_from: host_checklist_update.yml
     vars:
       update_gi_cklist_body:
         - { key: gi_install_status, value: "FAILED"}
@@ -94,7 +94,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: gi_checklist_update.yml
+    tasks_from: host_checklist_update.yml
   vars:
     update_gi_cklist_body:
       - { key: gi_install_status, value: "SUCCESSFUL"}

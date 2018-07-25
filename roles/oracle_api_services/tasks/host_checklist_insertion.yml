@@ -1,51 +1,33 @@
-- name: check if host checklist name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ ansible_hostname }}*'
-  register: is_host_chklst_name_exist
-  ignore_errors: yes
+---
 
-- name: Complete Task Of Host CheckList Insertion
-  block: 
-    - name: Insert Starting Part of the db checklist Name For Identification
-      lineinfile: 
-        path: /root/api_service/ansible_db_details.txt
-        line: "ID Of checklist for {{ ansible_hostname }}"
-      when: is_host_chklst_name_exist.stdout == ""
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_id.yml
+  when: host_id is not defined
 
-    - import_role:
-        name: oracle_api_services
-        tasks_from: get_host_id.yml
-      when: host_id is not defined
-
-    - name: Make A POST Call To Insert HOST Checklist Details In V_DB_CHECK_LIST
+- name: Checklist Insert
+  block:
+    - name: POST To Insert into Checklist Details
       uri:
         url: "{{ apex_url }}/insert_db_check_list"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: {
-            "host_id": "{{ host_id }}"
-            }
+        body:
+          host_id: "{{ host_id }}"
+        status_code: 200,201
         headers:
-            Content-Type: "application/json"
-      register: host_checklist_insrt_response
+          Content-Type: "application/json"
+      register: checklist_insrt_response
 
-    - name: Insert The Id Of Host Checklist In ansible_db_details.txt File
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ ansible_hostname }}*"
-        line: "ID Of checklist for {{ ansible_hostname }}={{ host_checklist_insrt_response.json | json_query('ID') }}"
+    - name: set checklist_id
+      set_fact:
+        checklist_id: "{{ checklist_insrt_response.json | json_query('ID') }}"
+
   rescue:
-    - name: Remove the ID String Since POST call Didn't Succeed
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for {{ ansible_hostname }}*"
-        state: absent  
-        
     - name: Store the Json If APEX Server Is Down
       lineinfile:
         path: /root/api_service/unsent_json_body/host_chklst_insertion_body.json
         line: '{"host_id" : "{{ host_id.stdout }}"}'
         create: yes
-      when: host_checklist_insrt_response.status == "500"
-
-  when: is_host_chklst_name_exist.rc == 1
+      when: checklist_insrt_response.status == "500"
