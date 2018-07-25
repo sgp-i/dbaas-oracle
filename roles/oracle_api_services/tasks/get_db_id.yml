@@ -1,0 +1,12 @@
+---
+
+- name: GET db_id from APEX
+  uri:
+    url: "{{ apex_url }}/get_db_id/{{ oracle_db_name | urlencode }}"
+    validate_certs: no  # should be removed after https certs becomes renewed
+    method: GET
+  register: db_id_get_response
+
+- name: set db_id
+  set_fact:
+    db_id: "{{ db_id_get_response.json | json_query('id') }}"
