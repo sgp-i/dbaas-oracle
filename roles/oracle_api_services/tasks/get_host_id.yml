@@ -1,12 +1,18 @@
 ---
 
-- name: GET host_id from APEX
-  uri:
-    url: "{{ apex_url }}/get_host_id/{{ ansible_hostname }}"
-    validate_certs: no  # should be removed after https certs becomes renewed
-    method: GET
-  register: host_id_get_response
+- block:
+  - name: GET host_id from APEX
+    uri:
+      url: "{{ apex_url }}/get_host_id/{{ ansible_hostname }}"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: GET
+    register: host_id_get_response
 
-- name: set host_id
-  set_fact:
-    host_id: "{{ host_id_get_response.json | json_query('id') }}"
+  - name: set host_id
+    set_fact:
+      host_id: "{{ host_id_get_response.json | json_query('id') }}"
+  
+  rescue:
+  - name: set host_id
+    set_fact:
+      host_id: ""
