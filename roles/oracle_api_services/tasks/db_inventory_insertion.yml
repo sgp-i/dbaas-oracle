@@ -1,22 +1,15 @@
 
 ---
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_code.yml
+  when: host_code is not defined
+
 - include_vars: var_db_inventory_insertion.yml
-
-- name: check if db inventory name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ db_invntry_insrtion_body.database_name }}'
-  register: is_db_inv_name_exist
-  ignore_errors: yes
-
 
 - name: Complete Tasks Of DB Inventory Insertion
   block:
-    - name: Insert Starting Part of the Host Inventory Name For Identification
-      lineinfile: 
-        path: /root/api_service/ansible_db_details.txt
-        line: "ID Of {{ db_invntry_insrtion_body.database_name }}"
-      when: is_db_inv_name_exist.stdout == ""
-
   #  "app_id" is a fk and needs to discussed and is not in body of post call
     - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
       uri:
@@ -29,17 +22,7 @@
             Content-Type: "application/json"
       register: v_db_inventory_insertion_response
 
-    - name: Insert The db_member_id In ansible_db_details.txt File
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ db_invntry_insrtion_body.database_name }}*"
-        line: "ID Of {{ db_invntry_insrtion_body.database_name }} database={{ v_db_inventory_insertion_response.json | json_query('ID') }}"
   rescue:
-     - name: Remove the ID String Since POST call Didn't Succeed
-       lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ db_invntry_insrtion_body.database_name }}*"
-        state: absent
      - name: Store the Json If APEX Server Is Down
        block:
         - name: Put The Json In A File
@@ -50,5 +33,5 @@
         - name: Make Single Quotes to Double Quotes
           shell: sed -i 's|'\''|\"|g' /root/api_service/unsent_json_body/db_invtry_insrtion_body.json 
        when: v_db_inventory_insertion_response.status == "500"   
-  when: is_db_inv_name_exist.rc == 1
+  when: db_id == ""
 

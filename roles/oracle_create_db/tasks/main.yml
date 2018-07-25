@@ -6,7 +6,9 @@
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
 
-- include: update_inventory.yml
+- include_role:
+    name: oracle_api_services
+    tasks_from: db_inventory_insertion.yml
   tags:
   - apex_api
 

@@ -1,40 +1,19 @@
 ---
 
-- name: Create A File For Inserting ID Details Formed In DB
-  lineinfile: 
-    path: /root/api_service/ansible_db_details.txt
-    line: DETAILS OF THE ID'S WE GET AFTER POST CALLS
-    create: yes
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_code.yml
+  when: host_code is not defined
 
-- name: Get The Host Code
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE' | awk -F '=' '{ print $2 }'
-  register: host_code_output
-
-- name: set host_code and env_source
-  set_fact:
-    host_code: "{{ host_code_output.stdout }}"
-  when: host_code_output.stdout != ""
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_id.yml
+  when: host_id is not defined
 
 - include_vars: var_host_inventory_insertion.yml
 
-- name: check if host inventory name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}*'
-  register: is_host_inv_name_exist
-  ignore_errors: yes
-
 - name: Complete Tasks Of Host Inventory Insertion
   block: 
-    - name: Insert Starting Part of the Host Inventory Name For Identification
-      lineinfile: 
-        path: /root/api_service/ansible_db_details.txt
-        line: "ID Of {{ ansible_hostname }}"
-      when: is_host_inv_name_exist.stdout == ""
-
-    - name: Check Whether HOST_CODE Exist or Not
-      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^V_HOST_CODE'
-      register: is_host_code_exist
-      ignore_errors: yes
-
     - name: Make a POST call to insert host details in V_HOST_INV_TBL
       uri:
         url: "{{ apex_url }}/insert_host_inventory"
@@ -46,25 +25,7 @@
             Content-Type: "application/json"
       register: v_host_detail_insertion_response
 
-    - name: Insert The v_host_inventory_id In ansible_db_details.txt File
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ ansible_hostname }}*"
-        line: "ID Of {{ ansible_hostname }}={{ v_host_detail_insertion_response.json | json_query('ID') }}"
-
-    - name: Insert The V_HOST_CODE In ansible_db_details.txt File
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        line: "V_HOST_CODE of {{ ansible_hostname }} is={{ v_host_detail_insertion_response.json | json_query('HOST_CODE') }}"
-      when: is_host_code_exist.rc == 1 
-
   rescue:
-    - name: remove entry for failed host
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of {{ ansible_hostname }}*"
-        state: absent
-
     - name: Store the Json If APEX Server Is Down
       block:
         - name: Put The Json In A File
@@ -76,6 +37,6 @@
           shell: sed -i 's|'\''|\"|g' /root/api_service/unsent_json_body/host_inv_insertion.json 
       when: v_host_detail_insertion_response.status == "500"  
 
-  when: is_host_inv_name_exist.rc == 1
+  when: host_id == ""
 
 

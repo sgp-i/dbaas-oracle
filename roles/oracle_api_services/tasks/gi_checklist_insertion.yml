@@ -1,14 +1,8 @@
 ---
 
-- block:
-  - name: get host_id
-    shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}=' | awk -F '=' '{print $2}'
-    register: host_id_cat
-    failed_when: host_id_cat.stdout == ""
-
-  - name: set host_id
-    set_fact:
-      host_id: "{{ host_id_cat.stdout }}"
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_host_id.yml
   when: host_id is not defined
 
 - name: check if GI checklist name exists

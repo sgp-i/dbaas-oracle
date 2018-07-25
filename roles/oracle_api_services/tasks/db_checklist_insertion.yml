@@ -1,11 +1,9 @@
 ---
-- name: get Db ID line
-  command: grep -e '^ID Of {{ oracle_db_name }} database' /root/api_service/ansible_db_details.txt
-  register: db_line
 
-- name: set db_id
-  set_fact:
-    db_id: "{{ db_line.stdout  | regex_replace('.*=(.*)','\\1')}}"
+- import_role:
+    name: oracle_api_services
+    tasks_from: get_db_id.yml
+  when: db_id is not defined
     
 - name: check if db checklist name exists
   shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for {{ oracle_db_name }} db*'

@@ -10,3 +10,4 @@
 - name: set host_code
   set_fact:
     host_code: "{{ host_code_get_response.json | json_query('host_code') }}"
+  when: host_code_get_response.json | json_query('host_code') != ""

@@ -18,14 +18,6 @@
 
     - import_role:
         name: oracle_api_services
-        tasks_from: host_inventory_insertion.yml
-      vars:
-        clustered: Y
-      tags:
-      - apex_api
-
-    - import_role:
-        name: oracle_api_services
         tasks_from: gi_checklist_insertion.yml
       tags:
       - apex_api

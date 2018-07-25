@@ -11,9 +11,10 @@
         line: "ID Of checklist for {{ ansible_hostname }}"
       when: is_host_chklst_name_exist.stdout == ""
 
-    - name: Get The HOST ID
-      shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of {{ ansible_hostname }}*' | awk -F '=' '{ print $2 }'
-      register: host_id
+    - import_role:
+        name: oracle_api_services
+        tasks_from: get_host_id.yml
+      when: host_id is not defined
 
     - name: Make A POST Call To Insert HOST Checklist Details In V_DB_CHECK_LIST
       uri:
@@ -22,7 +23,7 @@
         method: POST
         body_format: json
         body: {
-            "host_id": "{{ host_id.stdout }}"
+            "host_id": "{{ host_id }}"
             }
         headers:
             Content-Type: "application/json"
