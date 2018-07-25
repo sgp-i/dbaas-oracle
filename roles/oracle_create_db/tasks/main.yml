@@ -12,12 +12,6 @@
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_insertion.yml
-  tags:
-  - apex_api
-
 - name: create tmp dir
   file:
     group: "{{ oracle_group }}"
