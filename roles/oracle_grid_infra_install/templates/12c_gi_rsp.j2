@@ -45,15 +45,13 @@ oracle.install.crs.config.gpnp.configureGNS={% if (
 {% endif %}
 oracle.install.crs.config.autoConfigureClusterNodeVIP={% if (
       grid_install_mode == "CRS_CONFIG" or
-      grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}true
+      grid_install_mode == "CRS_SWONLY") -%}true
 {% else %}
 
 {% endif %}
 oracle.install.crs.config.gpnp.gnsOption={% if (
       grid_install_mode == "CRS_CONFIG" or
-      grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}CREATE_NEW_GNS
+      grid_install_mode == "CRS_SWONLY") -%}CREATE_NEW_GNS
 {% else %}
 
 {% endif %}
@@ -84,22 +82,19 @@ oracle.install.crs.config.storageOption={% if (
 oracle.install.crs.config.sharedFileSystemStorage.votingDiskLocations=
 oracle.install.crs.config.sharedFileSystemStorage.votingDiskRedundancy={% if (
       grid_install_mode == "CRS_CONFIG" or
-      grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}NORMAL
+      grid_install_mode == "CRS_SWONLY") -%}NORMAL
 {% else %}
 
 {% endif %}
 oracle.install.crs.config.sharedFileSystemStorage.ocrLocations={% if (
       grid_install_mode == "CRS_CONFIG" or
-      grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}{{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}
+      grid_install_mode == "CRS_SWONLY") -%}{{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}
 {% else %}
 
 {% endif %}
 oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy={% if (
       grid_install_mode == "CRS_CONFIG" or
-      grid_install_mode == "CRS_SWONLY" or
-      grid_install_mode == "UPGRADE") -%}NORMAL
+      grid_install_mode == "CRS_SWONLY") -%}NORMAL
 {% else %}
 
 {% endif %}
