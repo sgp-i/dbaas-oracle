@@ -64,7 +64,7 @@
     become: yes
     become_user: "{{ oracle_user }}"
     shell: |
-      nohup {{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_configTool.rsp 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+      nohup {{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands RESPONSE_FILE={{ oracle_tmp }}/grid_configTool.rsp 2>&1 | tee {{ oracle_tmp }}/config_stdout.out &
       sleep 30
       while true
       do 
@@ -74,6 +74,8 @@
       done
     args:
       executable: /bin/bash
+    register: configTool
+    failed_when: '"The action configuration has failed its perform method" in configTool.stdout'
     when: 
     - inventory_hostname == master_node
     - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
