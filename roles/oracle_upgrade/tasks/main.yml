@@ -38,13 +38,14 @@
 - import_tasks: upgrade_prechecks.yml
   vars:
     oracle_home: "{{ current_oracle_home }}"
+  when: inventory_hostname == master_node
   tags:
   - prechecks
 
 - name: check for precheck failures
   fail:
     msg: There were {{ precheck_results_count.errors }} errors in the Precheck script
-  when: precheck_results_count.errors | int > 0
+  when: hostvars[master_node]["precheck_results_count"]["errors"] | int > 0
   tags:
   - prechecks
 
@@ -83,9 +84,11 @@
   when: 
     - db_details.rc == 0
     - current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
+    - inventory_hostname == master_node
 
 - import_tasks: upgrade_postchecks.yml
   vars:
     oracle_home: "{{ new_oracle_home }}"
+  when: inventory_hostname == master_node
   tags:
   - postchecks
