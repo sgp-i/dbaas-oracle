@@ -25,6 +25,25 @@
     msg: There were {{ precheck_results_count.errors }} errors in the Precheck script
   when: precheck_results_count.errors | int > 0
 
+- name: ensure dbs dir in new home
+  file:
+    path: "{{ new_oracle_home }}/dbs"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    state: directory
+    mode: 755
+  
+- name: move ora and orapw files
+  shell: cp -p {{ current_oracle_home }}/dbs/{{ curr_file }} {{ new_oracle_home }}/dbs/
+  args:
+    creates: '{{ new_oracle_home }}/dbs/{{ curr_file }}'
+  loop:
+  - init.ora
+  - init{{ oracle_db_name }}*.ora
+  - orapw{{ oracle_db_name }}*
+  loop_control:
+    loop_var: curr_file
+  
 - include: upgrade_oracle.yml
   when: 
     - db_details.rc == 0
