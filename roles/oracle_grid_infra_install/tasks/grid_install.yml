@@ -28,7 +28,7 @@
       executable: /bin/bash
       creates: "{{ oracle_grid_home }}/cfgtoollogs/configToolAllCommands"
     register: grid_install
-    failed_when: '"[FATAL]" in grid_install.stdout'
+    failed_when: '"[FATAL]" in grid_install.stdout or "Installation cannot continue" in grid_install.stdout or  grid_install.rc != 0'
     when: inventory_hostname == master_node
 
   - name: execute orainstRoot.sh script
