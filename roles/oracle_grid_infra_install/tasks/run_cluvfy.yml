@@ -31,7 +31,7 @@
       name: oracle_api_services
       tasks_from: host_checklist_update.yml
     vars:
-      update_gi_cklist_body:
+      update_host_cklist_body:
         - { key: cluster_verify , value: "N" }
     tags:
     - apex_api
@@ -44,7 +44,7 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    update_gi_cklist_body:
+    update_host_cklist_body:
       - { key: cluster_verify , value: "Y" }
   tags:
   - apex_api

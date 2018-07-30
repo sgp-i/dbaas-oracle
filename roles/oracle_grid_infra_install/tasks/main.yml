@@ -4,7 +4,7 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    update_gi_cklist_body:
+    update_host_cklist_body:
       - { key: checklist_type , value: "5" }
       - { key: gi_install_status, value: "PENDING"}
   tags:
