@@ -8,6 +8,17 @@
   set_fact:
     current_oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
+- block: 
+  - name: get local_rac_sid
+    shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+    register: ps_grep_rac
+    changed_when: False
+
+  - name: set local_rac_sid
+    set_fact:
+      local_rac_sid: "{{ ps_grep_rac.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+  when: rac_install == 'true'
+
 - name: ensure 12c is installed
   stat:
     path: "{{ oracle_home }}/bin/dbua"

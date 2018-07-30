@@ -5,7 +5,7 @@
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: |
-    nohup dbua -silent -sid {{ oracle_db_name }} -oracleHome {{ current_oracle_home }} -sysDBAUserName sys -sysDBAPassword {{ oracle_db_syspass }} -recompile_invalid_objects true -degree_of_parallelism 4 2>{{ oracle_tmp }}/db_upgrade_stderr.err >{{ oracle_tmp }}/db_upgrade_stdout.out &
+    nohup dbua -silent -sid {{ oracle_db_name }} -oracleHome {{ current_oracle_home }} -sysDBAUserName sys -sysDBAPassword {{ oracle_db_syspass }} -recompile_invalid_objects true -degree_of_parallelism 4 {{ rac_flag }} 2>{{ oracle_tmp }}/db_upgrade_stderr.err >{{ oracle_tmp }}/db_upgrade_stdout.out &
     sleep 30
     while true
     do 

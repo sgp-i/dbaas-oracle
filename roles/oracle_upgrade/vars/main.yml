@@ -10,7 +10,7 @@ rac_install: "{% if ansible_play_hosts | length > 1 -%}true
               {%- else -%}false
               {%- endif %}"
 
-rac_flag: "{% if rac_install == 'true' -%}-localRacsid {{ oracle_db_name }}1
+rac_flag: "{% if rac_install == 'true' -%}-localRacsid {{ local_rac_sid }}
           {%- else -%}
           {%- endif %}"
 
