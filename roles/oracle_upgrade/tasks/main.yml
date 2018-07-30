@@ -3,6 +3,7 @@
 - name: get db details
   command: grep "^{{ oracle_db_name }}:" /etc/oratab
   register: db_details
+  changed_when: False
 
 - name: set original_oracle_home
   set_fact:
