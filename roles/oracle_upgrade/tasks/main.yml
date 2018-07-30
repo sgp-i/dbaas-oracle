@@ -12,18 +12,26 @@
   stat:
     path: "{{ oracle_home }}/bin/dbua"
   register: ora_12c_installed
+  tags:
+  - oracle_install
 
 - name: install 12c sw_only if needed
   import_role: 
     name: oracle_rdbms_install
   when: ora_12c_installed.stat.exists == false
+  tags:
+  - oracle_install
 
 - import_tasks: upgrade_prechecks.yml
+  tags:
+  - prechecks
 
 - name: check for precheck failures
   fail:
     msg: There were {{ precheck_results_count.errors }} errors in the Precheck script
   when: precheck_results_count.errors | int > 0
+  tags:
+  - prechecks
 
 - name: ensure needed directories in new home
   file:
@@ -37,6 +45,8 @@
   - network/admin
   loop_control:
     loop_var: curr_dir
+  tags:
+  - copy
   
 - name: move ora and orapw files
   shell: cp -p {{ current_oracle_home }}/{{ curr_file.sub_dir }}/{{ curr_file.filename }} {{ new_oracle_home }}/{{ curr_file.sub_dir }}/
@@ -49,6 +59,8 @@
   - { filename: tnsnames.ora, sub_dir: network/admin }
   loop_control:
     loop_var: curr_file
+  tags:
+  - copy
   
 - include: upgrade_oracle.yml
   when: 
@@ -56,3 +68,5 @@
     - current_oracle_home | regex_replace('.*/product/([^/]*).*', '\\1') != oracle_version
 
 - import_tasks: upgrade_postchecks.yml
+  tags:
+  - postchecks
