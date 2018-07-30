@@ -1,6 +1,6 @@
 ---
 
-oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+new_oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
 oracle_user: oracle
 
