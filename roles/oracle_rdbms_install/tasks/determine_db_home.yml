@@ -5,6 +5,12 @@
     name: python-lxml
     state: present 
   
+- name: check if inventory.xml exist
+  stat: 
+    path: "{{ oracle_base }}/oraInventory/ContentsXML/inventory.xml"
+  register: is_invntry_xml_exist
+  failed_when: is_invntry_xml_exist.stat.exists == false
+  
 - name: get current oracle home locations
   xml:
     path: "{{ oracle_base }}/oraInventory/ContentsXML/inventory.xml"
