@@ -4,7 +4,7 @@
   become_method: sudo
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: "sqlplus / as sysdba @{{ oracle_home }}/rdbms/admin/catuppst.sql"
+  command: "sqlplus sys/{{ oracle_db_syspass }}@{{ oracle_db_name }} @{{ oracle_home }}/rdbms/admin/catuppst.sql"
   register: catuppst_script
 
 - name: save stdout
@@ -21,7 +21,7 @@
   become_method: sudo
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/postupgrade_fixups.sql
+  command: sqlplus sys/{{ oracle_db_syspass }}@{{ oracle_db_name }} @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/postupgrade_fixups.sql
   register: post_fixup_script
   when: execute_post_fixup | lower == 'true'
 
