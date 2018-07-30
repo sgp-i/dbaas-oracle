@@ -4,6 +4,8 @@ oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }
 
 oracle_user: oracle
 
+oracle_group: oinstall
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
