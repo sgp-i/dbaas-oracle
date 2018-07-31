@@ -7,6 +7,7 @@
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_tmp }}/db_precheck/preupgrd.sql
+  failed_when: '"Could not proceed with Upgrade due to errors." in precheck_script.stdout'
   register: precheck_script
 
 - name: save stdout
