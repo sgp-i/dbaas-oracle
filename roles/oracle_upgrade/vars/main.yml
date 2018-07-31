@@ -10,7 +10,7 @@ rac_install: "{% if ansible_play_hosts | length > 1 -%}true
               {%- else -%}false
               {%- endif %}"
 
-rac_flag: "{% if rac_install == 'true' -%}-localRacsid {{ local_rac_sid }}
+rac_flag: "{% if rac_install == 'true' -%}-localRacsid {{ oracle_sid }}
           {%- else -%}
           {%- endif %}"
 
@@ -19,7 +19,7 @@ master_node: "{{ ansible_play_hosts | first }}"
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_db_name }}"
+  ORACLE_SID: "{{ oracle_sid }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
