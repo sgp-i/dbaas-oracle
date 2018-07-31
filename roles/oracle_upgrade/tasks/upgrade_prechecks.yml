@@ -27,8 +27,8 @@
 - name: get result counts
   set_fact:
     precheck_results_count: {
-      errors: "{{ preupgrade_log.stdout | regex_search('[0-9]* ERRORS') | regex_search('[0-9]*') }}",
-      warnings: "{{ preupgrade_log.stdout | regex_search('[0-9]* WARNINGS') | regex_search('[0-9]*') }}",
+      errors: "{{ preupgrade_log.stdout | regex_search('[0-9]* ERROR') | regex_search('[0-9]*') }}",
+      warnings: "{{ preupgrade_log.stdout | regex_search('[0-9]* WARNING') | regex_search('[0-9]*') }}",
       informational: "{{ preupgrade_log.stdout | regex_search('[0-9]* INFORMATIONAL') | regex_search('[0-9]*') }}"
     }
 
