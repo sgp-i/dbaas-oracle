@@ -6,11 +6,7 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
-rac_install: "{% if ansible_play_hosts | length > 1 -%}true
-              {%- else -%}false
-              {%- endif %}"
-
-rac_flag: "{% if rac_install == 'true' -%}-localRacsid {{ oracle_sid }}
+rac_flag: "{% if ansible_play_hosts | length > 1 -%}-localRacsid {{ oracle_sid }}
           {%- else -%}
           {%- endif %}"
 
