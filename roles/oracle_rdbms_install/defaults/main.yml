@@ -8,9 +8,9 @@ oracle_edition: EE
 # location for temporary installation files
 oracle_tmp: /u01/tmp/{{ oracle_version }}
 
-oracle_base: /u01/app
+install_base: /u01/app
 
-oracle_db_home: db_1 
+oracle_base: "{{ install_base }}/oracle"
 
 oracle_db_name: db
 

@@ -22,8 +22,8 @@
 
 - block:
   - name: general oracle post-installation
-    command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
-    when: 'oracle_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["db_install"]["stdout"]'
+    command: "{{ install_base }}/oraInventory/orainstRoot.sh"
+    when: 'install_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["db_install"]["stdout"]'
 
   - include_tasks: execute_root_script.yml
     loop: "{{ cluster_nodes }}"

@@ -1,7 +1,9 @@
 ---
 
 - include: determine_db_home.yml
-  when: inventory_hostname == master_node
+  when: 
+  - oracle_db_home is not defined
+  - inventory_hostname == master_node
 
 - include: copy_archives.yml
 
