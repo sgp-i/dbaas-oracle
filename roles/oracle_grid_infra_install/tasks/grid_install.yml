@@ -59,6 +59,15 @@
     - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
     - inventory_hostname == curr_host
 
+  - include_tasks: execute_rootupgrade_script.yml
+    loop: "{{ cluster_nodes }}"
+    loop_control:
+      loop_var: curr_host
+    tags: upgrade_script    
+    when: 
+    # - 'oracle_grid_home + "/rootupgrade.sh" in hostvars[master_node]["grid_install"]["stdout"]'
+    - inventory_hostname == curr_host
+
   - name: run grid configTool
     environment: "{{ ora_user_env }}"
     become: yes
@@ -75,10 +84,11 @@
     args:
       executable: /bin/bash
     register: configTool
+    tags: configTool
     failed_when: '"The action configuration has failed its perform method" in configTool.stdout'
     when: 
     - inventory_hostname == master_node
-    - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
+    # - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
   
   rescue:
   - import_role:
