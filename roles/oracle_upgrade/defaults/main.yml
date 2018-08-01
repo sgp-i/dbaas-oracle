@@ -4,8 +4,6 @@ oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_home: db_1 
-
 oracle_db_name: db
 
 oracle_tmp: /u01/tmp/{{ oracle_db_name }}

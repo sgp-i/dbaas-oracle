@@ -9,6 +9,11 @@
   set_fact:
     current_oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
+- name: set oracle_db_home
+  set_fact:
+    oracle_db_home: "{{ current_oracle_home | basename }}"
+  when: oracle_db_home is not defined
+
 - name: get oracle_sid
   shell: ps -ef | grep ora_smon_{{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
