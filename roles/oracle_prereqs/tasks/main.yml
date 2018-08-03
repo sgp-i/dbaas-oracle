@@ -185,29 +185,27 @@
   when: huge_page_total_size.stdout | int < ansible_memtotal_mb * 1024 // 2
 
 - name: Get The Ignored Users In pbis
-  command: cat /etc/pbis/user-ignore
-  changed_when: false
-  ignore_errors: yes
+  slurp:
+    src: /etc/pbis/user-ignore
   register: pbis_ignored_users_in_srvr
 
 - name: Check The Ignored Users List In pbis
   set_fact:
     failed_checks: "{{ failed_checks | string }} user ->{{ ignored_user }} is not in pbis ignored user list, "
-  when: ignored_user not in pbis_ignored_users_in_srvr.stdout_lines
+  when: ignored_user not in pbis_ignored_users_in_srvr.content | b64decode
   loop: "{{ pbis.ignored_users }}"
   loop_control:
     loop_var: ignored_user
 
 - name: Get The Ignored Group In pbis
-  command: cat /etc/pbis/group-ignore
-  changed_when: false
-  ignore_errors: yes
+  slurp:
+    src: /etc/pbis/group-ignore
   register: pbis_ignored_group_in_srvr
 
 - name: Check The Ignored Users List In pbis
   set_fact:
     failed_checks: "{{ failed_checks | string }} group --> {{ ignored_group }} is not in pbis ignored group list, "
-  when: ignored_group not in pbis_ignored_group_in_srvr.stdout_lines
+  when: ignored_group not in pbis_ignored_group_in_srvr.content | b64decode
   loop: "{{ pbis.ignored_groups }}"
   loop_control:
     loop_var: ignored_group
