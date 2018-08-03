@@ -212,13 +212,18 @@
   loop_control:
     loop_var: ignored_group
 
-- name: Get Local Storage Filesystem Size
-  shell: df -h /u01 | awk 'NR == 2 { print $2 }' | awk -F 'G' '{print $1}'
-  register: local_disk_size
+- name: Ensure Local Storage Filesystem is mounted
+  set_fact:
+    failed_checks: "{{ failed_checks | string }} local filesystem not mounted"
+  register: local_fs_check
+  when: ansible_mounts | json_query('[?mount == `/u01`]') == []
 
 - name: Check Local Storage Filesystem Size
   set_fact:
     failed_checks: "{{ failed_checks | string }} | size of local filesystem should be greater than 300GB"
+  when: 
+  - local_fs_check.skipped is defined
+  - ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) | regex_search('[0-9]*') | int < 300
 
 - debug:
     var: failed_checks
