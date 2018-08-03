@@ -4,14 +4,10 @@
   set_fact:
      failed_checks: ""
 
-- name: check the version
-  shell: echo `uname -r | awk -F. '{print $1}'`
-  register: version_number
-
-- name: setting the fact 
+- name: check the kernel version
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} the linux kernel version ,"
-  when: version_number.stdout | int < 3
+    failed_checks: "{{ failed_checks | string }} Linux kernel version too low,"
+  when: ansible_kernel.split('.')[0] | int < 3
 
 - name: check the total memory
   shell: grep MemTotal /proc/meminfo | awk '{ print $2 }'
