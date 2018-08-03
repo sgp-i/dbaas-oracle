@@ -9,28 +9,19 @@
     failed_checks: "{{ failed_checks | string }} Linux kernel version too low,"
   when: ansible_kernel.split('.')[0] | int < 3
 
-- name: check the total memory
-  shell: grep MemTotal /proc/meminfo | awk '{ print $2 }'
-  register: total_memory
-
-- name: setting the fact 
+- name: check swap size for virtuals (64GB RAM)
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} no sufficient (396868032M ) memory,"
-  when: total_memory.stdout | int < 396868032
+    failed_checks: "{{ failed_checks | string }} swap size should be more than 16384M for 64GB RAM or more,"
+  when: 
+  - ansible_swaptotal_mb | int < 16384
+  - ansible_memtotal_mb | int > 65536
 
-- name: check the swap size
-  shell: grep SwapTotal /proc/meminfo | awk '{ print $2 }'
-  register: swap_memory
-
-- name: setting the fact 
+- name: check swap size for physicals (256GB RAM)
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size should be more than 16384M for the 64GB RAM or more,"
-  when: swap_memory.stdout | int < 16384 and total_memory.stdout | int > 64000000
-
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size should be more than 32768M for the 256GB RAM or more,"
-  when: swap_memory.stdout < 32768 and total_memory.stdout | int > 256000000
+    failed_checks: "{{ failed_checks | string }} swap size should be more than 32768M for 256GB RAM or more,"
+  when: 
+  - ansible_swaptotal_mb < 32768
+  - ansible_memtotal_mb | int > 262144
 
 - name: check whether ssh service is running
   shell: ps -ef | grep sshd | wc -l
