@@ -1,5 +1,31 @@
 ---
 
+############################################################
+## Possibly different way to report the Checklist Status  ##
+## Need to find a way to fail at the end if there are     ##
+## any 'FAILED' checks.                                   ##
+############################################################
+# - name: check the kernel version
+#   set_fact:
+#     checklist: 
+#       kernel_version: 
+#         expected_value: 3
+#         actual_value: "{{ ansible_kernel.split('.')[0] }}"
+#         status: "{% if ansible_kernel.split('.')[0] | int < 3 -%}FAILED
+#                  {%- else -%}PASSED
+#                  {%- endif -%}"
+#   tags: module
+
+# - debug:
+#     var: checklist
+#   tags: module
+
+# - fail:
+#   when: checklist | json_query('[?..status == FAILED')
+# - name: setting the fact 
+#   set_fact:
+#      failed_checks: ""
+
 - name: setting the fact 
   set_fact:
      failed_checks: ""
