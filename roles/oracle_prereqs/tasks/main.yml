@@ -31,8 +31,14 @@
     failed_checks: "{{ failed_checks | string }} sshd service is not running,"
   when: ansible_facts['services']['sshd.service']['state'] != "running"
 
+##########################################################
+## If this is always mounted a specific way for Charter ##
+## we could check that mountpoint using Ansible Facts.  ##
+## Otherwise, this is the only option for this.         ##
+##########################################################
 - name: check TMP directory
   shell: echo `df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F 'G' '{print $1}'`
+  changed_when: False
   register: tmp_size
 
 - name: setting the fact 
