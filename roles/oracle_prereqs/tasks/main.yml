@@ -46,14 +46,28 @@
     failed_checks: "{{ failed_checks | string }} TMP directory size should be more than 4GB, {{ tmp_size.stdout | int | round }}"
   when: tmp_size.stdout | int | round < 4
 
-- name: check the RW permission for all 
-  shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
-  register: rw_permission
+##########################################################################
+## There is no way to 'check' this without changing it.                 ##
+## However, I don't see the harm here with this one making the change.  ##
+##                                                                      ##
+## If needed, I have left the original version in place, commented, and ##
+## updated to be idempotent should Charter prefer to use it.            ##
+##########################################################################
+- name: ensure RW permission for all on /var/tmp
+  file:
+    path: /var/tmp
+    state: directory
+    mode: 01777
 
-- name: setting the fact 
-  set_fact:  
-    failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
-  when: rw_permission.stdout!="drwxrwxrwt."
+# - name: check the RW permission for all 
+#   shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
+#   changed_when: False
+#   register: rw_permission
+
+# - name: setting the fact 
+#   set_fact:  
+#     failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
+#   when: rw_permission.stdout!="drwxrwxrwt."
 
 
 - name: umask value checker
