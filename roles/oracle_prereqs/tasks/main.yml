@@ -82,6 +82,26 @@
     failed_checks: "{{ failed_checks | string }} unmask value is neither 22 or 022 or 0022,"
   when: umask_value.stdout | int != 22 or umask_value.stdout | int != 022 or umask_value.stdout | int != 0022
 
+##########################################################
+## For all ulimit settings, these could be set with     ##
+## `pam_limits` module.  However, like the perms check  ##
+## above, it wouldn't just check but instead would set  ##
+## the values as needed.                                ##
+##                                                      ##
+## I believe this one is also work making the change,   ##
+## but will leave it for now.  I have provided one      ##
+## example, commented out, below                        ##
+##                                                      ##
+## Also, if we use the `pam_limits` module, the entire  ##
+## ulimits section could be written as a loop           ##
+##########################################################
+
+# - name: ensure soft files ulimit is 2047
+#   pam_limits:
+#     domain: "{{ oracle_user }}"
+#     limit_type: "soft"
+#     limit_item: "nproc"
+#     value: "2047"
 
 - name: get ulimit value (soft files)
   become: yes
