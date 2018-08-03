@@ -158,18 +158,31 @@
    failed_checks: "{{ failed_checks | string }} ulimit value should be unlimited for ulimit -Hs,"
   when: ulimit_value.stdout != "unlimited"
 
-- name: Get the Memory Detail of the Instance
-  shell: free -k | awk ' $1 == "Mem:" {print $2}'
-  register: Total_Ram_size
+############################################################
+## Potentially could use `sysctl` module to set hugepages ##
+##                                                        ##
+## There are two caveats here:                            ##
+## 1. As with otheres, this doesn't just check, but will  ##
+##    also change the value if it's not set correctly     ##
+## 2. I'm not sure if the setting in the example below    ##
+##    is all that's needed.  So there may be more work    ##
+##    needed here even if Charter does want to use this   ##
+############################################################
+# - name: ensure hugepages is set to half the size of memory
+#   sysctl:
+#     name: vm.nr_hugepages
+#     value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
+#     state: present
 
 - name: Get The Huge Page Total Size
   shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
+  changed_when: False
   register: huge_page_total_size
 
 - name: Check The Huge Page Total Size
   set_fact:
     failed_checks: "{{ failed_checks | string }} Huge Page size should be half of the RAM size,"
-  when: huge_page_total_size.stdout | int < {{ (Total_Ram_size.stdout | int) / 2 }}
+  when: huge_page_total_size.stdout | int < {{ ansible_memtotal_mb * 1024 // 2 }}
 
 - name: Get The Ignored Users In pbis
   shell: cat /etc/pbis/user-ignore
