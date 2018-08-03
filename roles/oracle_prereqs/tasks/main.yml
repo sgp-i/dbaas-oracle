@@ -71,7 +71,10 @@
 
 
 - name: umask value checker
+  become: yes
+  become_user: "{{ oracle_user }}"
   shell: umask
+  changed_when: False
   register: umask_value
 
 - name: setting the fact 
