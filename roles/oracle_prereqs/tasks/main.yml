@@ -185,7 +185,8 @@
   when: huge_page_total_size.stdout | int < {{ ansible_memtotal_mb * 1024 // 2 }}
 
 - name: Get The Ignored Users In pbis
-  shell: cat /etc/pbis/user-ignore
+  command: cat /etc/pbis/user-ignore
+  changed_when: false
   ignore_errors: yes
   register: pbis_ignored_users_in_srvr
 
@@ -198,7 +199,8 @@
     loop_var: ignored_user
 
 - name: Get The Ignored Group In pbis
-  shell: cat /etc/pbis/group-ignore
+  command: cat /etc/pbis/group-ignore
+  changed_when: false
   ignore_errors: yes
   register: pbis_ignored_group_in_srvr
 
