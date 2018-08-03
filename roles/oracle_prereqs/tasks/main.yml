@@ -182,7 +182,7 @@
 - name: Check The Huge Page Total Size
   set_fact:
     failed_checks: "{{ failed_checks | string }} Huge Page size should be half of the RAM size,"
-  when: huge_page_total_size.stdout | int < {{ ansible_memtotal_mb * 1024 // 2 }}
+  when: huge_page_total_size.stdout | int < ansible_memtotal_mb * 1024 // 2
 
 - name: Get The Ignored Users In pbis
   command: cat /etc/pbis/user-ignore
