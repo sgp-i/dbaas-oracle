@@ -23,14 +23,13 @@
   - ansible_swaptotal_mb < 32768
   - ansible_memtotal_mb | int > 262144
 
-- name: check whether ssh service is running
-  shell: ps -ef | grep sshd | wc -l
-  register: process_id
+- name: populate service facts
+  service_facts:  
 
 - name: setting the fact 
   set_fact:  
-    failed_checks: "{{ failed_checks | string }} ssh process is not running,"
-  when: process_id.stdout | int == 1
+    failed_checks: "{{ failed_checks | string }} sshd service is not running,"
+  when: ansible_facts['services']['sshd.service']['state'] != "running"
 
 - name: check TMP directory
   shell: echo `df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F 'G' '{print $1}'`
