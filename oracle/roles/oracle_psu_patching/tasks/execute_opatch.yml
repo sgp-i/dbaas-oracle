@@ -1,0 +1,22 @@
+---
+
+- name: Run Opatch Prereqs
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: "{{ opatch_bin  }}" prereq CheckConflictAgainstOHWithDetail -phBaseDir {{ pstage }}/{{ patch_num }}
+  register: opatch_prereq
+
+- name: Run Opatch
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: "{{ opatch_bin  }}" apply -oh ${{ patch_type }}_HOME -local {{ pstage }}/{{ patch_num }}
+  register: opatch_command
+  
+- name: Check Opatch Inventory
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: "{{ opatch_bin  }}" lsinventory
+  register: opatch_command
