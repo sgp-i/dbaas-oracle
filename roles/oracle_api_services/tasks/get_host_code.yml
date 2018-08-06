@@ -10,8 +10,8 @@
 
   - name: set host_code
     set_fact:
-      host_code: "{{ host_code_get_response.json | json_query('host_code') }}"
-    when: host_code_get_response.json | json_query('host_code') != ""
+      host_code: "{{ host_code_get_response.json | json_query('items[0].host_code') }}"
+    when: host_code_get_response.json | json_query('items[0].host_code') != ""
   
   rescue:
   - name: set host_code
