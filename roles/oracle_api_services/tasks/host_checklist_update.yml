@@ -14,6 +14,6 @@
     body: "{{ chklst_json_body }}"
     headers:
         Content-Type: "application/json"
-    when: 
-    - checklist_id is defined
-    - checklist_id != ""
+  when: 
+  - checklist_id is defined
+  - checklist_id != ""
