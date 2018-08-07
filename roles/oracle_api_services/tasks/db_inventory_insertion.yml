@@ -17,24 +17,24 @@
 - name: Complete Tasks Of DB Inventory Insertion
   block:
   #  "app_id" is a fk and needs to discussed and is not in body of post call
-    - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
-      uri:
-        url: "{{ apex_url }}/insert_db_inventory"
-        validate_certs: no  # should be removed after https certs becomes renewed
-        method: POST
-        body_format: json
-        body: "{{ db_invntry_insrtion_body }}"
-        headers:
-            Content-Type: "application/json"
-      register: v_db_inventory_insertion_response
+  - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
+    uri:
+      url: "{{ apex_url }}/insert_db_inventory"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: POST
+      body_format: json
+      body: "{{ db_invntry_insertion_body }}"
+      headers:
+          Content-Type: "application/json"
+    register: v_db_inventory_insertion_response
 
   rescue:
-     - name: Store the Json If APEX Server Is Down
+  - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
-          lineinfile:
+    lineinfile:
       path: "{{ json_backup_dir }}/db_inv_insertion.json"
       line: "{{ db_invntry_insertion_body  | to_json }}"
-            create: yes
+      create: yes
     when: v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1
   when: db_id == ""
 
