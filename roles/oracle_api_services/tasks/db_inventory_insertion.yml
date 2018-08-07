@@ -30,14 +30,11 @@
 
   rescue:
      - name: Store the Json If APEX Server Is Down
-       block:
-        - name: Put The Json In A File
+    delegate_to: localhost
           lineinfile:
-            path: "{{ json_backup_dir }}/db_invtry_insrtion_body.json"
-            line: "{{ db_invntry_insrtion_body }}"
+      path: "{{ json_backup_dir }}/db_inv_insertion.json"
+      line: "{{ db_invntry_insertion_body  | to_json }}"
             create: yes
-        - name: Make Single Quotes to Double Quotes
-          shell: sed -i 's|'\''|\"|g' /root/api_service/unsent_json_body/db_invtry_insrtion_body.json 
-       when: v_db_inventory_insertion_response.status == "500"   
+    when: v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1
   when: db_id == ""
 

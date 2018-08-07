@@ -14,28 +14,25 @@
 
 - name: Complete Tasks Of Host Inventory Insertion
   block: 
-    - name: Make a POST call to insert host details in V_HOST_INV_TBL
-      uri:
-        url: "{{ apex_url }}/insert_host_inventory"
-        validate_certs: no  # should be removed after https certs becomes renewed
-        method: POST
-        body_format: json
-        body: "{{ host_inventory_insrt_body }}"
-        headers:
-            Content-Type: "application/json"
-      register: v_host_detail_insertion_response
+  - name: Make a POST call to insert host details in V_HOST_INV_TBL
+    uri:
+      url: "{{ apex_url }}/insert_host_inventory"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: POST
+      body_format: json
+      body: "{{ host_inventory_insrt_body }}"
+      headers:
+          Content-Type: "application/json"
+    register: v_host_detail_insertion_response
 
   rescue:
-    - name: Store the Json If APEX Server Is Down
-      block:
-        - name: Put The Json In A File
-          lineinfile:
-            path: "{{ json_backup_dir }}/host_inv_insertion.json"
-            line: "{{ host_inventory_insrt_body }}"
-            create: yes
-        - name: Make Single Quotes to Double Quotes
-          shell: sed -i 's|'\''|\"|g' /root/api_service/unsent_json_body/host_inv_insertion.json 
-      when: v_host_detail_insertion_response.status == "500"  
+  - name: Store the Json If APEX Server Is Down
+    delegate_to: localhost
+    lineinfile:
+      path: "{{ json_backup_dir }}/host_inv_insertion.json"
+      line: "{{ host_inventory_insrt_body  | to_json }}"
+      create: yes
+    when: v_host_detail_insertion_response.status == "500" or  v_host_detail_insertion_response.status == -1
 
   when: host_id == ""
 
