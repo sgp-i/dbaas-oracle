@@ -5,8 +5,9 @@
     url: "{{ apex_url }}/get_cluster_id/{{ cluster_name | urlencode }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: GET
+  ignore_errors: yes
   register: cluster_id_get_response
 
 - name: set cluster_id
   set_fact:
-    cluster_id: "{{ cluster_id_get_response.json | json_query('items[0].id')) }}"
+    cluster_id: "{{ cluster_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('items[0].id') }}"
