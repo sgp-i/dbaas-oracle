@@ -30,7 +30,7 @@
       block:
         - name: Put The Json In A File
           lineinfile:
-            path: /root/api_service/unsent_json_body/cluster_membr_body.json
+            path: "{{ json_backup_dir }}/cluster_membr_body.json"
             line: "{{ cluster_membr_body }}"
             create: yes
         - name: Make Single Quotes to Double Quotes

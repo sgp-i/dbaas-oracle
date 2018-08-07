@@ -27,7 +27,7 @@
   rescue:
     - name: Store the Json If APEX Server Is Down
       lineinfile:
-        path: /root/api_service/unsent_json_body/host_chklst_insertion_body.json
+        path: "{{ json_backup_dir }}/host_chklst_insertion_body.json"
         line: '{"host_id" : "{{ host_id.stdout }}"}'
         create: yes
       when: checklist_insrt_response.status == "500"
