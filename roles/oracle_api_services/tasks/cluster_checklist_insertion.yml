@@ -1,51 +1,33 @@
-- name: check if cluster checklist name exists
-  shell:  cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for cluster*'
-  register: is_cluster_chklst_name_exist
-  ignore_errors: yes
-
-- name: Complete Block Of Cluster CheckList Insertion
-  block:
-    - name: Insert Starting Part of the cluster checklist Name For Identification
-      lineinfile: 
-        path: /root/api_service/ansible_db_details.txt
-        line: "ID Of checklist for cluster"
-      when: is_cluster_chklst_name_exist.stdout == ""
+---
 
     - import_role:
         name: oracle_api_services
         tasks_from: get_cluster_id.yml
       when: cluster_id is not defined
 
-    - name: Make A POST Call To Insert Cluster Checklist Details In V_DB_CHECK_LIST
+- name: Checklist Insert
+  block:
+  - name: POST To Insert into Checklist Details
       uri:
         url: "{{ apex_url }}/insert_db_check_list"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
-        body: {
-            "cluster_id": "{{ cluster_id }}",
-          }
+      body: 
+        cluster_id: "{{ cluster_id }}"
+      status_code: 200,201
         headers:
           Content-Type: "application/json"
-      register: cluster_checklist_insrt_response
+    register: checklist_insrt_response
 
-    - name: Insert The Id Of Cluster Checklist In ansible_db_details.txt File
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for cluster*"
-        line: "ID Of checklist for cluster={{ cluster_checklist_insrt_response.json | json_query('ID') }}"  
+    - name: set checklist_id
+      set_fact:
+        checklist_id: "{{ checklist_insrt_response.json | json_query('ID') }}"
+
   rescue:
-    - name: Remove the ID String Since POST call Didn't Succeed
-      lineinfile:
-        path: /root/api_service/ansible_db_details.txt
-        regexp: "^ID Of checklist for cluster*"
-        state: absent
-
     - name: Store the Json If APEX Server Is Down
       lineinfile:
       path: "{{ json_backup_dir }}/cluster_chklst_insertion_body.json"
         line: '{"cluster_id" : "{{ cluster_id.stdout }}"}'
         create: yes
       when: cluster_checklist_insrt_response.status == "500"
-
-  when: is_cluster_chklst_name_exist.rc == 1
