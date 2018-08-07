@@ -11,8 +11,3 @@
   - name: set host_id
     set_fact:
       host_id: "{{ host_id_get_response.json | json_query('items[0].id') }}"
-  
-  rescue:
-  - name: set host_id
-    set_fact:
-      host_id: ""
