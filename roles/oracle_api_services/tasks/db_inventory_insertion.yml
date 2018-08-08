@@ -32,7 +32,7 @@
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
     lineinfile:
-      path: "{{ json_backup_dir }}/db_inv_insertion.json"
+      path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_inv_insertion.json"
       line: "{{ db_invntry_insertion_body  | to_json }}"
       create: yes
     when: v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1

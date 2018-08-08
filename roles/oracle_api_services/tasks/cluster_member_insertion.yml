@@ -29,7 +29,7 @@
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
     lineinfile:
-      path: "{{ json_backup_dir }}/cluster_membr_body.json"
+      path: "{{ json_backup_dir }}/{{ cluster_name }}_cluster_membr_body.json"
       line: "{{ cluster_membr_body  | to_json }}"
       create: yes
     when: v_cluster_membr_detail_insertion_response.status == "500" or v_cluster_membr_detail_insertion_response.status == -1

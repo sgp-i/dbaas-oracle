@@ -28,7 +28,7 @@
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
     lineinfile:
-      path: "{{ json_backup_dir }}/cluster_chklst_insertion_body.json"
+      path: "{{ json_backup_dir }}/{{ cluster_name }}_cluster_chklst_updates.json"
       line: '{"cluster_id": "{{ cluster_id }}", "update": {{ chklst_json_body | to_json }} }'
       create: yes
     when: checklist_insrt_response.status == "500" or checklist_insrt_response.status == -1
