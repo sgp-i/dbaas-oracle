@@ -1,5 +1,21 @@
 ---
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+    - {
+        key: checklist_type,
+        value: "9"
+      }
+    - { 
+        key: gi_install_status, 
+        value: IN_PROGRESS
+      }
+  tags:
+  - apex_api
+
 - name: populate service facts
   service_facts:
 
@@ -266,7 +282,21 @@
   copy:
     dest: "{{ oracle_tmp }}/prereq_checklist.json"
     content: "{{ checklist }}"
-      
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+      - { 
+          key: gi_install_status, 
+          value: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
+                  {%- else -%}SUCCESSFUL
+                  {%- endif %}"
+        }
+  tags:
+  - apex_api
+
 - name: Check for Precheck Failures
   fail:
     msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check
