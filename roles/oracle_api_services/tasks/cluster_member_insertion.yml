@@ -32,7 +32,9 @@
       path: "{{ json_backup_dir }}/{{ cluster_name }}_cluster_membr_body.json"
       line: "{{ cluster_membr_body  | to_json }}"
       create: yes
-    when: v_cluster_membr_detail_insertion_response.status == "500" or v_cluster_membr_detail_insertion_response.status == -1
+    when: 
+    - inventory_hostname == master_node
+    - v_cluster_membr_detail_insertion_response.status == "500" or v_cluster_membr_detail_insertion_response.status == -1
   when: cluster_id == ""
 
 - import_tasks: host_inventory_insertion.yml

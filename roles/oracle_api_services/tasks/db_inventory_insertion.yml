@@ -27,6 +27,7 @@
       headers:
           Content-Type: "application/json"
     register: v_db_inventory_insertion_response
+    when: inventory_hostname == master_node
 
   rescue:
   - name: Store the Json If APEX Server Is Down
@@ -35,6 +36,8 @@
       path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_inv_insertion.json"
       line: "{{ db_invntry_insertion_body  | to_json }}"
       create: yes
-    when: v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1
+    when: 
+    - inventory_hostname == master_node
+    - v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1
   when: db_id == ""
 
