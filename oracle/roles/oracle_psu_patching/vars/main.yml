@@ -6,6 +6,8 @@ grid_home: "{{ install_base }}/{{ grid_version }}/grid"
 
 pstage: "{{ oracle_base }}/software/PSU"
 
+patch_num: "{{ patch_file | regex_replace('p([0-9]*)_.*','\\1') }}"
+
 oracle_user: oracle
 
 oracle_group: oinstall

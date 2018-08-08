@@ -8,6 +8,8 @@
     state: directory
     recurse: yes
 
+- include_tasks: copy_archives.yml
+
 - include_tasks: execute_opatch.yml
 
 - name: Run datapatch

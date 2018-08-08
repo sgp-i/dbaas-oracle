@@ -12,6 +12,6 @@ oracle_db_name: db
 
 gi_sid: +ASM
 
-patch_num: ""
-
 patch_type: ""
+
+oracle_installer_path: /ansible
