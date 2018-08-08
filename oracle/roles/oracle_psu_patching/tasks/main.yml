@@ -1,5 +1,13 @@
 ---
 
+- name: create tmp dir
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+
 - include_tasks: execute_opatch.yml
 
 - name: Run datapatch
