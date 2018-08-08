@@ -255,6 +255,17 @@
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
   
+- name: create tmp dir
+  file:
+    path: "{{ oracle_tmp }}"
+    recurse: yes
+    state: directory
+
+- name: Write checklist to file for upload
+  copy:
+    dest: "{{ oracle_tmp }}/prereq_checklist.json"
+    content: "{{ checklist }}"
+      
 # - name: Check for Precheck Failures
 #   fail:
 #     msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check
