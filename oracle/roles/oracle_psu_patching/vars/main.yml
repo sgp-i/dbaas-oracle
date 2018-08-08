@@ -14,7 +14,7 @@ oracle_group: oinstall
 
 oracle_tmp: /u01/tmp/PSU/{{ patch_type }}/{{ patch_num}}
 
-optach_bin: ${{ patch_type }}_HOME/OPatch/opatch
+opatch_bin: ${{ patch_type }}_HOME/OPatch/opatch
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
