@@ -38,14 +38,14 @@
   
   rescue:
   - import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_update.yml
-  vars:
-    update_host_cklist_body:
-      - { key: checklist_type , value: "2" }
-      - { key: db_install_status, value: "FAILED"}
-  tags:
-  - apex_api
+      name: oracle_api_services
+      tasks_from: host_checklist_update.yml
+    vars:
+      update_host_cklist_body:
+        - { key: checklist_type , value: "2" }
+        - { key: db_install_status, value: "FAILED"}
+    tags:
+    - apex_api
 
   - name: Install Failed
     fail:
