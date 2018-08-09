@@ -1,36 +1,61 @@
 ---
 
-- name: install oracle
-  environment: "{{ ora_user_env }}"
-  become: yes
-  become_user: "{{ oracle_user }}"
-  shell: |
-    nohup {{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
-    sleep 30
-    while true
-    do 
-      c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
-      [ $c -eq 0 ] && break
-      sleep 10
-    done
-  args:
-    executable: /bin/bash
-    creates: "{{ oracle_home }}/bin/sqlplus"
-  register: db_install
-  failed_when: '"[FATAL]" in db_install.stdout'
-  when: inventory_hostname == master_node
-
 - block:
-  - name: general oracle post-installation
-    command: "{{ install_base }}/oraInventory/orainstRoot.sh"
-    when: 'install_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["db_install"]["stdout"]'
+  - name: install oracle
+    environment: "{{ ora_user_env }}"
+    become: yes
+    become_user: "{{ oracle_user }}"
+    shell: |
+      nohup {{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
+      sleep 30
+      while true
+      do 
+        c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
+        [ $c -eq 0 ] && break
+        sleep 10
+      done
+    args:
+      executable: /bin/bash
+      creates: "{{ oracle_home }}/bin/sqlplus"
+    register: db_install
+    failed_when: '"[FATAL]" in db_install.stdout'
+    when: inventory_hostname == master_node
 
-  - include_tasks: execute_root_script.yml
-    loop: "{{ cluster_nodes }}"
-    loop_control:
-      loop_var: curr_host
-    tags: root_script    
-    when: 
-    - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
-    - inventory_hostname == curr_host
-  when: hostvars[master_node]["db_install"]["changed"] == true
+  - block:
+    - name: general oracle post-installation
+      command: "{{ install_base }}/oraInventory/orainstRoot.sh"
+      when: 'install_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["db_install"]["stdout"]'
+
+    - include_tasks: execute_root_script.yml
+      loop: "{{ cluster_nodes }}"
+      loop_control:
+        loop_var: curr_host
+      tags: root_script    
+      when: 
+      - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
+      - inventory_hostname == curr_host
+    when: hostvars[master_node]["db_install"]["changed"] == true
+  
+  rescue:
+  - import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+      - { key: checklist_type , value: "2" }
+      - { key: gi_install_status, value: "FAILED"}
+  tags:
+  - apex_api
+
+  - name: Install Failed
+    fail:
+      msg: RDBMS Install Failed
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+      - { key: gi_install_status, value: "SUCCESSFUL"}
+  tags:
+  - apex_api 
