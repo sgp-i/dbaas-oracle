@@ -43,7 +43,7 @@
   vars:
     update_host_cklist_body:
       - { key: checklist_type , value: "2" }
-      - { key: gi_install_status, value: "FAILED"}
+      - { key: db_install_status, value: "FAILED"}
   tags:
   - apex_api
 
@@ -56,6 +56,6 @@
     tasks_from: host_checklist_update.yml
   vars:
     update_host_cklist_body:
-      - { key: gi_install_status, value: "SUCCESSFUL"}
+      - { key: db_install_status, value: "SUCCESSFUL"}
   tags:
   - apex_api 

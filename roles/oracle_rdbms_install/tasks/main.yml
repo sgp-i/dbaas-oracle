@@ -6,7 +6,7 @@
   vars:
     update_host_cklist_body:
       - { key: checklist_type , value: "2" }
-      - { key: gi_install_status, value: "IN PROGRESS"}
+      - { key: db_install_status, value: "IN PROGRESS"}
   tags:
   - apex_api
 
