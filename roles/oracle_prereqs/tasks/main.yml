@@ -1,189 +1,309 @@
 ---
 
-- name: setting the fact 
-  set_fact:
-     failed_checks: ""
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+    - {
+        key: checklist_type,
+        value: "9"
+      }
+    - { 
+        key: gi_install_status, 
+        value: IN_PROGRESS
+      }
+  tags:
+  - apex_api
 
-- name: check the version
-  shell: echo `uname -r | awk -F. '{print $1}'`
-  register: version_number
+- name: populate service facts
+  service_facts:
 
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} the linux kernel version ,"
-  when: version_number.stdout | int < 3
-
-- name: check the total memory
-  shell: grep MemTotal /proc/meminfo | awk '{ print $2 }'
-  register: total_memory
-
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} no sufficient (396868032M ) memory,"
-  when: total_memory.stdout | int < 396868032
-
-- name: check the swap size
-  shell: grep SwapTotal /proc/meminfo | awk '{ print $2 }'
-  register: swap_memory
-
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size should be more than 16384M for the 64GB RAM or more,"
-  when: swap_memory.stdout | int < 16384 and total_memory.stdout | int > 64000000
-
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} swap size should be more than 32768M for the 256GB RAM or more,"
-  when: swap_memory.stdout < 32768 and total_memory.stdout | int > 256000000
-
-- name: check whether ssh service is running
-  shell: ps -ef | grep sshd | wc -l
-  register: process_id
-
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} ssh process is not running,"
-  when: process_id.stdout | int == 1
-
+##########################################################
+## If this is always mounted a specific way for Charter ##
+## we could check that mountpoint using Ansible Facts.  ##
+## Otherwise, this is the only option for this.         ##
+##########################################################
 - name: check TMP directory
   shell: echo `df -kh /tmp | awk 'NR == 2 { print $4 }' | awk -F 'G' '{print $1}'`
+  changed_when: False
   register: tmp_size
 
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} TMP directory size should be more than 4GB, {{ tmp_size.stdout | int | round }}"
-  when: tmp_size.stdout | int | round < 4
+##########################################################################
+## There is no way to 'check' this without changing it.                 ##
+## However, I don't see the harm here with this one making the change.  ##
+##                                                                      ##
+## If needed, I have left the original version in place, commented, and ##
+## updated to be idempotent should Charter prefer to use it.            ##
+##########################################################################
+- name: ensure RW permission for all on /var/tmp
+  file:
+    path: /var/tmp
+    state: directory
+    mode: 01777
+  register: tmp_perms
 
-- name: check the RW permission for all 
-  shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
-  register: rw_permission
+# - name: check the RW permission for all 
+#   shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
+#   changed_when: False
+#   register: tmp_perms
 
-- name: setting the fact 
-  set_fact:  
-    failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
-  when: rw_permission.stdout!="drwxrwxrwt."
-
+# - name: setting the fact 
+#   set_fact:  
+#     failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
+#   when: tmp_perms.stdout!="drwxrwxrwt."
 
 - name: umask value checker
+  become: yes
+  become_user: "{{ oracle_user }}"
   shell: umask
+  changed_when: False
   register: umask_value
 
-- name: setting the fact 
-  set_fact:  
-    failed_checks: "{{ failed_checks | string }} unmask value is neither 22 or 022 or 0022,"
-  when: umask_value.stdout | int != 22 or umask_value.stdout | int != 022 or umask_value.stdout | int != 0022
+##########################################################
+## For all ulimit settings, these could be set with     ##
+## `pam_limits` module.  However, like the perms check  ##
+## above, it wouldn't just check but instead would set  ##
+## the values as needed.                                ##
+##                                                      ##
+## I believe this one is also work making the change,   ##
+## but will leave it for now.  I have provided one      ##
+## example, commented out, below                        ##
+##                                                      ##
+## Also, if we use the `pam_limits` module, the entire  ##
+## ulimits section could be written as a loop           ##
+##########################################################
 
-
+# - name: ensure soft files ulimit is 2047
+#   pam_limits:
+#     domain: "{{ oracle_user }}"
+#     limit_type: "soft"
+#     limit_item: "nproc"
+#     value: "2047"
 - name: get ulimit value (soft files)
   become: yes
   become_user: "{{ oracle_user }}"
   shell: ulimit -Sn
-  register: ulimit_value
-
-- name: check the ulimit value
-  set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 2047 for ulimit -Sn,"
-  when: ulimit_value.stdout | int != 2047
+  changed_when: false
+  register: ulimit_soft_files
 
 - name: get ulimit value (hard files)
   become: yes
   become_user: "{{ oracle_user }}"
   shell: ulimit -Hn
-  register: ulimit_value
-
-- name: check the ulimit value
-  set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 65536 for ulimit -Hn,"
-  when: ulimit_value.stdout | int != 65536
+  changed_when: false
+  register: ulimit_hard_files
 
 - name: get ulimit value (hard procs)
   become: yes
   become_user: "{{ oracle_user }}"
   shell: ulimit -Hu
-  register: ulimit_value
-
-- name: check the ulimit value
-  set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 16384 for ulimit -Hu,"
-  when: ulimit_value.stdout | int != 16384
+  changed_when: false
+  register: ulimit_hard_procs
 
 - name: get ulimit value (soft stack)
   become: yes
   become_user: "{{ oracle_user }}"
   shell: ulimit -Ss
-  register: ulimit_value
-
-- name: check the ulimit value
-  set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be 10240 for ulimit -Ss,"
-  when: ulimit_value.stdout | int != 10240
+  changed_when: false
+  register: ulimit_soft_stack
 
 - name: get ulimit value (hard stack)
   become: yes
   become_user: "{{ oracle_user }}"
   shell: ulimit -Hs
-  register: ulimit_value
+  changed_when: false
+  register: ulimit_hard_stack
 
-- name: check the ulimit value
-  set_fact:
-   failed_checks: "{{ failed_checks | string }} ulimit value should be unlimited for ulimit -Hs,"
-  when: ulimit_value.stdout != "unlimited"
-
-- name: Get the Memory Detail of the Instance
-  shell: free -k | awk ' $1 == "Mem:" {print $2}'
-  register: Total_Ram_size
-
+############################################################
+## Potentially could use `sysctl` module to set hugepages ##
+##                                                        ##
+## There are two caveats here:                            ##
+## 1. As with otheres, this doesn't just check, but will  ##
+##    also change the value if it's not set correctly     ##
+## 2. I'm not sure if the setting in the example below    ##
+##    is all that's needed.  So there may be more work    ##
+##    needed here even if Charter does want to use this   ##
+############################################################
+# - name: ensure hugepages is set to half the size of memory
+#   sysctl:
+#     name: vm.nr_hugepages
+#     value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
+#     state: present
 - name: Get The Huge Page Total Size
   shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
+  changed_when: False
   register: huge_page_total_size
 
-- name: Check The Huge Page Total Size
-  set_fact:
-    failed_checks: "{{ failed_checks | string }} Huge Page size should be half of the RAM size,"
-  when: huge_page_total_size.stdout | int < {{ (Total_Ram_size.stdout | int) / 2 }}
-
 - name: Get The Ignored Users In pbis
-  shell: cat /etc/pbis/user-ignore
-  ignore_errors: yes
+  slurp:
+    src: /etc/pbis/user-ignore
   register: pbis_ignored_users_in_srvr
 
 - name: Check The Ignored Users List In pbis
   set_fact:
-    failed_checks: "{{ failed_checks | string }} user ->{{ ignored_user }} is not in pbis ignored user list, "
-  when: ignored_user not in pbis_ignored_users_in_srvr.stdout_lines
+    missing_pbis_ignored_users: "{{ missing_pbis_ignored_users | default([]) }} + [ '{{ ignored_user }}' ]"
+  when: ignored_user not in pbis_ignored_users_in_srvr.content | b64decode
   loop: "{{ pbis.ignored_users }}"
   loop_control:
     loop_var: ignored_user
 
-- name: Get The Ignored Group In pbis
-  shell: cat /etc/pbis/group-ignore
-  ignore_errors: yes
-  register: pbis_ignored_group_in_srvr
+- name: Get The Ignored Groups In pbis
+  slurp:
+    src: /etc/pbis/group-ignore
+  register: pbis_ignored_groups_in_srvr
 
-- name: Check The Ignored Users List In pbis
+- name: Check The Ignored Groups List In pbis
   set_fact:
-    failed_checks: "{{ failed_checks | string }} group --> {{ ignored_group }} is not in pbis ignored group list, "
-  when: ignored_group not in pbis_ignored_group_in_srvr.stdout_lines
+    missing_pbis_ignored_groups: "{{ missing_pbis_ignored_groups | default([]) }} + [ '{{ ignored_group }}' ]"
+  when: ignored_group not in pbis_ignored_groups_in_srvr.content | b64decode
   loop: "{{ pbis.ignored_groups }}"
   loop_control:
     loop_var: ignored_group
 
-- name: Get Local Storage Filesystem Size
-  shell: df -h /u01 | awk 'NR == 2 { print $2 }' | awk -F 'G' '{print $1}'
-  register: local_disk_size
-
-- name: Check Local Storage Filesystem Size
+- name: generate checklist output
   set_fact:
-    failed_checks: "{{ failed_checks | string }} | size of local filesystem should be greater than 300GB"
-
+    checklist: 
+    - check_name: Kernel Version
+      expected_value: 3 or higher
+      actual_value: "{{ ansible_kernel.split('.')[0] }}"
+      status: "{% if ansible_kernel.split('.')[0] | int < 3 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Swap Size
+      expected_value: "{% if ansible_memtotal_mb | int > 65536 and 
+                              ansible_memtotal_mb | int < 262144 -%}16384 or higher
+                      {%- elif ansible_memtotal_mb | int < 262144 -%}32768 or higher
+                      {%- else -%}0
+                      {%- endif %}"
+      actual_value: "{{ ansible_swaptotal_mb }}"
+      status: "{% if (ansible_memtotal_mb | int > 65536 and 
+                      ansible_memtotal_mb | int < 262144 and
+                      ansible_swaptotal_mb < 16384) or
+                      (ansible_memtotal_mb | int < 262144 and
+                      ansible_swaptotal_mb < 32768) -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: SSH Service Status
+      expected_value: running
+      actual_value: "{{ ansible_facts['services']['sshd.service']['state'] }}"
+      status: "{% if ansible_facts['services']['sshd.service']['state'] != 'running' -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
+    - check_name: /var/tmp Size
+      expected_value: 4 or higher
+      actual_value: "{{ tmp_size.stdout }}"
+      status: "{% if tmp_size.stdout | int < 4 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: /var/tmp Permissions
+      expected_value: 01777 (drwxrwxrwt.)
+      actual_value: "{{ tmp_perms.mode }}"
+      status: "{% if tmp_perms.changed == true -%}FIXED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: umask Value
+      expected_value: 22 (in any variant)
+      actual_value: "{{ umask_value.stdout }}"
+      status: "{% if umask_value.stdout | int != 22 -%}FAILED
+                {%- else -%}PASSED
+                {%- endif %}"
+    - check_name: Soft Files ulimit
+      expected_value: 2047
+      actual_value: "{{ ulimit_soft_files.stdout }}"
+      status: "{% if ulimit_soft_files.stdout | int != 2047 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Hard Files ulimit
+      expected_value: 65536
+      actual_value: "{{ ulimit_hard_files.stdout }}"
+      status: "{% if ulimit_hard_files.stdout | int != 65536 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Hard Processes ulimit
+      expected_value: 16384
+      actual_value: "{{ ulimit_hard_procs.stdout }}"
+      status: "{% if ulimit_hard_procs.stdout | int != 16384 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Soft Stack ulimit
+      expected_value: 10240
+      actual_value: "{{ ulimit_soft_stack.stdout }}"
+      status: "{% if ulimit_soft_stack.stdout | int != 10240 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Hard Stack ulimit
+      expected_value: unlimited
+      actual_value: "{{ ulimit_hard_stack.stdout }}"
+      status: "{% if ulimit_hard_stack.stdout != 'unlimited' -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: HugePages Total Size
+      expected_value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
+      actual_value: "{{ huge_page_total_size.stdout }}"
+      status: "{% if huge_page_total_size.stdout | int < ansible_memtotal_mb * 1024 // 2 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Ignored PBIS users
+      expected_value: "{{ pbis.ignored_users | join(',') }}"
+      actual_value: "{{ pbis_ignored_users_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
+      status: "{% if missing_pbis_ignored_users is defined and
+                     missing_pbis_ignored_users | length > 0 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Ignored PBIS groups
+      expected_value: "{{ pbis.ignored_groups | join(',') }}"
+      actual_value: "{{ pbis_ignored_groups_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
+      status: "{% if missing_pbis_ignored_groups is defined and
+                     missing_pbis_ignored_groups | length > 0 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Check /u01 Filesystem Size
+      expected_value: 300 GiB
+      actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
+                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) }}
+                     {%- endif -%}"
+      status: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] or
+                     ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) | regex_search('[0-9]*') | int < 300 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+ 
 - debug:
-    var: failed_checks
+    var: checklist | json_query('[?status == `FAILED`]')
+    verbosity: 1
+  
+- name: create tmp dir
+  file:
+    path: "{{ oracle_tmp }}"
+    recurse: yes
+    state: directory
 
-# - name: fail the tasks if the pre-requsites are not satisfied
-#   fail: 
-#     msg: The following pre-requesties are not met {{ failed_checks | string }}
-#   when: failed_checks!=""
+- name: Write checklist to file for upload
+  copy:
+    dest: "{{ oracle_tmp }}/prereq_checklist.json"
+    content: "{{ checklist }}"
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+      - { 
+          key: gi_install_status, 
+          value: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
+                  {%- else -%}SUCCESSFUL
+                  {%- endif %}"
+        }
+  tags:
+  - apex_api
+
+- name: Check for Precheck Failures
+  fail:
+    msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check
+          {%- else -%}You have {{ checklist | json_query('[?status == `FAILED`]') | length }} failed checks
+          {%- endif %}"
+  when: checklist | json_query('[?status == `FAILED`]') | length > 1
+  tags: precheck_fail
 
 ## Additional Checks from updated doc
 # /dev/shm
-# OS Filesystem Local Disks size
