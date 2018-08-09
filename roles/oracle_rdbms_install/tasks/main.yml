@@ -15,6 +15,11 @@
   - oracle_db_home is not defined
   - inventory_hostname == master_node
 
+- name: copy oracle_db_home fact to other nodes
+  set_fact:
+    oracle_db_home: "{{ hostvars[master_node]['oracle_db_home'] }}"
+  when: inventory_hostname != master_node
+
 - include: copy_archives.yml
 
 - name: create cluster_node_string
