@@ -35,7 +35,9 @@
       when: 
       - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
       - inventory_hostname == curr_host
-    when: hostvars[master_node]["db_install"]["changed"] == true
+    when: 
+    - hostvars[master_node]["db_install"]["changed"]
+    - hostvars[master_node]['db_install']['failed'] is not defined or not hostvars[master_node]['db_install']['failed']
 
 - import_role:
     name: oracle_api_services
