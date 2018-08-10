@@ -3,9 +3,9 @@
 - block:
   - name: execute 'upload DB check log' API call
     uri:
-      url: "{{ apex_url }}/upload_db_check_log"
+      url: "{{ apex_url }}/upload_db_check_log/"
       validate_certs: no  # should be removed after https certs becomes renewed
-      method: PUT
+      method: POST
       src: "{{ logfile_path }}"
       headers:
         Content-Type: "text/plain"
