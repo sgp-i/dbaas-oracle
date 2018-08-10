@@ -1,14 +1,19 @@
 ---
 
+- name: read logfile
+  slurp:
+    src: "{{ logfile_path }}"
+  register: logfile_text
+
 - block:
   - name: execute 'upload DB check log' API call
     uri:
       url: "{{ apex_url }}/upload_db_check_log/"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
-      src: "{{ logfile_path }}"
+      body: "{{ logfile_text.content | b64decode | string }}"
       headers:
-        Content-Type: "text/plain"
+        Content-Type: text/plain
         ID: "{{ checklist_id }}"
     register: log_insrt_response
 
@@ -19,4 +24,4 @@
       path: /apex/unsent_json_body/{{ ansible_hostname }}/upload_log.json
       line: '{"checklist_id": "{{ checklist_id }}"}, {"logfile_path": "{{ logfile_path }}"}'
       create: yes
-    when: log_insrt_response.status == 500 or log_insrt_response.status == 404
+    when: log_insrt_response.status == 500 or log_insrt_response.status == -1
