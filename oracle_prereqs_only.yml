@@ -3,7 +3,6 @@
 - name: Oracle Pre-Reqs
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   tasks:
   - import_role:
       name: oracle_prereqs

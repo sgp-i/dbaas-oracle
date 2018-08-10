@@ -3,7 +3,6 @@
 - name: upgrade oracle 11g database to 12c database
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   become_user: '{{ oracle_user }}'
 
   vars:

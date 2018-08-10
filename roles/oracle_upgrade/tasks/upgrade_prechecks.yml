@@ -3,7 +3,6 @@
 - import_tasks: copy_archives.yml
 
 - name: run preupgrd.sql script for {{ oracle_db_name }}
-  become_method: sudo
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_tmp }}/db_precheck/preupgrd.sql
@@ -33,7 +32,6 @@
     }
 
 - name: execute pre-fixup
-  become_method: sudo
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade_fixups.sql
