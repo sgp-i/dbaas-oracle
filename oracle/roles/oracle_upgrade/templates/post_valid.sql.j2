@@ -9,10 +9,10 @@ Rem --run utlrp.sql script after upgrade to identify
 Rem --check for invalid objects
 set termout on
   select object_name, object_type, status from dba_objects where status='INVALID';
-@/u01/app/oracle/product/12.1.0.2/db_1/rdbms/admin/utlrp.sql
+@{{ new_oracle_home }}/rdbms/admin/utlrp.sql
 Rem--check to verify all objects recompiled
 prompt  CHECKING COMPONENTS----DATABASE REGISTRY
 Rem select object_name, object_type, status from dba_objects where status='INVALID';
-@$HOME/checkcomp.sql
+@{{ oracle_tmp }}/checkcomp.sql
 exit
 EOF
