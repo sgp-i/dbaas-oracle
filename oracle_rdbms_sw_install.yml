@@ -3,11 +3,7 @@
 - name: install oracle database
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   tasks:
-  - import_role:
-      name: oracle_prereqs
-  
   - import_role:
       name: oracle_rdbms_install
 

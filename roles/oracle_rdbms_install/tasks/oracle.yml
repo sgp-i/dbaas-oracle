@@ -18,6 +18,7 @@
     creates: "{{ oracle_home }}/bin/sqlplus"
   register: db_install
   failed_when: '"[FATAL]" in db_install.stdout'
+  ignore_errors: yes
   when: inventory_hostname == master_node
 
 - block:
@@ -33,4 +34,28 @@
     when: 
     - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
     - inventory_hostname == curr_host
-  when: hostvars[master_node]["db_install"]["changed"] == true
+  when: 
+  - hostvars[master_node]["db_install"]["changed"]
+  - hostvars[master_node]['db_install']['failed'] is not defined or not hostvars[master_node]['db_install']['failed']
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: host_checklist_update.yml
+  vars:
+    update_host_cklist_body:
+      - { 
+          key: db_install_status,
+          value: "{% if hostvars[master_node]['db_install']['failed'] is defined and
+                        hostvars[master_node]['db_install']['failed'] -%}FAILED
+                  {%- else -%}SUCCESSFUL
+                  {%- endif -%}"
+        }
+  tags:
+  - apex_api 
+
+- name: Install Failed
+  fail:
+    msg: RDBMS Install Failed
+  when: 
+  - hostvars[master_node]['db_install']['failed'] is defined
+  - hostvars[master_node]['db_install']['failed']

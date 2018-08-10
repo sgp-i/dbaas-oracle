@@ -3,7 +3,6 @@
 - name: install oracle 12c grid infrastructure
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   tasks:
     - import_role:
         name: oracle_api_services

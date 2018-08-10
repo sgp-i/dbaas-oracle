@@ -3,7 +3,6 @@
 - name: Create DB Instance
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   tasks:
   - import_role:
       name: oracle_create_db

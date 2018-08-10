@@ -1,6 +1,6 @@
 - name: generate json_body
   set_fact: 
-    chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
+    host_chklst_json_body: '{{ host_chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
   with_items: "{{ update_host_cklist_body }}"
 
 - import_tasks: host_checklist_insertion.yml
@@ -11,9 +11,9 @@
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json
-    body: "{{ chklst_json_body }}"
+    body: "{{ host_chklst_json_body }}"
     headers:
         Content-Type: "application/json"
-    when: 
-    - checklist_id is defined
-    - checklist_id != ""
+  when: 
+  - checklist_id is defined
+  - checklist_id != ""

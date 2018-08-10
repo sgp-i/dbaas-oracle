@@ -3,7 +3,6 @@
 - name: upgrade oracle grid infrastructure from 11g to 12c
   hosts: '{{ host }}'
   become: yes
-  become_method: sudo
   roles:
     - oracle_prereqs
     - oracle_grid_infra_install
