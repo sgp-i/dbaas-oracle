@@ -1,19 +1,21 @@
 - name: generate json_body
   set_fact: 
-    chklst_json_body: '{{ chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
+    cluster_chklst_json_body: '{{ cluster_chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
   with_items: "{{ update_cluster_cklist_body }}"
 
-- name: get host checklist ID
-  shell: cat /root/api_service/ansible_db_details.txt | grep -e '^ID Of checklist for cluster*' | awk -F '=' '{print $2}'
-  register: cluster_cklst_id
+- import_tasks: cluster_checklist_insertion.yml
+  when: inventory_hostname == master_node
 
 - name: update the json data using PUT call
   uri:
-    url:  "{{ apex_url }}/db_check_list/{{ cluster_cklst_id.stdout }}"
+    url:  "{{ apex_url }}/db_check_list/{{ checklist_id }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: PUT
     body_format: json
-    body: "{{ chklst_json_body }}"
+    body: "{{ cluster_chklst_json_body }}"
     headers:
         Content-Type: "application/json"
-    when: cluster_cklst_id.stdout != ""
+  when: 
+  - inventory_hostname == master_node
+  - checklist_id is defined
+  - checklist_id != ""

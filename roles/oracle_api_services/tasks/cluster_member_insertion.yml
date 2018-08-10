@@ -9,33 +9,32 @@
 
 - name: Complete Tasks Of Cluster Member Insertion
   block:
-    - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
-      uri:
-        url: "{{ apex_url }}/insertclustermember"
-        validate_certs: no  # should be removed after https certs becomes renewed
-        method: POST
-        body_format: json
-        body: "{{ cluster_membr_body }}"
-        headers:
-            Content-Type: "application/json"
-      register: v_cluster_membr_detail_insertion_response
-      when: inventory_hostname == master_node
+  - name: Make A POST Call To Insert Cluster Member Details In V_CLUSTER_MEMBER_TBL
+    uri:
+      url: "{{ apex_url }}/insertclustermember"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: POST
+      body_format: json
+      body: "{{ cluster_membr_body }}"
+      headers:
+          Content-Type: "application/json"
+    register: v_cluster_membr_detail_insertion_response
+    when: inventory_hostname == master_node
 
-    - name: Get The HOST_CODE From Response
-      set_fact:
-        host_code: "{{ hostvars[master_node].v_cluster_membr_detail_insertion_response.json | json_query('HOST_CODE') }}"
+  - name: Get The HOST_CODE From Response
+    set_fact:
+      host_code: "{{ hostvars[master_node].v_cluster_membr_detail_insertion_response.json | json_query('HOST_CODE') }}"
       
   rescue:
-    - name: Store the Json If APEX Server Is Down
-      block:
-        - name: Put The Json In A File
-          lineinfile:
-            path: /root/api_service/unsent_json_body/cluster_membr_body.json
-            line: "{{ cluster_membr_body }}"
-            create: yes
-        - name: Make Single Quotes to Double Quotes
-          shell: sed -i 's|'\''|\"|g' /root/api_service/unsent_json_body/cluster_membr_body.json 
-      when: v_cluster_membr_detail_insertion_response.status == "500"
+  - name: Store the Json If APEX Server Is Down
+    delegate_to: localhost
+    lineinfile:
+      path: "{{ json_backup_dir }}/{{ cluster_name }}_cluster_membr_body.json"
+      line: "{{ cluster_membr_body  | to_json }}"
+      create: yes
+    when: 
+    - inventory_hostname == master_node
+    - v_cluster_membr_detail_insertion_response.status == "500" or v_cluster_membr_detail_insertion_response.status == -1
   when: cluster_id == ""
 
 - import_tasks: host_inventory_insertion.yml

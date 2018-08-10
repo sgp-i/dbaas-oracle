@@ -26,8 +26,9 @@
 
   rescue:
     - name: Store the Json If APEX Server Is Down
+      delegate_to: localhost
       lineinfile:
-        path: /root/api_service/unsent_json_body/db_chklst_insertion_body.json
-        line: '{"db_id" : "{{ db_id }}"}'
+        path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_chklst_updates.json"
+        line: '{ "db_id": "{{ db_id }}", "update": {{ db_chklst_json_body | to_json }} }'
         create: yes
-      when: checklist_insrt_response.status == "500"
+      when: checklist_insrt_response.status == "500" or checklist_insrt_response.status == -1
