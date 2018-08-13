@@ -5,13 +5,17 @@ UNIX_GROUP_NAME={{ oracle_group }}
 INVENTORY_LOCATION={{ oracle_base }}/oraInventory
 SELECTED_LANGUAGES=en
 ORACLE_HOME={{ oracle_home }}
-ORACLE_BASE={{ oracle_base }}/oracle
+ORACLE_BASE={{ oracle_base }}
 oracle.install.db.InstallEdition={{ oracle_edition }}
 oracle.install.db.EEOptionsSelection=false
 oracle.install.db.optionalComponents=
 oracle.install.db.DBA_GROUP={{ oracle_dba_group }}
 oracle.install.db.OPER_GROUP={{ oracle_dba_group }}
-oracle.install.db.CLUSTER_NODES={{ cluster_node_string | join(',') }}
+oracle.install.db.CLUSTER_NODES={% if (
+      rac_install == 'true') -%}{{ cluster_node_string | join(',') }}
+{% else %}
+
+{% endif %}
 oracle.install.db.isRACOneInstall=false
 oracle.install.db.racOneServiceName=
 oracle.install.db.config.starterdb.type=GENERAL_PURPOSE
