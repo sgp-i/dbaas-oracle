@@ -1,0 +1,11 @@
+oracle_base: /u01/app/oracle
+oracle_version: 12.1.0.2
+oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}"
+rdbms_name: "{{ rdbms_name | mandatory }}"
+oracle_grid_version: 12.1.0.2
+oracle_grid_infra_home: "/u01/app/{{ oracle_grid_version }}/grid"
+uninstallation_type: "{{ uninstallation_type | mandatory  }}" # if set to standalone 
+database_name: "{% if uninstallation_type == 'cluster' %} {{ database_name | mandatory }} 
+                {% else %} 
+                {% endif %}"
+
