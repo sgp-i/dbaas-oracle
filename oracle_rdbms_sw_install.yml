@@ -9,4 +9,4 @@
 
   ## Optional vars
   # oracle_version (default: 12.1.0.2) 
-  # rac_install (default: false)
+  # oracle_db_home (default: auto-generated based on next available; e.g. db_2)
