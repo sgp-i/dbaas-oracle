@@ -52,8 +52,12 @@
         [ $c -eq 0 ] && break
         sleep 10
       done
+    register: create_db
     args:
       executable: /bin/bash
+    failed_when: '"[FATAL]" in create_db.stdout or 
+                  "failed to run command ‘dbca’" in create_db.stdout or 
+                  create_db.rc != 0'
 
   rescue:
   - import_role:
