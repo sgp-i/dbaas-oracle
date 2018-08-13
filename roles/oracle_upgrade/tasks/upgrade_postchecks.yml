@@ -36,7 +36,7 @@
 - name: copy in SQL Scripts
   template:
     dest: "{{ oracle_tmp }}/{{ sql_script }}"
-    src: "{{ sql_script }}"
+    src: "{{ sql_script }}.j2"
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
   loop:
