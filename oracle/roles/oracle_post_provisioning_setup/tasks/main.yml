@@ -1,0 +1,13 @@
+---
+- name: Creating no sid entry in ORATAB file
+  lineinfile:
+    path: /etc/oratab
+    line: 'no_sid:{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}:N'
+
+- name: Run Cleanup file job for Database
+  shell: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh > {{ oracle_base }}/admin/scripts/cleanup_files.out 2>&1'
+
+- name: Set up Directory in ORACLE_ADMIN
+  file:
+    path: ‘{{ oracle_base }}/admin/chgctl’
+    state: directory
