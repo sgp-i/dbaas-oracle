@@ -1,0 +1,8 @@
+.imported_roles/
+./oracle/Vagrantfile
+./oracle/.vagrant/*
+./oracle/.vagrant
+./oracle/hosts
+secret
+vault.txt
+*.retry
