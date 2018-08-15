@@ -29,7 +29,7 @@ CRS_HOME=
 REMOTE_NODES={{ cluster_nodes[1:] | default('') }}
 
 #Local Node
-LOCAL_NODE={{ master_node }}
+LOCAL_NODE={{ hostvars[master_node]['ansible_hostname'] }}
 
 # Network Properties
 # The name of Oracle home in Oracle central inventory
