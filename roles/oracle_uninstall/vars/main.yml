@@ -5,3 +5,9 @@ oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}"
 cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
+
+rac_install: "{% if ansible_play_hosts | length > 1 -%}true
+              {%- else -%}false
+              {%- endif %}"
+
+oracle_user: oracle
