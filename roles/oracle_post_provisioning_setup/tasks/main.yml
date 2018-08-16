@@ -25,7 +25,7 @@
 
 - name: Copy the "postprovstalone.sql" to server
   copy: 
-    src: ../files/postprovstalone.sql
+    src: postprovstalone.sql
     dest: "{{ oracle_tmp }}"
 
 #need to update with valid username and password
