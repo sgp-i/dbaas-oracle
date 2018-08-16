@@ -11,3 +11,15 @@
   file:
     path: ‘{{ oracle_base }}/admin/chgctl’
     state: directory
+
+- name: Copy the "postprovstalone.sql" to server
+  copy: 
+    src: ../files/postprovstalone.sql
+    dest: "{{ oracle_tmp }}"
+
+#need to update with valid username and password
+- name: run postprovstalone.sql script
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_tmp }}/postprovstalone.sql"
+ 
