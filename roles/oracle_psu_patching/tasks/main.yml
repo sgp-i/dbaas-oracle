@@ -10,7 +10,15 @@
 
 - include_tasks: copy_archives.yml
 
-- include_tasks: execute_opatch.yml
+- include_tasks: opatch_prereq.yml
+
+- include_tasks: opatch_apply.yml
+  when: inventory_hostname == curr_node
+  loop: "{{ ansible_play_hosts }}"
+  loop_control:
+    loop_var: curr_node
+
+- include_tasks: opatch_inventory.yml
 
 - name: Run datapatch
   become: yes

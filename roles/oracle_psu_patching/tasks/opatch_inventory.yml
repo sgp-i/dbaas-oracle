@@ -1,0 +1,17 @@
+---
+
+- name: Check Opatch Inventory
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: $ORACLE_HOME/OPatch/opatch lsinventory
+  register: opatch_lsinv
+
+- name: save opatch inventory stdout
+  copy:
+    dest: "{{ oracle_tmp }}/opatch_lsinv.out"
+    content: "{{ opatch_lsinv.stdout }}"
+
+- name: save opatch inventory stderr
+  copy:
+    dest: "{{ oracle_tmp }}/opatch_lsinv.err"
+    content: "{{ opatch_lsinv.stderr }}"

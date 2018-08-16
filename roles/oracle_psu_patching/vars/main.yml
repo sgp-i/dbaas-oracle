@@ -1,8 +1,6 @@
 ---
 
-oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
-
-grid_home: "{{ install_base }}/{{ grid_version }}/grid"
+master_node: "{{ ansible_play_hosts | first }}"
 
 pstage: "{{ oracle_base }}/software/PSU"
 
@@ -14,12 +12,12 @@ oracle_group: oinstall
 
 oracle_tmp: /u01/tmp/PSU/{{ patch_type }}/{{ patch_num}}
 
-opatch_bin: ${{ patch_type }}_HOME/OPatch/opatch
-
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home }}"
-  GRID_HOME: "{{ grid_home }}"
-  OPATCHDIR: $ORACLE_HOME/OPatch
-  GI_SID: "{{ gi_sid }}"
+  ORACLE_SID: "{% if patch_type == 'ORACLE' -%}{{ oracle_db_name }}
+              {%- elif patch_type == 'GRID' -%}{{ gi_sid }}
+              {%- endif %}"
+  ORACLE_HOME: "{% if patch_type == 'ORACLE' -%}{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}
+              {%- elif patch_type == 'GRID' -%}{{ install_base }}/{{ grid_version }}/grid
+              {%- endif %}"
+  PATH: "{{ ansible_env.PATH }}:$ORACLE_HOME/OPatch"
