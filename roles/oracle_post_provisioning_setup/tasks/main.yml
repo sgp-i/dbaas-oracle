@@ -5,7 +5,18 @@
     line: 'no_sid:{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}:N          # line added by Ansible'
 
 - name: Run Cleanup file job for Database
-  shell: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh > {{ oracle_base }}/admin/scripts/cleanup_files.out 2>&1'
+  command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
+  register: cleanup_files
+
+- name: save cleanup_files script stdout
+  copy:
+    dest: '{{ oracle_tmp }}/cleanup_files.out'
+    content: '{{ cleanup_files.stdout }}'
+
+- name: save cleanup_files script stderr
+  copy:
+    dest: "{{ oracle_tmp }}/cleanup_files.err"
+    content: "{{ cleanup_files.stderr | default('') }}"
 
 - name: Set up Directory in ORACLE_ADMIN
   file:
