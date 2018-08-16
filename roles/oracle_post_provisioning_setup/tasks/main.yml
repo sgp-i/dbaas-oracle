@@ -7,7 +7,7 @@
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
   register: cleanup_files
-
+  
 - name: save cleanup_files script stdout
   copy:
     dest: '{{ oracle_tmp }}/cleanup_files.out'
@@ -28,9 +28,18 @@
     src: postprovstalone.sql
     dest: "{{ oracle_tmp }}"
 
-#need to update with valid username and password
 - name: run postprovstalone.sql script
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: "sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_tmp }}/postprovstalone.sql"
- 
+  register: postprovstalone
+
+- name: save postprovstalone script stdout
+  copy:
+    dest: '{{ oracle_tmp }}/postprovstalone.out'
+    content: '{{ postprovstalone.stdout }}'
+
+- name: save postprovstalone script stderr
+  copy:
+    dest: "{{ oracle_tmp }}/postprovstalone.err"
+    content: "{{ postprovstalone.stderr | default('') }}"
