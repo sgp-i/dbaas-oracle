@@ -16,4 +16,6 @@ gi_sid: +ASM
 
 patch_type: ""
 
+opatch_flags: ""
+
 oracle_installer_path: /ansible
