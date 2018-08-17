@@ -1,9 +1,8 @@
-- name: generate json_body
-  set_fact: 
-    host_chklst_json_body: '{{ host_chklst_json_body | default({}) | combine({ item.key: item.value }) }}'
-  with_items: "{{ update_host_cklist_body }}"
+---
 
-- import_tasks: host_checklist_insertion.yml
+- name: insert new checklist entry
+  include_tasks: host_checklist_insertion.yml
+  when: host_chklst_json_body.new_entry
 
 - name:  update the json data using PUT call
   uri:
