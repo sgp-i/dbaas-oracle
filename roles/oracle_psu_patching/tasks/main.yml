@@ -19,11 +19,3 @@
     loop_var: curr_node
 
 - include_tasks: opatch_inventory.yml
-
-- name: Run datapatch
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  command: $OPATCHDIR/datapatch -verbose
-  register: datapatch
-  when: patch_type == 'ORACLE'
