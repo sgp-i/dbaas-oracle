@@ -16,10 +16,10 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_db_name: db
+oracle_db_name: +ASM
 
 # password for the sysdba
-oracle_db_syspass: Oracle123
+oracle_db_syspass: oracle123
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
