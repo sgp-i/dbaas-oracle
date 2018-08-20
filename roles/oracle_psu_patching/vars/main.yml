@@ -6,6 +6,10 @@ pstage: "{{ oracle_base }}/software/PSU"
 
 patch_num: "{{ patch_file | regex_replace('p([0-9]*)_.*','\\1') }}"
 
+oracle_home: "{% if patch_type == 'ORACLE' -%}{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}
+              {%- elif patch_type == 'GRID' -%}{{ install_base }}/{{ grid_version }}/grid
+              {%- endif %}"
+
 oracle_user: oracle
 
 oracle_group: oinstall
@@ -17,7 +21,5 @@ ora_user_env:
   ORACLE_SID: "{% if patch_type == 'ORACLE' -%}{{ oracle_db_name }}
               {%- elif patch_type == 'GRID' -%}{{ gi_sid }}
               {%- endif %}"
-  ORACLE_HOME: "{% if patch_type == 'ORACLE' -%}{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}
-              {%- elif patch_type == 'GRID' -%}{{ install_base }}/{{ grid_version }}/grid
-              {%- endif %}"
+  ORACLE_HOME: "{{ oracle_home }}"
   PATH: "{{ ansible_env.PATH }}:$ORACLE_HOME/OPatch"
