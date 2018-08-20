@@ -15,5 +15,3 @@
     dest: "{{ pstage }}" 
     remote_src: yes 
     keep_newer: true 
-  tags:
-    - cluvfy
