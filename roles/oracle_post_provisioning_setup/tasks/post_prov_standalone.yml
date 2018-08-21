@@ -4,6 +4,9 @@
   copy: 
     src: postprovstalone.sql
     dest: "{{ oracle_tmp }}"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
 
 - name: run postprovstalone.sql script
   become: yes
