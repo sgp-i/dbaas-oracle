@@ -4,11 +4,11 @@
   template:
     src: 12c_gi_rsp.j2
     dest: "{{ oracle_tmp }}/grid_install.rsp"
+  debug: false
 
 - name: create configTool rsp file
-  copy:
+  template:
+    src: grid_configTool.rsp.j2
     dest: "{{ oracle_tmp }}/grid_configTool.rsp"
-    content: |
-      oracle.assistants.asm|S_ASMPASSWORD={{ oracle_asm_syspass }}
-      oracle.assistants.asm|S_ASMMONITORPASSWORD={{ oracle_asm_syspass }}
+  debug: false
       
