@@ -42,14 +42,12 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    update_host_cklist_body:
-      - { 
-          key: db_install_status,
-          value: "{% if hostvars[master_node]['db_install']['failed'] is defined and
+    host_chklst_json_body:
+       new_entry: False
+       db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
                         hostvars[master_node]['db_install']['failed'] -%}FAILED
-                  {%- else -%}SUCCESSFUL
-                  {%- endif -%}"
-        }
+                          {%- else -%}SUCCESSFUL
+                          {%- endif -%}"
   tags:
   - apex_api 
 
