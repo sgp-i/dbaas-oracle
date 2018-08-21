@@ -1,5 +1,3 @@
----
-
 - name: insert new checklist entry
   include_tasks: db_checklist_insertion.yml
   when: db_chklst_json_body.new_entry
