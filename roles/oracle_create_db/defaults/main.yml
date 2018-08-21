@@ -10,15 +10,8 @@ oracle_db_home: db_1
 
 oracle_db_name: db
 
-# password for the sysdba
-oracle_db_syspass: password
-
-oracle_system_pass: OraPasswd1
-
 asm_data_group: DATA
 
-oracle_pdb_name: pdb2
-
-oracle_pdb_passwd: PraPasswd1
+oracle_pdb_name: ""
 
 rac_install: false
