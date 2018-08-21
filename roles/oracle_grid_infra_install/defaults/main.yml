@@ -2,16 +2,12 @@
 
 grid_version: 12.1.0.2
 
-oracle_pass: oracle123
-
 # installation mode. Avaialable modes are : CRS_CONFIG | HA_CONFIG | UPGRADE | CRS_SWONLY | HA_SWONLY
 grid_install_mode: HA_CONFIG
 
 cluster_type: STANDARD
 
 cluster_name: scan1
-
-oracle_asm_syspass: Oracle123
 
 # location for temporary installation files
 oracle_tmp: /u01/tmp/{{ grid_version }}
