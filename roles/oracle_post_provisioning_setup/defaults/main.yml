@@ -9,7 +9,7 @@ oracle_db_name: db
 oracle_db_home: db_2
 
 # location for temporary files
-oracle_tmp: /u01/tmp/{{ oracle_version }}
+oracle_tmp: /u01/tmp/{{ oracle_db_name }}
 
 oracle_user: oracle
 
