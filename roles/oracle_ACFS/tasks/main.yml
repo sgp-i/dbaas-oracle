@@ -36,6 +36,13 @@
         #   state: present
   when: inventory_hostname == master_node
 
+- name: As oracle (on all other nodes if RAC) From ASM
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  shell: echo "alter diskgroup EXP_DG mount;" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
+  when: inventory_hostname != master_node and rac_install == true
+
 - name: From OS
   block:
       - name: create "exp" directory
@@ -54,9 +61,3 @@
         command: '/bin/mount -t acfs /dev/asm/exp_fs_vol-5 {{ oracle_base }}/exp'
   when: inventory_hostname != master_node and rac_install == true
 
-- name: As oracle (on all other nodes if RAC) From ASM
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  shell: echo "alter diskgroup EXP_DG mount;" | sqlplus sys/{{ oracle_db_syspass }} as sysdba
-  when: inventory_hostname != master_node and rac_install == true
