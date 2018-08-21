@@ -4,15 +4,9 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    update_host_cklist_body:
-    - {
-        key: checklist_type,
-        value: "9"
-      }
-    - { 
-        key: gi_install_status, 
-        value: IN_PROGRESS
-      }
+    host_chklst_json_body:
+      checklist_type: "9" 
+      gi_install_status: IN_PROGRESS
   tags:
   - apex_api
 
@@ -295,13 +289,10 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    update_host_cklist_body:
-      - { 
-          key: gi_install_status, 
-          value: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
-                  {%- else -%}SUCCESSFUL
-                  {%- endif %}"
-        }
+    host_chklst_json_body:
+      gi_install_status: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
+                          {%- else -%}SUCCESSFUL
+                          {%- endif %}"
   tags:
   - apex_api
 
