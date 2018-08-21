@@ -3,7 +3,7 @@
 - name: run catuppst.sql script for {{ oracle_db_name }}
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: "sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_home }}/rdbms/admin/catuppst.sql"
+  command: "sqlplus / as sysdba @{{ oracle_home }}/rdbms/admin/catuppst.sql"
   register: catuppst_script
 
 - name: save stdout
@@ -19,7 +19,7 @@
 - name: execute post-fixup
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/postupgrade_fixups.sql
+  command: sqlplus / as sysdba @{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/postupgrade_fixups.sql
   register: post_fixup_script
   when: execute_post_fixup | lower == 'true'
 
@@ -49,7 +49,7 @@
 - name: execute SQL Post Validate script
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: sqlplus sys/{{ oracle_db_syspass }} as sysdba @{{ oracle_tmp }}/post_valid.sql
+  command: sqlplus / as sysdba @{{ oracle_tmp }}/post_valid.sql
   register: post_valid_script
   tags: post_valid
 
