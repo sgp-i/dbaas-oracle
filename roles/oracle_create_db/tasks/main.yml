@@ -33,6 +33,7 @@
     tasks_from: db_checklist_update.yml
   vars:
     db_chklst_json_body:
+      new_entry: True
       checklist_type: "8" 
       db_install_status: "IN PROGRESS"
   tags:
@@ -65,6 +66,7 @@
       tasks_from: db_checklist_update.yml
     vars:
       db_chklst_json_body:
+        new_entry: False
         db_install_status: "FAILED"
     tags:
     - apex_api
@@ -78,6 +80,7 @@
     tasks_from: db_checklist_update.yml
   vars:
     db_chklst_json_body:
+      new_entry: False
       db_install_status: "SUCCESSFUL"
   tags:
   - apex_api

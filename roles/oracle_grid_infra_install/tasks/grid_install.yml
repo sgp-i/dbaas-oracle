@@ -5,6 +5,7 @@
     tasks_from: host_checklist_update.yml
     vars:
       host_chklst_json_body:
+        new_entry: False
         checklist_type: '9'
         gi_install_status: IN PROGRESS
   tags:
@@ -96,6 +97,7 @@
       tasks_from: host_checklist_update.yml
     vars:
       host_chklst_json_body:
+        new_entry: False
         gi_install_status: "FAILED"
     vars
     tags:
@@ -110,6 +112,7 @@
     tasks_from: host_checklist_update.yml
   vars:
     host_chklst_json_body:
+      new_entry: False
       gi_install_status: "SUCCESSFUL"
   tags:
   - apex_api

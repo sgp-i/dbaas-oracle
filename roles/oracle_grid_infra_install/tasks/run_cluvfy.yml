@@ -32,6 +32,7 @@
       tasks_from: host_checklist_update.yml
     vars:
       host_chklst_json_body:
+        new_entry: False
         cluster_verify: "N"
 
     tags:
@@ -46,6 +47,7 @@
     tasks_from: host_checklist_update.yml
   vars:
     host_chklst_json_body:
+      new_entry: False
       cluster_verify: "Y" 
   tags:
   - apex_api
