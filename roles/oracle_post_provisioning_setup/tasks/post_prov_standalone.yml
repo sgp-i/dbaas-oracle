@@ -1,0 +1,22 @@
+---
+
+- name: Copy the "postprovstalone.sql" to server
+  copy: 
+    src: postprovstalone.sql
+    dest: "{{ oracle_tmp }}"
+
+- name: run postprovstalone.sql script
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "sqlplus / as sysdba @{{ oracle_tmp }}/postprovstalone.sql"
+  register: postprovstalone
+
+- name: save postprovstalone script stdout
+  copy:
+    dest: '{{ oracle_tmp }}/postprovstalone.out'
+    content: '{{ postprovstalone.stdout }}'
+
+- name: save postprovstalone script stderr
+  copy:
+    dest: "{{ oracle_tmp }}/postprovstalone.err"
+    content: "{{ postprovstalone.stderr | default('') }}"

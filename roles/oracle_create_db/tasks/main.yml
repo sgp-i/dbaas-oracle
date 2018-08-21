@@ -1,5 +1,8 @@
 ---
 
+- include_vars: secrets.yml
+  no_log: true
+
 - name: check if db has already been installed
   command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
   ignore_errors: yes
@@ -32,9 +35,10 @@
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
   vars:
-    update_db_cklist_body:
-      - { key: checklist_type , value: "8" }
-      - { key: db_install_status , value: "IN PROGRESS" }
+    db_chklst_json_body:
+      new_entry: True
+      checklist_type: "8" 
+      db_install_status: "IN PROGRESS"
   tags:
   - apex_api
 
@@ -52,16 +56,21 @@
         [ $c -eq 0 ] && break
         sleep 10
       done
+    register: create_db
     args:
       executable: /bin/bash
+    failed_when: '"[FATAL]" in create_db.stdout or 
+                  "failed to run command ‘dbca’" in create_db.stdout or 
+                  create_db.rc != 0'
 
   rescue:
   - import_role:
       name: oracle_api_services
       tasks_from: db_checklist_update.yml
     vars:
-      update_db_cklist_body:
-        - { key: db_install_status , value: "FAILED" }
+      db_chklst_json_body:
+        new_entry: False
+        db_install_status: "FAILED"
     tags:
     - apex_api
   
@@ -73,7 +82,8 @@
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
   vars:
-    update_db_cklist_body:
-      - { key: db_install_status , value: "SUCCESSFUL" }
+    db_chklst_json_body:
+      new_entry: False
+      db_install_status: "SUCCESSFUL"
   tags:
   - apex_api
