@@ -5,8 +5,8 @@
   environment: "{{ ora_user_env }}"
   shell: |
      echo "create diskgroup EXP_DG external redundancy disk '{{ oracle_external_disk }}/EXP001','{{ oracle_external_disk }}/EXP002','{{ oracle_external_disk }}/EXP003'
-     attribute 'compatible.asm' = '12.1', 'compatible.advm' = '12.1';" | sqlplus sys/{{ oracle_db_syspass }} as sysdba
-     echo "alter diskgroup EXP_DG add volume EXP_FS_VOL size 25g;" | sqlplus sys/{{ oracle_db_syspass }} as sysdba
+     attribute 'compatible.asm' = '12.1', 'compatible.advm' = '12.1';" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
+     echo "alter diskgroup EXP_DG add volume EXP_FS_VOL size 25g;" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
 
 - name: As oracle (on primary node if RAC) or From OS
   block:
@@ -21,7 +21,9 @@
         become: yes
         become_user: '{{ oracle_user }}'
         environment: "{{ ora_user_env }}"
-        command: /sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5
+        command: |
+        /sbin/mkfs -t acfs /dev/oracleasm/disks/EXP003
+        /sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5
         # filesystem:
         #   fstype: acfs
         #   dev: /dev/asm/exp_fs_vol-5
@@ -33,6 +35,24 @@
         #   fstype: acfs
         #   state: present
   when: inventory_hostname == master_node
+
+- name: From OS
+  block:
+      - name: create "exp" directory
+        become: yes
+        become_user: '{{ oracle_user }}'
+        environment: "{{ ora_user_env }}"
+        file:
+          path: ‘{{ oracle_base }}/exp’
+          state: directory
+      - name: creating "acfs" file system
+        become: yes
+        become_user: '{{ oracle_user }}'
+        environment: "{{ ora_user_env }}"
+        command: '/sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5'
+      - name: Mount the disk
+        command: '/bin/mount -t acfs /dev/asm/exp_fs_vol-5 {{ oracle_base }}/exp'
+  when: inventory_hostname != master_node and rac_install == true
 
 - name: As oracle (on all other nodes if RAC) From ASM
   become: yes
