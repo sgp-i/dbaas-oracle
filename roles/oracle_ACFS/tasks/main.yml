@@ -22,8 +22,8 @@
         become_user: '{{ oracle_user }}'
         environment: "{{ ora_user_env }}"
         command: |
-        /sbin/mkfs -t acfs /dev/oracleasm/disks/EXP003
-        /sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5
+          /sbin/mkfs -t acfs /dev/oracleasm/disks/EXP003
+          /sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5
         # filesystem:
         #   fstype: acfs
         #   dev: /dev/asm/exp_fs_vol-5
