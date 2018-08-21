@@ -15,9 +15,6 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
-# password for the sysdba
-oracle_db_syspass: password
-
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
 # shell environment for the oracle user

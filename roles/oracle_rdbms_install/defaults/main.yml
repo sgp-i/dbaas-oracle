@@ -14,15 +14,11 @@ oracle_base: "{{ install_base }}/oracle"
 
 oracle_db_name: db
 
-# password for the sysdba
-oracle_db_syspass: password
 
 oracle_db_mem: "2048"
 
 # FILE_SYSTEM_STORAGE | ASM_STORAGE
 oracle_storage_type: ASM_STORAGE
-
-oracle_asm_syspass: Oracle123
 
 asm_data_group: DATA
 
