@@ -1,8 +1,5 @@
 ---
 
-- include_vars: secrets.yml
-  no_log: true
-
 - name: Copy the "postprovstalone.sql" to server
   copy: 
     src: postprovstalone.sql

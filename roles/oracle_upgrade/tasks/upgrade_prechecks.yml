@@ -1,8 +1,5 @@
 ---
 
-- include_vars: secrets.yml
-  no_log: true
-
 - import_tasks: copy_archives.yml
 
 - name: run preupgrd.sql script for {{ oracle_db_name }}
