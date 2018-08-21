@@ -8,7 +8,7 @@
      attribute 'compatible.asm' = '12.1', 'compatible.advm' = '12.1';" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
      echo "alter diskgroup EXP_DG add volume EXP_FS_VOL size 25g;" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
 
-- name: As oracle (on primary node if RAC) or From OS
+- name: As oracle (on primary node if RAC)
   block:
       - name: create "exp" directory
         become: yes
