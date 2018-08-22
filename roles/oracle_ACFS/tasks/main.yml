@@ -19,23 +19,32 @@
 
 - name: As oracle (on primary node if RAC)
   block:
-      - name: creating "acfs" file system
-        become: yes
-        become_user: '{{ oracle_user }}'
-        environment: "{{ ora_user_env }}"
-        command: |
-          /sbin/mkfs -t acfs /dev/oracleasm/disks/EXP003
-          /sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5
-        # filesystem:
-        #   fstype: acfs
-        #   dev: /dev/asm/exp_fs_vol-5
-      - name: Mount the disk
-        command: '/bin/mount -t acfs /dev/asm/exp_fs_vol-5 {{ oracle_base }}/exp'
-        # mount:
-        #   path: /u01/app/oracle/exp
-        #   src: /dev/asm/exp_fs_vol-5
-        #   fstype: acfs
-        #   state: present
+  - name: get exp dev name
+    find:
+      paths: /dev/asm
+      file_type: any
+      patterns: exp_fs_vol*
+    register: find_exp_dev
+    failed_when: find_exp_dev.matched == 0
+
+  - name: set exp_dev
+    set_fact:
+      exp_dev: "{{ find_exp_dev.files[0].path }}"
+
+  - name: creating "acfs" file system
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: /sbin/mkfs -t acfs {{ exp_dev }}
+    # filesystem:
+    #   fstype: acfs
+    #   dev: /dev/asm/exp_fs_vol-5
+  - name: Mount the disk
+    command: /bin/mount -t acfs {{ exp_dev }} {{ oracle_base }}/exp
+    # mount:
+    #   path: /u01/app/oracle/exp
+    #   src: /dev/asm/exp_fs_vol-5
+    #   fstype: acfs
+    #   state: present
   when: inventory_hostname == master_node
 
 - name: Mount on additional nodes (if any)
