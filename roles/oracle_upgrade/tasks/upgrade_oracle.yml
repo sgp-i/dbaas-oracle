@@ -1,5 +1,8 @@
 ---
 
+- include_vars: secrets.yml
+  no_log: true
+
 - name: upgrade oracle
   become: yes
   become_user: "{{ oracle_user }}"
@@ -15,3 +18,9 @@
     done
   args:
     executable: /bin/bash
+  no_log: true
+  register: oracle_upgrade
+
+- name: Protected Output - upgrade oracle                                       
+  debug:                                                                  
+    var: "oracle_upgrade | combine({'cmd': oracle_upgrade.cmd | replace(oracle_db_syspass, '<PASSWORD HIDDEN>')})"
