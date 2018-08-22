@@ -22,6 +22,5 @@
     delegate_to: localhost
     lineinfile:
       path: /apex/unsent_json_body/{{ ansible_hostname }}/upload_log.json
-      line: '{"checklist_id": "{{ checklist_id }}"}, {"logfile_path": "{{ logfile_path }}"}'
+      line: '{"checklist_id": {{ checklist_id | to_json }} }, {"logfile_path": {{ logfile_path | to_json }} }'
       create: yes
-    when: log_insrt_response.status == 500 or log_insrt_response.status == -1

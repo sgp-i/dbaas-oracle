@@ -1,0 +1,16 @@
+---
+
+- name: Run Opatch
+  environment: "{{ ora_user_env }}"
+  command: $ORACLE_HOME/OPatch/opatchauto apply {{ pstage }}/{{ patch_num }} {{ opatch_flags }}
+  register: opatch_apply
+
+- name: save opatch apply stdout
+  copy:
+    dest: "{{ oracle_tmp }}/opatch_apply.out"
+    content: "{{ opatch_apply.stdout }}"
+
+- name: save opatch prereq stderr
+  copy:
+    dest: "{{ oracle_tmp }}/opatch_apply.err"
+    content: "{{ opatch_apply.stderr }}"

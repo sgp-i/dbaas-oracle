@@ -30,6 +30,7 @@
     owner: "{{ oracle_user }}"
     src: 12c_create_db_rsp.j2
     dest: "{{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp"
+  diff: false
 
 - import_role:
     name: oracle_api_services

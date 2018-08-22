@@ -1,0 +1,21 @@
+---
+
+oracle_version: 12.1.0.2
+
+grid_version: 12.1.0.2
+
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
+
+oracle_db_home: db_1 
+
+oracle_db_name: db
+
+gi_sid: +ASM
+
+patch_type: ""
+
+opatch_flags: ""
+
+oracle_installer_path: /ansible
