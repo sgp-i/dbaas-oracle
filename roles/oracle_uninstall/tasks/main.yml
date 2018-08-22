@@ -28,3 +28,11 @@
   file:
     path: "{{ oracle_home }}"
     state: absent
+
+##########################################################
+## Need details on what to clean out of these files:    ##
+## - tnsnames.ora                                       ##
+## - protocol.ora                                       ##
+## - listener.ora                                       ##
+## - /etc/oratab                                        ##
+##########################################################
