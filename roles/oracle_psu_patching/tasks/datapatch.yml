@@ -1,0 +1,18 @@
+---
+
+- name: Run datapatch
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: $OPATCHDIR/datapatch -verbose
+  register: datapatch
+
+- name: save datapatch stdout
+  copy:
+    dest: "{{ oracle_tmp }}/datapatch.out"
+    content: "{{ datapatch.stdout }}"
+
+- name: save datapatch stderr
+  copy:
+    dest: "{{ oracle_tmp }}/datapatch.err"
+    content: "{{ datapatch.stderr }}"

@@ -1,16 +1,28 @@
-- import_tasks: db_checklist_insertion.yml
-  when: inventory_hostname == master_node
+- name: insert new checklist entry
+  include_tasks: db_checklist_insertion.yml
+  when: db_chklst_json_body.new_entry
 
-- name: update the json data using PUT call
-  uri:
-    url:  "{{ apex_url }}/db_check_list/{{ checklist_id }}"
-    validate_certs: no  # should be removed after https certs becomes renewed
-    method: PUT
-    body_format: json
-    body: "{{ db_chklst_json_body }}"
-    headers:
-        Content-Type: "application/json"
-  when:
-  - inventory_hostname == master_node 
-  - checklist_id is defined
-  - checklist_id != ""
+- name: Checklist Update
+  block:
+  - name: update the json data using PUT call
+    uri:
+      url:  "{{ apex_url }}/db_check_list/{{ checklist_id }}"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: PUT
+      body_format: json
+      body: "{{ db_chklst_json_body }}"
+      register: checklist_update_response
+      headers:
+          Content-Type: "application/json"
+
+  rescue:
+  - name: Store the Json If APEX Server Is Down
+    delegate_to: localhost
+    lineinfile:
+      path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_chklst_updates.json"
+      line: '{
+                "db_id": "{{ db_id }}",
+                "checklist_id": "{{ checklist_id }}",
+                "update": {{ db_chklst_json_body | to_json }} 
+              }'
+      create: yes
