@@ -1,5 +1,13 @@
 ---
 
+- name: get asm disk paths - {{ asm_data_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_data_pattern }}"
+    use_regex: no
+  register: asm_data_paths_find_result
+
 - name: create cluster_node_string
   set_fact:
     cluster_node_string: "{{ cluster_node_string | default([]) }} + [ '{{ hostvars[node_name]['ansible_hostname'] }}' ]"
