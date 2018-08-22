@@ -1,4 +1,12 @@
 ---
+
+- name: create "exp" directory
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: ‘{{ oracle_base }}/exp’
+    state: directory
+
 - name : From ASM-creating diskgroup
   become: yes
   become_user: '{{ oracle_user }}'
@@ -10,13 +18,6 @@
 
 - name: As oracle (on primary node if RAC)
   block:
-      - name: create "exp" directory
-        become: yes
-        become_user: '{{ oracle_user }}'
-        environment: "{{ ora_user_env }}"
-        file:
-          path: ‘{{ oracle_base }}/exp’
-          state: directory
       - name: creating "acfs" file system
         become: yes
         become_user: '{{ oracle_user }}'
@@ -45,13 +46,6 @@
 
 - name: From OS
   block:
-      - name: create "exp" directory
-        become: yes
-        become_user: '{{ oracle_user }}'
-        environment: "{{ ora_user_env }}"
-        file:
-          path: ‘{{ oracle_base }}/exp’
-          state: directory
       - name: creating "acfs" file system
         become: yes
         become_user: '{{ oracle_user }}'
