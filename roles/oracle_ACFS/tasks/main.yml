@@ -35,14 +35,23 @@
     become_user: '{{ oracle_user }}'
     environment: "{{ ora_user_env }}"
     command: /sbin/mkfs -t acfs {{ exp_dev }}
+    ###################################################################
+    ## 'filesystem' module doesn't currently support ACFS            ##
+    ## The commented task below will work once that support is added ##
+    ###################################################################
     # filesystem:
     #   fstype: acfs
-    #   dev: /dev/asm/exp_fs_vol-5
+    #   dev: "{{ exp_dev }}"
+
   - name: Mount the disk
     command: /bin/mount -t acfs {{ exp_dev }} {{ oracle_base }}/exp
+    ###################################################################
+    ## 'mount' module doesn't currently support ACFS                 ##
+    ## The commented task below will work once that support is added ##
+    ###################################################################
     # mount:
-    #   path: /u01/app/oracle/exp
-    #   src: /dev/asm/exp_fs_vol-5
+    #   path: {{ oracle_base }}/exp
+    #   src: {{ exp_dev }}
     #   fstype: acfs
     #   state: present
   when: inventory_hostname == master_node
