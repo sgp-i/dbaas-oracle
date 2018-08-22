@@ -1,5 +1,12 @@
 ---
 
+- name: ensure product to deinstall has been specified
+  fail:
+    msg: Please pass either 'database' or 'grid' for deinstall_product
+  when: deinstall_product is not defined or
+        (deinstall_product != 'database' and
+        deinstall_product != 'grid')
+
 - name: get asm disk paths - {{ asm_data_group }}
   find:
     paths: "{{ asm_disk_location }}"
@@ -15,24 +22,4 @@
   loop_control:
     loop_var: node_name
 
-- name: create oracle_uninstall rsp file
-  template:
-    owner: "{{ oracle_user }}"
-    src: deinstall.rsp.j2
-    dest: "{{ oracle_tmp }}/deinstall.rsp"
-  when: inventory_hostname == master_node
-
-# - name: 
-#   become_user: {{ oracle_user }}
-#   command: "{{ oracle_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/deinstall.rsp"
-#   register: deinstall_cmd
-
-# - name: save deinstall stdout
-#   copy:
-#     dest: "{{ oracle_tmp }}/deinstall_cmd.out"
-#     content: "{{ deinstall_cmd.stdout }}"
-
-# - name: save deinstall stderr
-#   copy:
-#     dest: "{{ oracle_tmp }}/deinstall_cmd.err"
-#     content: "{{ deinstall_cmd.stderr }}" 
+- include_tasks: deinstall.yml
