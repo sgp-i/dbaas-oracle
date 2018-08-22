@@ -1,5 +1,5 @@
 - name: run the deinstall script
-  shell: "{{ grid_home }}/deinstall/deinstall"
+  shell: "{{ oracle_home }}/deinstall/deinstall"
   
 
 - name: uninstallation of grid

@@ -8,10 +8,6 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_version: 12.1.0.2
 
-oracle_grid_version: 12.1.0.2
-
-grid_home: "{{ install_base }}/{{ oracle_grid_version }}/grid"
-
 asm_sid: +ASM
 
 asm_disk_location: /dev/oracleasm/disks

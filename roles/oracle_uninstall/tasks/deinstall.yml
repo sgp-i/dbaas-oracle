@@ -9,7 +9,7 @@
 
 - name: 
   become_user: "{{ oracle_user }}"
-  command: "{{ grid_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
+  command: "{{ oracle_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
   register: "{{ deinstall_product }}_deinstall_cmd"
 
 - name: save deinstall stdout
