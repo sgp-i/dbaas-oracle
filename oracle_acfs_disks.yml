@@ -1,0 +1,9 @@
+---
+
+- name: upgrade oracle 11g database to 12c database
+  hosts: '{{ host }}'
+  become: yes
+  any_errors_fatal: true
+  tasks:
+  - import_role:
+      name: oracle_ACFS
