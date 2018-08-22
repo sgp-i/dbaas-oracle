@@ -7,14 +7,15 @@
     path: ‘{{ oracle_base }}/exp’
     state: directory
 
-- name : From ASM-creating diskgroup
-  become: yes
+- name: add create_exp_disk.sql script
+  template:
+    src: create_exp_disk.sql.j2
+    dest: "{{ oracle_tmp }}/create_exp_disk.sql"
+
+- name: create ACFS Disk in ASM
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  shell: |
-     echo "create diskgroup EXP_DG external redundancy disk '{{ oracle_external_disk }}/EXP001','{{ oracle_external_disk }}/EXP002','{{ oracle_external_disk }}/EXP003'
-     attribute 'compatible.asm' = '12.1', 'compatible.advm' = '12.1';" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
-     echo "alter diskgroup EXP_DG add volume EXP_FS_VOL size 25g;" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
+  command: sqlplus / as sysasm @{{ oracle_tmp }}/create_exp_disk.sql
 
 - name: As oracle (on primary node if RAC)
   block:
@@ -39,10 +40,15 @@
 
 - name: Mount on additional nodes (if any)
   block:
-  - name: As oracle (on all other nodes if RAC) From ASM
+  - name: add mount_exp_disk.sql script
+    copy:
+      src: mount_exp_disk.sql
+      dest: "{{ oracle_tmp }}/mount_exp_disk.sql"
+
+  - name: mount ACFS disk in ASM
     become_user: '{{ oracle_user }}'
     environment: "{{ ora_user_env }}"
-    shell: echo "alter diskgroup EXP_DG mount;" | sqlplus sys/{{ oracle_db_syspass }} as sysasm
+    command: sqlplus / as sysasm @{{ oracle_tmp }}/mount_exp_disk.sql
 
   - name: creating "acfs" file system
     become_user: '{{ oracle_user }}'
