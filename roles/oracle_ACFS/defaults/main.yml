@@ -1,35 +1,11 @@
 ---
-rac_install: false
 
-oracle_base: /u01/app/oracle
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
 
 oracle_external_disk: /dev/oracleasm/disks
 
-master_node: "{{ ansible_play_hosts | first }}"
-
 oracle_version: 12.1.0.2
 
-oracle_db_home: db_1
-
-# location for temporary files
-oracle_tmp: /u01/tmp/{{ oracle_version }}
-
-oracle_user: oracle
-
 oracle_db_name: +ASM
-
-# password for the sysdba
-oracle_db_syspass: oracle123
-
-oracle_home_ACFS: /u01/app/12.1.0.2/grid
-
-# oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
-
-# shell environment for the oracle user
-ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home_ACFS }}"
-  NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home_ACFS }}/bin:{{ ansible_env.PATH }}"
