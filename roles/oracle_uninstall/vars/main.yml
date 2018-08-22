@@ -11,3 +11,5 @@ rac_install: "{% if ansible_play_hosts | length > 1 -%}true
               {%- endif %}"
 
 oracle_user: oracle
+
+oracle_dba_group: dba

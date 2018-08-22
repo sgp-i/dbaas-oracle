@@ -20,8 +20,6 @@ asm_data_group: DATA
 
 asm_data_pattern: D*
 
-asm_disk_string: "{{ asm_data_paths_find_result | json_query('files[].path') | join(',') }}"
-
 rdbms_name: "{{ rdbms_name | mandatory }}"
 
 uninstallation_type: "{{ uninstallation_type | mandatory  }}" # if set to standalone 
