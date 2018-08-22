@@ -23,3 +23,8 @@
     loop_var: node_name
 
 - include_tasks: deinstall.yml
+
+- name: cleanup ORACLE_HOME directory
+  file:
+    path: "{{ oracle_home }}"
+    state: absent
