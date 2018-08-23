@@ -3,14 +3,11 @@
 - include_tasks: get_host_code.yml
   when: host_code is not defined
 
-- include_tasks: get_host_id.yml
-  when: host_id is not defined
-
 - include_vars: var_host_inventory_insertion.yml
 
-- name: Complete Tasks Of Host Inventory Insertion
+- name: POST in V_HOST_INV_TBL
   block: 
-  - name: Make a POST call to insert host details in V_HOST_INV_TBL
+  - name: Insert {{ ansible_hostname }} into Host Inventory
     uri:
       url: "{{ apex_url }}/insert_host_inventory"
       validate_certs: no  # should be removed after https certs becomes renewed
@@ -29,7 +26,4 @@
       line: "{{ host_inventory_insrt_body  | to_json }}"
       create: yes
     when: v_host_detail_insertion_response.status == "500" or  v_host_detail_insertion_response.status == -1
-
-  when: host_id == ""
-
 
