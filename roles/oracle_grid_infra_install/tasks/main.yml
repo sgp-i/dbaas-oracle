@@ -9,8 +9,9 @@
     tasks_from: "{{ checklist_task }}_checklist_update.yml"
   vars:
     chklst_json_body:
-      new_entry: False
-      checklist_type: "5" 
+      new_entry: True
+      checklist_type: "5"
+      category_type: Install
       gi_install_status: "PENDING"
   tags:
   - apex_api

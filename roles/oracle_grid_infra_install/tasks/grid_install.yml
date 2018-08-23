@@ -7,6 +7,7 @@
     chklst_json_body:
       new_entry: False
       checklist_type: '9'
+      category_type: Install
       gi_install_status: IN PROGRESS
   tags:
   - apex_api

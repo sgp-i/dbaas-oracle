@@ -6,7 +6,8 @@
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "9" 
+      checklist_type: "5"
+      category_type: Install
       gi_install_status: IN_PROGRESS
   tags:
   - apex_api
