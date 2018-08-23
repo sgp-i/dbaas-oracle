@@ -42,7 +42,7 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    host_chklst_json_body:
+chklst_json_body:
        new_entry: False
        db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
                         hostvars[master_node]['db_install']['failed'] -%}FAILED

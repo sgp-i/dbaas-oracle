@@ -7,7 +7,7 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
     vars:
-      host_chklst_json_body:
+chklst_json_body:
         new_entry: False
         checklist_type: "2"
         db_install_status: "IN PROGRESS"

@@ -31,7 +31,7 @@
       name: oracle_api_services
       tasks_from: host_checklist_update.yml
     vars:
-      host_chklst_json_body:
+      chklst_json_body:
         new_entry: False
         cluster_verify: "N"
 
@@ -46,7 +46,7 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    host_chklst_json_body:
+    chklst_json_body:
       new_entry: False
       cluster_verify: "Y" 
   tags:

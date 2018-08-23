@@ -36,7 +36,7 @@
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
   vars:
-    db_chklst_json_body:
+chklst_json_body:
       new_entry: True
       checklist_type: "8" 
       db_install_status: "IN PROGRESS"
@@ -69,7 +69,7 @@
       name: oracle_api_services
       tasks_from: db_checklist_update.yml
     vars:
-      db_chklst_json_body:
+chklst_json_body:
         new_entry: False
         db_install_status: "FAILED"
     tags:
@@ -83,7 +83,7 @@
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
   vars:
-    db_chklst_json_body:
+chklst_json_body:
       new_entry: False
       db_install_status: "SUCCESSFUL"
   tags:
