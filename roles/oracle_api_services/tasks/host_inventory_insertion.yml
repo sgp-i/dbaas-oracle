@@ -1,13 +1,9 @@
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_code.yml
+- include_tasks: get_host_code.yml
   when: host_code is not defined
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_id.yml
+- include_tasks: get_host_id.yml
   when: host_id is not defined
 
 - include_vars: var_host_inventory_insertion.yml

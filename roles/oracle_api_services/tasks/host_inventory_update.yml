@@ -1,6 +1,4 @@
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_id.yml
+- include_tasks: get_host_id.yml
   when: host_id is not defined
 
 - name: generate json_body
