@@ -27,9 +27,9 @@
     content: "{{ cluvfy_results.stderr }}"
 
 - block:
-  - import_role:
+  - include_role:
       name: oracle_api_services
-      tasks_from: host_checklist_update.yml
+      tasks_from: "{{ checklist_task }}_checklist_update.yml"
     vars:
       chklst_json_body:
         new_entry: False
@@ -42,9 +42,9 @@
       msg: "Cluster Verify failed"
   when: cluvfy_results.rc != 0
 
-- import_role:
+- include_role:
     name: oracle_api_services
-    tasks_from: host_checklist_update.yml
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
   vars:
     chklst_json_body:
       new_entry: False
