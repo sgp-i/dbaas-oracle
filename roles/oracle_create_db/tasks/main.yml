@@ -11,9 +11,7 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: db_inventory_insertion.yml
-  vars:
-   oracle_db_name: "{{ oracle_db_name }}"
+    tasks_from: db_inventory_update.yml
   tags:
   - apex_api
 
