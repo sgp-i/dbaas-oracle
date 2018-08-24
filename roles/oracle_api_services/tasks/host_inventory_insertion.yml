@@ -17,6 +17,11 @@
       headers:
           Content-Type: "application/json"
     register: v_host_detail_insertion_response
+  
+  - name: set host_id
+    set_fact:
+      host_id: "{{ v_host_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+
 
   rescue:
   - name: Store the Json If APEX Server Is Down

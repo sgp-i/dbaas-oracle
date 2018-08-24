@@ -19,6 +19,11 @@
   - name: Get The HOST_CODE From Response
     set_fact:
       host_code: "{{ hostvars[master_node].v_cluster_membr_detail_insertion_response.json | json_query('HOST_CODE') }}"
+  
+  - name: set cluster_id
+    set_fact:
+      cluster_id: "{{ v_cluster_membr_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+    when: inventory_hostname == master_node
       
   rescue:
   - name: Store the Json If APEX Server Is Down
