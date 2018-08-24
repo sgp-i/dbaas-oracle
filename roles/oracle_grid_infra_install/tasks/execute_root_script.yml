@@ -20,11 +20,18 @@
       content: "{{ root_script.stderr | default('') }}"
     when: root_script.changed
 
-  ## Need actual log location ##
-  # - import_role:
-  #     name: oracle_api_services
-  #     tasks_from: upload_log.yml
-  #   vars:
-  #     logfile_path: "{{ oracle_base }}/path/to/log"
-  #   tags:
-  #   - apex_api
+  # Need actual log location ##
+  # the log file is /u01/app/12.1.0.2/grid/install/root_dbtest04.techlab.com_2018-08-24_03-31-16.log 
+  - name: Get files in a folder
+    find:
+      paths: "{{ oracle_grid_home }}/install/"
+      patterns: "root_{{ ansible_hostname }}*.log"
+    register: log_files
+
+  - import_role:
+      name: oracle_api_services
+      tasks_from: upload_log.yml
+    vars:
+      logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+    tags:
+    - apex_api

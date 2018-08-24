@@ -63,14 +63,15 @@
                   "failed to run command ‘dbca’" in create_db.stdout or 
                   create_db.rc != 0'
 
-  ## Need actual log location ##
-  # - import_role:
-  #     name: oracle_api_services
-  #     tasks_from: upload_log.yml
-  #   vars:
-  #     logfile_path: "{{ oracle_base }}/path/to/log"
-  #   tags:
-  #   - apex_api
+  # Need actual log location ##
+  # path location  /u01/app/oracle/cfgtoollogs/dbca/db1/db1.log
+  - import_role:
+      name: oracle_api_services
+      tasks_from: upload_log.yml
+    vars:
+      logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
+    tags:
+    - apex_api
 
   rescue:
   - import_role:
