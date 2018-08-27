@@ -13,6 +13,7 @@
     - name: get db details
       command: grep "^{{ oracle_db_name }}:" /etc/oratab
       ignore_errors: yes
+      changed_when: false
       register: db_details
 
     - name: set oracle_home
