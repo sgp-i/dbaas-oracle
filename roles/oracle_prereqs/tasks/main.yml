@@ -239,7 +239,7 @@
     - check_name: HugePages Total Size
       expected_value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
       actual_value: "{{ huge_page_total_size.stdout | int * 2048 }}"
-      status: "{% if huge_page_total_size.stdout * | int 2048 < ansible_memtotal_mb * 1024 // 2 -%}FAILED
+      status: "{% if huge_page_total_size.stdout | int * 2048 < ansible_memtotal_mb * 1024 // 2 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Ignored PBIS users
