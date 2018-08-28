@@ -258,11 +258,11 @@
                {%- endif %}"
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
-      actual_value: "{% if ansible_mounts | json_query('[?mount == `/`]') == [] -%}unmounted
-                     {%- else -%}{{ (ansible_mounts | json_query('[?mount == `/`].size_total|[0]') | int / 1024 | pow(3)) | round | int }} GiB
+      actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
+                     {%- else -%}{{ (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int }} GiB
                      {%- endif -%}"
-      status: "{% if ansible_mounts | json_query('[?mount == `/`]') == [] or
-                     (ansible_mounts | json_query('[?mount == `/`].size_total|[0]') | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
+      status: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] or
+                     (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
  
