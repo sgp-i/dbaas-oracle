@@ -178,7 +178,7 @@
                      (ansible_memtotal_mb | int >= 65536 and 
                       ansible_memtotal_mb | int < 262144 and
                       ansible_swaptotal_mb < 16384) or
-                     (ansible_memtotal_mb | int <= 262144 and
+                     (ansible_memtotal_mb | int >= 262144 and
                       ansible_swaptotal_mb < 32768) -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
