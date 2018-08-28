@@ -237,11 +237,11 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: HugePages Total Size
-      expected_value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
-      actual_value: "{{ huge_page_total_size.stdout | int * 2048 }}"
-      status: "{% if huge_page_total_size.stdout | int * 2048 < ansible_memtotal_mb * 1024 // 2 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
+      expected_value: "{{ ansible_memtotal_mb // 2 }}"
+      actual_value: "{{ huge_page_total_size.stdout | int * 2 }}"
+      status: "{% if huge_page_total_size.stdout | int * 2 < ansible_memtotal_mb // 2 -%}FAILED
+              {%- else -%}PASSED
+              {%- endif %}"
     - check_name: Ignored PBIS users
       expected_value: "{{ pbis.ignored_users | join(',') }}"
       actual_value: "{{ pbis_ignored_users_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
