@@ -24,3 +24,20 @@
 - name: Protected Output - upgrade oracle                                       
   debug:                                                                  
     var: "oracle_upgrade | combine({'cmd': oracle_upgrade.cmd | replace(oracle_db_syspass, '<PASSWORD HIDDEN>')})"
+
+- name: get upgrade logfile
+  find:
+    paths: "{{ oracle_base }}/cfgtoollogs/dbua/logs"
+    file_type: file
+    age: -10m
+    age_stamp: mtime
+    patterns: silent.log_*
+  register: upgrade_log_file
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: upload_log.yml
+  vars:
+    logfile_path: "{{ upgrade_log_file.files[0].path }}"
+  tags:
+  - apex_api

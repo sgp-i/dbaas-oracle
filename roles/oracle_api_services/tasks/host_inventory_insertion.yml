@@ -1,20 +1,13 @@
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_code.yml
+- include_tasks: get_host_code.yml
   when: host_code is not defined
-
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_id.yml
-  when: host_id is not defined
 
 - include_vars: var_host_inventory_insertion.yml
 
-- name: Complete Tasks Of Host Inventory Insertion
+- name: POST in V_HOST_INV_TBL
   block: 
-  - name: Make a POST call to insert host details in V_HOST_INV_TBL
+  - name: Insert node into Host Inventory
     uri:
       url: "{{ apex_url }}/insert_host_inventory"
       validate_certs: no  # should be removed after https certs becomes renewed
@@ -24,6 +17,11 @@
       headers:
           Content-Type: "application/json"
     register: v_host_detail_insertion_response
+  
+  - name: set host_id
+    set_fact:
+      host_id: "{{ v_host_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+
 
   rescue:
   - name: Store the Json If APEX Server Is Down
@@ -33,7 +31,4 @@
       line: "{{ host_inventory_insrt_body  | to_json }}"
       create: yes
     when: v_host_detail_insertion_response.status == "500" or  v_host_detail_insertion_response.status == -1
-
-  when: host_id == ""
-
 
