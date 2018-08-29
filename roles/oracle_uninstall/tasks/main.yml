@@ -22,7 +22,16 @@
   loop_control:
     loop_var: node_name
 
-- include_tasks: prep_{{ deinstall_product }}_rsp.yml
+- name: get db details
+  command: grep ":{{ oracle_home }}:" /etc/oratab
+  register: db_details
+  ignore_errors: yes
+  changed_when: False
+
+- name: create db_list
+  set_fact:
+    db_list: "{{ db_list }} + [ '{{ item | regex_replace('^([^:]*).*','\\1') }}' ]"
+  loop: "{{ db_details.stdout_lines }}"
 
 - include_tasks: deinstall.yml
 
