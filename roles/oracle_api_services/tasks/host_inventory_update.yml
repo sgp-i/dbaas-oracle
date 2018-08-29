@@ -1,19 +1,26 @@
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_id.yml
+- include_tasks: get_host_id.yml
   when: host_id is not defined
 
-- name: generate json_body
-  set_fact: 
-    host_inv_json_body: '{{ host_inv_json_body | default({}) | combine({ item.key: item.value }) }}'
-  with_items: "{{ update_host_inv_body }}"
+- include_tasks: host_inventory_insertion.yml
+  when: host_id == ""
 
-- name: execute 'update the Host Inventory' API call
-  uri:
-    url: "{{ apex_url }}/host_inventory/{{ host_id }}"
-    validate_certs: no  # should be removed after https certs becomes renewed
-    method: PUT
-    body_format: json
-    body: "{{ host_inv_json_body }}"
-    headers:
-      Content-Type: "application/json"
+- name: PUT into V_HOST_INV_TBL
+  block:
+  - name: Update node in Host Inventory
+    uri:
+      url: "{{ apex_url }}/host_inventory/{{ host_id }}"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: PUT
+      body_format: json
+      body: "{{ host_invntry_update_body }}"
+      headers:
+        Content-Type: "application/json"
+  rescue:
+  - name: Store the Json If APEX Server Is Down
+    delegate_to: localhost
+    lineinfile:
+      path: "{{ json_backup_dir }}/host_inv_insertion.json"
+      line: "{{ host_invntry_update_body  | to_json }}"
+      create: yes
+
+  when: host_invntry_update_body is defined   

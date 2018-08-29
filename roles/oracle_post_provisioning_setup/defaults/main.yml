@@ -4,14 +4,16 @@ oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_home: db_1
+oracle_db_name: db
+
+oracle_db_home: db_2
 
 # location for temporary files
-oracle_tmp: /u01/tmp/{{ oracle_version }}
+oracle_tmp: /u01/tmp/{{ oracle_db_name }}
 
 oracle_user: oracle
 
-oracle_db_name: db
+oracle_group: oinstall
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
@@ -23,4 +25,5 @@ ora_user_env:
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+  
 
