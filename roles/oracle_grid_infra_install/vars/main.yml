@@ -16,6 +16,10 @@ ora_user_env:
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
 
+checklist_task: "{% if ansible_play_hosts == 1 -%}host
+                 {%- elif ansible_play_hosts > 1 -%}cluster
+                 {%- endif %}"
+
 cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
