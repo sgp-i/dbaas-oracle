@@ -3,14 +3,14 @@
 - name: 
   become_user: "{{ oracle_user }}"
   command: "{{ oracle_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
-  register: "{{ deinstall_product }}_deinstall_cmd"
+  register: deinstall_cmd
 
 - name: save deinstall stdout
   copy:
     dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall_cmd.out"
-    content: "{{ {{ deinstall_product }}_deinstall_cmd.stdout }}"
+    content: "{{ deinstall_cmd.stdout }}"
 
 - name: save deinstall stderr
   copy:
     dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall_cmd.err"
-    content: "{{ {{ deinstall_product }}_deinstall_cmd.stderr }}" 
+    content: "{{ deinstall_cmd.stderr }}" 
