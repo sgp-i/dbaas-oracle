@@ -1,0 +1,21 @@
+- name: CREATE RMAN SERVICE
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Check the Status DB
+    command: srvctl status database -d {{ db_name }} -v
+    register: dbExists
+  
+  - name: Add Service
+    command: srvctl add service -s {{ db_ServiceName }} -d {{ db_name }}
+    when: '"Instance status: Open" in dbExists.stdout'
+    ignore_errors: yes
+
+  - name: Start Service
+    command: srvctl start service -d {{ db_name }} -s {{ db_ServiceName }}
+    ignore_errors: yes
+    
+
+
+    
