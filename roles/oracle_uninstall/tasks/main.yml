@@ -22,6 +22,8 @@
   loop_control:
     loop_var: node_name
 
+- include_tasks: prep_{{ deinstall_product }}_rsp.yml
+
 - include_tasks: deinstall.yml
 
 - name: cleanup ORACLE_HOME directory
