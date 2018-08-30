@@ -1,4 +1,0 @@
-SET PAGES 50000 LINES 200 LONG 50000;
-SET SQLNUMBER OFF;
-INSERT INTO DB_ADMIN.BACKUP_CONFIG VALUES(920824827,'demo11','RMANBACKUP','ja8shd7d','CATALOG,'r0123#','dbtest08.techlab.com','db_test07’,NULL,'/u01/app/oracle/rman/scripts/log/',NULL,'YES','NO',0,'Y','SYS',sysdate);
-COMMIT;
