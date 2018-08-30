@@ -314,6 +314,7 @@
 - name: set missing_grid_disks variable
   set_fact:
     missing_grid_disks: []
+
 - name: rac specific disk check
   block: 
     - name: check grid disks
@@ -486,37 +487,32 @@
                {%- endif %}" 
     - check_name: Data Disks that are not present
       expected_value: ""
-      actual_value: "{{ missing_data_disks }}"
-      status: "{% if missing_data_disks is defined and
-                      missing_data_disks | length > 0 -%}FAILED
+      actual_value: "{{ missing_data_disks | default([]) }}"
+      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
     - check_name: Reco Disks that are not present
       expected_value: ""
-      actual_value: "{{ missing_reco_disks }}"
-      status: "{% if missing_reco_disks is defined and
-                      missing_reco_disks | length > 0 -%}FAILED
+      actual_value: "{{ missing_reco_disks | default([]) }}"
+      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
     - check_name: Exp Disks that are not present
       expected_value: ""
-      actual_value: "{{ missing_exp_disks }}"
-      status: "{% if missing_exp_disks is defined and
-                      missing_exp_disks | length > 0 -%}FAILED
+      actual_value: "{{ missing_exp_disks | default([]) }}"
+      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
     - check_name: GG Disks that are not present
       expected_value: ""
-      actual_value: "{{ missing_gg_disks }}"
-      status: "{% if missing_gg_disks is defined and
-                      missing_gg_disks | length > 0 -%}FAILED
+      actual_value: "{{ missing_gg_disks | default([]) }}"
+      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
     - check_name: grid Disks that are not present
       expected_value: ""
-      actual_value: "{{ missing_grid_disks }}"
-      status: "{% if missing_grid_disks is defined and
-                      missing_grid_disks | length > 0 and installation_type == 'rac' -%}FAILED
+      actual_value: "{{ missing_grid_disks | default([]) }}"
+      status: "{% if missing_grid_disks | default([]) | length > 0 and installation_type == 'rac' -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"  
     - check_name: /dev/shm Size
@@ -526,8 +522,8 @@
                 {%- else -%}PASSED
                {%- endif %}"         
 - debug:
-    var: checklist | json_query('[?status == `FAILED`]')
-    verbosity: 1
+    var: checklist #| json_query('[?status == `FAILED`]')
+    # verbosity: 1
   
 - name: create tmp dir
   file:
