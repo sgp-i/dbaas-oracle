@@ -143,6 +143,24 @@
   changed_when: False
   register: huge_page_total_size
 
+- name: check oracle user
+  command: grep {{ oracle_user }} /etc/passwd
+  changed_when: False
+  failed_when: False
+  register: oracle_user_check
+- set_fact:
+    oracle_user_check: "{% if oracle_user_check.rc == 0 -%}Local User Exists
+                        {%- else -%}Local User Does Not Exist
+                        {%- endif %}"
+
+- name: check oracle groups
+  command: groups {{ oracle_user }}
+  changed_when: False
+  ignore_errors: True
+  register: oracle_group_check
+- set_fact:
+    oracle_group_check: "{{ oracle_group_check.stdout | regex_replace(oracle_user + ' : (.*)', '\\1') }}"
+
 - name: Get The Ignored Users In pbis
   slurp:
     src: /etc/pbis/user-ignore
@@ -360,6 +378,18 @@
       expected_value: "{{ ansible_memtotal_mb // 2 }}"
       actual_value: "{{ huge_page_total_size.stdout | int * 2 }}"
       status: "{% if huge_page_total_size.stdout | int * 2 < ansible_memtotal_mb // 2 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Oracle user check
+      expected_value: Local User Exists
+      actual_value: "{{ oracle_user_check}}"
+      status: "{% if oracle_user_check != 'Local User Exists' -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Oracle group check
+      expected_value: "{{ oracle_groups | join(',') }}"
+      actual_value: "{{ oracle_group_check }}"
+      status: "{% if oracle_group_check.split(' ') | difference(oracle_groups) | length > 0 -%}FAILED
               {%- else -%}PASSED
               {%- endif %}"
     - check_name: Ignored PBIS users
