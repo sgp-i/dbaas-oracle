@@ -72,7 +72,7 @@
       src: Backup-Config-Values.sql
       dest: "{{ oracle_tmp }}"
 
-  - name: run postprovstalone.sql script
+  - name: run Backup-Config-Values.sql script
     command: "sqlplus / as sysdba  @{{ oracle_tmp }}/Backup-Config-Values.sql"
   
 
