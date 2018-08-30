@@ -268,16 +268,19 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Swap Size
-      expected_value: "{% if ansible_memtotal_mb | int > 65536 and 
+      expected_value: "{% if ansible_memtotal_mb | int < 65536 -%}8192 or higher
+                       {%- elif ansible_memtotal_mb | int >= 65536 and 
                               ansible_memtotal_mb | int < 262144 -%}16384 or higher
-                      {%- elif ansible_memtotal_mb | int < 262144 -%}32768 or higher
+                       {%- elif ansible_memtotal_mb | int >= 262144 -%}32768 or higher
                       {%- else -%}0
                       {%- endif %}"
       actual_value: "{{ ansible_swaptotal_mb }}"
-      status: "{% if (ansible_memtotal_mb | int > 65536 and 
+      status: "{% if (ansible_memtotal_mb | int < 65536 and 
+                      ansible_swaptotal_mb < 8192) or
+                     (ansible_memtotal_mb | int >= 65536 and 
                       ansible_memtotal_mb | int < 262144 and
                       ansible_swaptotal_mb < 16384) or
-                      (ansible_memtotal_mb | int < 262144 and
+                     (ansible_memtotal_mb | int >= 262144 and
                       ansible_swaptotal_mb < 32768) -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
@@ -312,41 +315,41 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - check_name: Soft Files ulimit
-      expected_value: 2047
+      expected_value: 2048 or higher
       actual_value: "{{ ulimit_soft_files.stdout }}"
-      status: "{% if ulimit_soft_files.stdout | int != 2047 -%}FAILED
+      status: "{% if ulimit_soft_files.stdout | int < 2048 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Hard Files ulimit
-      expected_value: 65536
+      expected_value: 65536 or higher
       actual_value: "{{ ulimit_hard_files.stdout }}"
-      status: "{% if ulimit_hard_files.stdout | int != 65536 -%}FAILED
+      status: "{% if ulimit_hard_files.stdout | int < 65536 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Hard Processes ulimit
-      expected_value: 16384
+      expected_value: 16384 or higher
       actual_value: "{{ ulimit_hard_procs.stdout }}"
-      status: "{% if ulimit_hard_procs.stdout | int != 16384 -%}FAILED
+      status: "{% if ulimit_hard_procs.stdout | int < 16384 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Soft Stack ulimit
-      expected_value: 10240
+      expected_value: 10240 or higher
       actual_value: "{{ ulimit_soft_stack.stdout }}"
-      status: "{% if ulimit_soft_stack.stdout | int != 10240 -%}FAILED
+      status: "{% if ulimit_soft_stack.stdout | int < 10240 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Hard Stack ulimit
-      expected_value: unlimited
+      expected_value: 10240 or higher
       actual_value: "{{ ulimit_hard_stack.stdout }}"
-      status: "{% if ulimit_hard_stack.stdout != 'unlimited' -%}FAILED
+      status: "{% if ulimit_hard_stack.stdout < 10240 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: HugePages Total Size
-      expected_value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
-      actual_value: "{{ huge_page_total_size.stdout }}"
-      status: "{% if huge_page_total_size.stdout | int < ansible_memtotal_mb * 1024 // 2 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
+      expected_value: "{{ ansible_memtotal_mb // 2 }}"
+      actual_value: "{{ huge_page_total_size.stdout | int * 2 }}"
+      status: "{% if huge_page_total_size.stdout | int * 2 < ansible_memtotal_mb // 2 -%}FAILED
+              {%- else -%}PASSED
+              {%- endif %}"
     - check_name: Ignored PBIS users
       expected_value: "{{ pbis.ignored_users | join(',') }}"
       actual_value: "{{ pbis_ignored_users_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
@@ -364,10 +367,10 @@
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
       actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
-                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) }}
+                     {%- else -%}{{ (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int }} GiB
                      {%- endif -%}"
       status: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] or
-                     ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) | regex_search('[0-9]*') | int < 300 -%}FAILED
+                     (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: check nozeroconf in config of network
