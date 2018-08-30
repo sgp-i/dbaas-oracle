@@ -28,3 +28,9 @@ oracle_db_ServiceName: db_test_RMAN
 # TNSNAMES: dbtest05.techlab.com
 
 oracle_db_name_node2: demo45
+
+RMAN_user: RMANBACKUP
+
+RMAN_password: ja8shd7d
+
+RMAN_log: /u01/app/oracle/rman/scripts/log/

@@ -24,9 +24,9 @@
   when: inventory_hostname == master_node
   block:
   - name: Copy the Create-RMAN-User.sql file
-    copy: 
-      src: create-RMAN-user.sql
-      dest: "{{ oracle_tmp }}"
+    template: 
+      src: create-RMAN-user.j2
+      dest: "{{ oracle_tmp }}/create-RMAN-user.sql"
 
   - name: run Create-RMAN-User.sql script
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-RMAN-user.sql"

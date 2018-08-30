@@ -1,4 +1,4 @@
 SET PAGES 50000 LINES 200 LONG 50000;
 SET SQLNUMBER OFF;
-INSERT INTO DB_ADMIN.BACKUP_CONFIG VALUES(920824827,'{{ oracle_db_name }}','RMANBACKUP','ja8shd7d','CATALOG','r0123#','{{ ansible_play_hosts[1] }}','{{ oracle_db_name_node2 }}',NULL,'/u01/app/oracle/rman/scripts/log/',NULL,'YES','NO',0,'Y','SYS',sysdate);
+INSERT INTO DB_ADMIN.BACKUP_CONFIG VALUES(920824827,'{{ oracle_db_name }}','{{ RMAN_user }}','{{ RMAN_password }}','CATALOG','r0123#','{{ ansible_play_hosts[1] }}','{{ oracle_db_name_node2 }}',NULL,'{{ RMAN_log }}',NULL,'YES','NO',0,'Y','SYS',sysdate);
 COMMIT;
