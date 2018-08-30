@@ -61,6 +61,22 @@
                   {%- else -%}disabled
                   {%- endif -%}"
 
+- name: read NTP config
+  slurp:
+    src: /etc/sysconfig/ntpdate
+  failed_when: False
+  register: ntpd_config
+  tags: debug
+- set_fact:
+    ntpd_config: ntpd_config.content | default('') | b64decode
+  tags: debug
+- set_fact:
+    ntpd_config:
+      options: "{{ ntpd_config | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') }}"
+      sync: "{{ ntpd_config | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') }}"
+      date_options: "{{ ntpd_config | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') }}"
+  tags: debug
+
 ##########################################################
 ## If this is always mounted a specific way for Charter ##
 ## we could check that mountpoint using Ansible Facts.  ##
