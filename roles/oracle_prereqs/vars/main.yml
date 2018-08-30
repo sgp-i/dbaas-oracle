@@ -13,3 +13,30 @@ pbis:
         - root
         - oinstall
         - dba
+
+installation_type: standalone
+
+# DATA and RECO disks will be varied depending on the operational incremental expansions
+luns:
+    DATA:
+        - DATA1
+        # - DATA2
+        # - DATA3
+    RECO:
+        #- R9001
+        - DATA1
+        - R9002
+    EXP:
+        - EXP001
+        - EXP002
+        - EXP003
+    GG:
+        - GG001
+        - GG002
+        - GG003
+        
+rac_luns:
+    GRID :
+        - GRID_DISK01
+        - GRID_DISK02
+        - GRID_DISK03

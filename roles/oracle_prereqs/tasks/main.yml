@@ -157,6 +157,107 @@
   loop_control:
     loop_var: ignored_group
 
+- name: Get The config of network
+  slurp:
+    src: /etc/sysconfig/network
+  register: network_config
+
+- name: check data disks
+  stat:
+    path: /dev/oracleasm/disks/{{ data_lun }}
+  register: data_disks
+  loop: "{{ luns.DATA }}"
+  loop_control:
+    loop_var: data_lun
+
+- name: data disk that are not available
+  set_fact: 
+    missing_data_disks: "{{ missing_data_disks | default([]) }} + [ '{{ disk.data_lun }}' ]"
+  when: disk.stat.exists == false
+  loop: "{{ data_disks.results }}"
+  loop_control:
+    loop_var: disk
+
+# to calculate block size
+# blockdev --getsz /dev/oracleasm/disks/DATA1  output is 419428352
+# 419428352/2/1024/1024 = 200GB
+# https://www.tachytelic.net/2014/03/posix-size-converter/
+# the stat gives block_size as 4096 but i dont know how to convert it to the actual size
+
+
+- name: check reco disks
+  stat:
+    path: /dev/oracleasm/disks/{{ reco_lun }}
+  register: reco_disks
+  loop: "{{ luns.RECO }}"
+  loop_control:
+    loop_var: reco_lun
+
+- name: reco disk that are not available
+  set_fact: 
+    missing_reco_disks: "{{ missing_reco_disks | default([]) }} + [ '{{ disk.reco_lun }}' ]"
+  when: disk.stat.exists == false
+  loop: "{{ reco_disks.results }}"
+  loop_control:
+    loop_var: disk
+
+
+- name: check exp disks
+  stat:
+    path: /dev/oracleasm/disks/{{ exp_lun }}
+  register: exp_disks
+  loop: "{{ luns.EXP }}"
+  loop_control:
+    loop_var: exp_lun
+
+- name: exp disk that are not available
+  set_fact: 
+    missing_exp_disks: "{{ missing_exp_disks | default([]) }} + [ '{{ disk.exp_lun }}' ]"
+  when: disk.stat.exists == false
+  loop: "{{ exp_disks.results }}"
+  loop_control:
+    loop_var: disk
+
+- name: check gg disks
+  stat:
+    path: /dev/oracleasm/disks/{{ gg_lun }}
+  register: gg_disks
+  loop: "{{ luns.GG }}"
+  loop_control:
+    loop_var: gg_lun
+
+- name: gg disk that are not available
+  set_fact: 
+    missing_gg_disks: "{{ missing_gg_disks | default([]) }} + [ '{{ disk.gg_lun }}' ]"
+  when: disk.stat.exists == false
+  loop: "{{ gg_disks.results }}"
+  loop_control:
+    loop_var: disk
+- name: set missing_grid_disks variable
+  set_fact:
+    missing_grid_disks: []
+- name: rac specific disk check
+  block: 
+    - name: check grid disks
+      stat:
+        path: /dev/oracleasm/disks/{{ grid_lun }}
+      register: grid_disks
+      loop: "{{ rac_luns.GRID }}"
+      loop_control:
+        loop_var: grid_lun
+    - name: grid disk that are not available
+      set_fact: 
+        missing_grid_disks: "{{ missing_grid_disks | default([]) }} + [ '{{ disk.grid_lun }}' ]"
+      when: disk.stat.exists == false
+      loop: "{{ grid_disks.results }}"
+      loop_control:
+        loop_var: disk
+  when: 'installation_type == "rac"'
+
+- name: get huge page size
+  shell: df -h /dev/shm | awk '$1 == "tmpfs" { print $2 }' | awk -F 'G' '{print $1}'
+  register: huge_page_size
+  
 - name: generate checklist output
   set_fact:
     checklist: 
@@ -184,6 +285,12 @@
       expected_value: running
       actual_value: "{{ ansible_facts['services']['sshd.service']['state'] }}"
       status: "{% if ansible_facts['services']['sshd.service']['state'] != 'running' -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
+    - check_name: NTPD Service Status
+      expected_value: running
+      actual_value: "{{ ansible_facts['services']['ntpd.service']['state'] }}"
+      status: "{% if ansible_facts['services']['ntpd.service']['state'] != 'running' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - check_name: /var/tmp Size
@@ -263,7 +370,53 @@
                      ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | filesizeformat(true) | regex_search('[0-9]*') | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
- 
+    - check_name: check nozeroconf in config of network
+      expected_value: "NOZEROCONF=yes"
+      actual_value: "{{ network_config.content | b64decode | trim | regex_replace('\n',',') | regex_replace('#*','')}}"
+      status: "{% if 'NOZEROCONF=yes' not in network_config.content | b64decode -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}" 
+    - check_name: Data Disks that are not present
+      expected_value: ""
+      actual_value: "{{ missing_data_disks }}"
+      status: "{% if missing_data_disks is defined and
+                      missing_data_disks | length > 0 -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Reco Disks that are not present
+      expected_value: ""
+      actual_value: "{{ missing_reco_disks }}"
+      status: "{% if missing_reco_disks is defined and
+                      missing_reco_disks | length > 0 -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Exp Disks that are not present
+      expected_value: ""
+      actual_value: "{{ missing_exp_disks }}"
+      status: "{% if missing_exp_disks is defined and
+                      missing_exp_disks | length > 0 -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: GG Disks that are not present
+      expected_value: ""
+      actual_value: "{{ missing_gg_disks }}"
+      status: "{% if missing_gg_disks is defined and
+                      missing_gg_disks | length > 0 -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: grid Disks that are not present
+      expected_value: ""
+      actual_value: "{{ missing_grid_disks }}"
+      status: "{% if missing_grid_disks is defined and
+                      missing_grid_disks | length > 0 and installation_type == 'rac' -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"  
+    - check_name: Huges Page
+      expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
+      actual_value: "{{ huge_page_size.stdout | int }}"
+      status: "{% if (ansible_memtotal_mb/2000) | int != huge_page_size.stdout | int -%}FAILED
+                {%- else -%}PASSED
+               {%- endif %}"         
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
     verbosity: 1
@@ -306,6 +459,3 @@
           {%- endif %}"
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags: precheck_fail
-
-## Additional Checks from updated doc
-# /dev/shm
