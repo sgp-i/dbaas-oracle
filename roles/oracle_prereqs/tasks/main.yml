@@ -123,6 +123,20 @@
   changed_when: false
   register: ulimit_hard_stack
 
+- name: get ulimit value (soft memlock)
+  become: yes
+  become_user: "{{ oracle_user }}"
+  shell: ulimit -Sl
+  changed_when: false
+  register: ulimit_soft_memlock
+
+- name: get ulimit value (hard memlock)
+  become: yes
+  become_user: "{{ oracle_user }}"
+  shell: ulimit -Hl
+  changed_when: false
+  register: ulimit_hard_memlock
+
 ############################################################
 ## Potentially could use `sysctl` module to set hugepages ##
 ##                                                        ##
@@ -372,6 +386,18 @@
       expected_value: 10240 or higher
       actual_value: "{{ ulimit_hard_stack.stdout }}"
       status: "{% if ulimit_hard_stack.stdout < 10240 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Soft memlock ulimit
+      expected_value: "{{ (ansible_memtotal_mb * 1024 * 0.9) | round(0,'floor') | int }}"
+      actual_value: "{{ ulimit_soft_memlock.stdout }}"
+      status: "{% if ulimit_soft_memlock.stdout | int < (ansible_memtotal_mb * 1024 * 0.9) | round(0,'floor') | int -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: Hard memlock ulimit
+      expected_value: "{{ (ansible_memtotal_mb * 1024 * 0.9) | round(0,'floor') | int }}"
+      actual_value: "{{ ulimit_hard_memlock.stdout }}"
+      status: "{% if ulimit_hard_memlock.stdout  | int < (ansible_memtotal_mb * 1024 * 0.9) | round(0,'floor') | int -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: HugePages Total Size
