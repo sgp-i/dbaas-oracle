@@ -15,6 +15,18 @@
 - name: populate service facts
   service_facts:
 
+- name: check SSH Service
+  set_fact:
+    ssh_service: "{% if ansible_facts['services']['sshd.service'] is defined -%}{{ ansible_facts['services']['sshd.service']['state'] }}
+                  {%- else -%}disabled
+                  {%- endif -%}"
+
+- name: check NTP Service
+  set_fact:
+    ntp_service: "{% if ansible_facts['services']['ntpd.service'] is defined -%}{{ ansible_facts['services']['ntpd.service']['state'] }}
+                  {%- else -%}disabled
+                  {%- endif -%}"
+
 ##########################################################
 ## If this is always mounted a specific way for Charter ##
 ## we could check that mountpoint using Ansible Facts.  ##
@@ -286,14 +298,14 @@
                {%- endif %}"
     - check_name: SSH Service Status
       expected_value: running
-      actual_value: "{{ ansible_facts['services']['sshd.service']['state'] }}"
-      status: "{% if ansible_facts['services']['sshd.service']['state'] != 'running' -%}FAILED
+      actual_value: "{{ ssh_service }}"
+      status: "{% if ssh_service != 'running' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - check_name: NTPD Service Status
       expected_value: running
-      actual_value: "{{ ansible_facts['services']['ntpd.service']['state'] }}"
-      status: "{% if ansible_facts['services']['ntpd.service']['state'] != 'running' -%}FAILED
+      actual_value: "{{ ntp_service }}"
+      status: "{% if ntp_service != 'running' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - check_name: /var/tmp Size
