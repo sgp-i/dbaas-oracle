@@ -8,7 +8,8 @@
       name: oracle_uninstall
 
   ## Required vars    
-  # oracle_db_home (default: auto-generated based on next available; e.g. db_2)
+  # deinstall_product: either GRID or DATABASE
+  # oracle_db_home:  Only required for RDBMS deinstall. Home to deinstall (e.g. db_1)
 
   ## Optional vars
   # oracle_version (default: 12.1.0.2) 
