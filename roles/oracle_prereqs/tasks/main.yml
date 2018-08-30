@@ -298,9 +298,12 @@
         loop_var: disk
   when: 'installation_type == "rac"'
 
-- name: get huge page size
-  shell: df -h /dev/shm | awk '$1 == "tmpfs" { print $2 }' | awk -F 'G' '{print $1}'
-  register: huge_page_size
+- name: get shm size
+  command: df -h /dev/shm --output=size
+  changed_when: False
+  register: shm_size
+- set_fact:
+    shm_size: "{{ shm_size.stdout_lines[1] | trim | regex_replace('G', '') | int }}"
   
 - name: generate checklist output
   set_fact:
@@ -482,10 +485,10 @@
                       missing_grid_disks | length > 0 and installation_type == 'rac' -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"  
-    - check_name: Huges Page
+    - check_name: /dev/shm Size
       expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
-      actual_value: "{{ huge_page_size.stdout | int }}"
-      status: "{% if (ansible_memtotal_mb/2000) | int != huge_page_size.stdout | int -%}FAILED
+      actual_value: "{{ shm_size.stdout | int }}"
+      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size.stdout | int -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"         
 - debug:
