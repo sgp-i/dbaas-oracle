@@ -589,8 +589,8 @@
                 {%- else -%}PASSED
                {%- endif %}"   
 - debug:
-    var: checklist #| json_query('[?status == `FAILED`]')
-    # verbosity: 1
+    var: checklist | json_query('[?status == `FAILED`]')
+     verbosity: 1
   
 - name: create tmp dir
   file:
