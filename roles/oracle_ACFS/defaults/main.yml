@@ -6,6 +6,10 @@ oracle_base: "{{ install_base }}/oracle"
 
 oracle_external_disk: /dev/oracleasm/disks
 
+asm_reco_group: RECO
+
+asm_reco_pattern: R*
+
 oracle_version: 12.1.0.2
 
 oracle_db_name: +ASM
