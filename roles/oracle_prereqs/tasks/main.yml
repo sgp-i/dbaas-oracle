@@ -243,97 +243,50 @@
   register: network_config
 
 - name: check data disks
-  stat:
-    path: /dev/oracleasm/disks/{{ data_lun }}
-  register: data_disks
-  loop: "{{ luns.DATA }}"
-  loop_control:
-    loop_var: data_lun
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_data_pattern }}"
+    use_regex: no
+  register: asm_data_disks
+  tags: disks
 
-- name: data disk that are not available
-  set_fact: 
-    missing_data_disks: "{{ missing_data_disks | default([]) }} + [ '{{ disk.data_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ data_disks.results }}"
-  loop_control:
-    loop_var: disk
-
-# to calculate block size
-# blockdev --getsz /dev/oracleasm/disks/DATA1  output is 419428352
-# 419428352/2/1024/1024 = 200GB
-# https://www.tachytelic.net/2014/03/posix-size-converter/
-# the stat gives block_size as 4096 but i dont know how to convert it to the actual size
-
-
+- debug:
+    var: asm_data_disks
+  tags: disks
 - name: check reco disks
-  stat:
-    path: /dev/oracleasm/disks/{{ reco_lun }}
-  register: reco_disks
-  loop: "{{ luns.RECO }}"
-  loop_control:
-    loop_var: reco_lun
-
-- name: reco disk that are not available
-  set_fact: 
-    missing_reco_disks: "{{ missing_reco_disks | default([]) }} + [ '{{ disk.reco_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ reco_disks.results }}"
-  loop_control:
-    loop_var: disk
-
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_disks
 
 - name: check exp disks
-  stat:
-    path: /dev/oracleasm/disks/{{ exp_lun }}
-  register: exp_disks
-  loop: "{{ luns.EXP }}"
-  loop_control:
-    loop_var: exp_lun
-
-- name: exp disk that are not available
-  set_fact: 
-    missing_exp_disks: "{{ missing_exp_disks | default([]) }} + [ '{{ disk.exp_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ exp_disks.results }}"
-  loop_control:
-    loop_var: disk
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_exp_pattern }}"
+    use_regex: no
+  register: asm_exp_disks
 
 - name: check gg disks
-  stat:
-    path: /dev/oracleasm/disks/{{ gg_lun }}
-  register: gg_disks
-  loop: "{{ luns.GG }}"
-  loop_control:
-    loop_var: gg_lun
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_gg_pattern }}"
+    use_regex: no
+  register: asm_gg_disks
+  when: golden_gate_check
 
-- name: gg disk that are not available
-  set_fact: 
-    missing_gg_disks: "{{ missing_gg_disks | default([]) }} + [ '{{ disk.gg_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ gg_disks.results }}"
-  loop_control:
-    loop_var: disk
-- name: set missing_grid_disks variable
-  set_fact:
-    missing_grid_disks: []
-
-- name: rac specific disk check
-  block: 
-    - name: check grid disks
-      stat:
-        path: /dev/oracleasm/disks/{{ grid_lun }}
-      register: grid_disks
-      loop: "{{ rac_luns.GRID }}"
-      loop_control:
-        loop_var: grid_lun
-    - name: grid disk that are not available
-      set_fact: 
-        missing_grid_disks: "{{ missing_grid_disks | default([]) }} + [ '{{ disk.grid_lun }}' ]"
-      when: disk.stat.exists == false
-      loop: "{{ grid_disks.results }}"
-      loop_control:
-        loop_var: disk
-  when: 'installation_type == "rac"'
+- name: check ocr disks
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_ocr_pattern }}"
+    use_regex: no
+  register: asm_ocr_disks
+  when: installation_type == "rac"
 
 - name: get shm size
   command: df -h /dev/shm --output=size
@@ -507,36 +460,48 @@
       status: "{% if 'NOZEROCONF=yes' not in network_config.content | b64decode -%}FAILED
                {%- else -%}PASSED
                {%- endif %}" 
-    - check_name: Data Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_data_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: DATA Disks
+      expected_value: "1 or more DATA disks"
+      actual_value: "{{ asm_data_disks.matched }} DATA disks"
+      status: "{% if asm_data_disks.matched == 0 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: Reco Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_reco_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: RECO Disks
+      expected_value: "1 or more RECO disks"
+      actual_value: "{{ asm_reco_disks.matched }} RECO disks"
+      status: "{% if asm_reco_disks.matched == 0 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: Exp Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_exp_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: EXP Disks
+      expected_value: "3 EXP disks"
+      actual_value: "{{ asm_exp_disks.matched }} EXP disks"
+      status: "{% if asm_exp_disks.matched != 3 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: GG Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_gg_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: GG Disks
+      expected_value: "{% if golden_gate_check -%}3 GG disks
+                       {%- else -%}
+                       {%- endif -%}"
+      actual_value: "{% if golden_gate_check -%}{{ asm_gg_disks.matched }}
+                     {%- else -%}
+                     {%- endif -%}"
+      status: "{% if golden_gate_check and
+                     asm_gg_disks.matched != 3 -%}FAILED
+               {%- elif not golden_gate_check -%}NOT_CHECKED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: grid Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_grid_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 and installation_type == 'rac' -%}FAILED
-                {%- else -%}PASSED
-               {%- endif %}"  
+    - check_name: OCR Disks
+      expected_value: "{% if installation_type == 'rac' -%}3 OCR disks
+                       {%- else -%}
+                       {%- endif -%}"
+      actual_value: "{% if installation_type == 'rac' -%}{{ asm_ocr_disks.matched }}
+                     {%- else -%}
+                     {%- endif -%}"
+      status: "{% if installation_type == 'rac' and
+                     asm_ocr_disks.matched != 3 -%}FAILED
+               {%- elif not installation_type == 'rac' -%}NOT_CHECKED
+               {%- else -%}PASSED
+               {%- endif %}"
     - check_name: /dev/shm Size
       expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
       actual_value: "{{ shm_size | int }}"
