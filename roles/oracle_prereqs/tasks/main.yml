@@ -65,16 +65,16 @@
   slurp:
     src: /etc/sysconfig/ntpdate
   failed_when: False
-  register: ntpd_config
+  register: read_ntpd_config
   tags: debug
 - set_fact:
-    ntpd_config: "{{ ntpd_config.content | default('') | b64decode }}"
+    ntpd_config_content: "{{ read_ntpd_config.content | default('') | b64decode }}"
   tags: debug
 - set_fact:
     ntpd_config:
-      options: "{{ ntpd_config | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') }}"
-      sync: "{{ ntpd_config | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') }}"
-      date_options: "{{ ntpd_config | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') }}"
+      options: "{{ ntpd_config_content | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') | regex_replace ('None','') }}"
+      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('None','') }}"
+      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('None','') }}"
   tags: debug
 
 - name: read kernel parameters
@@ -479,10 +479,12 @@
            hwclock_sync: "yes"
            date_options: ""
       actual_value: 
-           options: "{{ ntpd_config.options }}"
-           hwclock_sync: "{{ ntpd_config.sync }}" 
-           date_options: "{{ ntpd_config.date_options }}"         
-      status: "{% if ntpd_config.options != '\"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x\"' and ntpd_config.sync != 'yes' -%}FAILED
+           options: "{{ ntpd_config.options | default('') }}"
+           hwclock_sync: "{{ ntpd_config.sync | default('') }}" 
+           date_options: "{{ ntpd_config.date_options | default('') }}"         
+      status: "{% if ntpd_config.options | default('') != '\"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x\"' or
+                     ntpd_config.sync | default('') != 'yes' or
+                     ntpd_config.date_options | default('') != '' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
 
