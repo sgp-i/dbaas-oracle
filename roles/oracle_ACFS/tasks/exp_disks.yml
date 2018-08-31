@@ -1,0 +1,89 @@
+---
+
+- name: get asm disk paths - {{ asm_exp_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_exp_pattern }}"
+    use_regex: no
+  register: asm_exp_paths_find_result
+
+- name: create "exp" directory
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: ‘{{ oracle_base }}/exp’
+    state: directory
+
+- name: add create_exp_disk.sql script
+  template:
+    src: create_exp_disk.sql.j2
+    dest: "{{ oracle_tmp }}/create_exp_disk.sql"
+
+- name: create ACFS Disk in ASM
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: sqlplus / as sysasm @{{ oracle_tmp }}/create_exp_disk.sql
+
+- name: As oracle (on primary node if RAC)
+  block:
+  - name: get exp dev name
+    find:
+      paths: /dev/asm
+      file_type: any
+      patterns: exp_fs_vol*
+    register: find_exp_dev
+    failed_when: find_exp_dev.matched == 0
+
+  - name: set exp_dev
+    set_fact:
+      exp_dev: "{{ find_exp_dev.files[0].path }}"
+
+  - name: creating "acfs" file system
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: /sbin/mkfs -t acfs {{ exp_dev }}
+    ###################################################################
+    ## 'filesystem' module doesn't currently support ACFS            ##
+    ## The commented task below will work once that support is added ##
+    ###################################################################
+    # filesystem:
+    #   fstype: acfs
+    #   dev: "{{ exp_dev }}"
+
+  - name: Mount the disk
+    command: /bin/mount -t acfs {{ exp_dev }} {{ oracle_base }}/exp
+    ###################################################################
+    ## 'mount' module doesn't currently support ACFS                 ##
+    ## The commented task below will work once that support is added ##
+    ###################################################################
+    # mount:
+    #   path: {{ oracle_base }}/exp
+    #   src: {{ exp_dev }}
+    #   fstype: acfs
+    #   state: present
+  when: inventory_hostname == master_node
+
+- name: Mount on additional nodes (if any)
+  block:
+  - name: add mount_asm_diskgroup.sql script
+    template:
+      src: mount_asm_diskgroup.sql.j2
+      dest: "{{ oracle_tmp }}/mount_exp_disk.sql"
+
+  - name: mount ACFS disk in ASM
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: sqlplus / as sysasm @{{ oracle_tmp }}/mount_exp_disk.sql
+
+  - name: creating "acfs" file system
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: '/sbin/mkfs -t acfs /dev/asm/exp_fs_vol-5'
+
+  - name: Mount the disk
+    command: '/bin/mount -t acfs /dev/asm/exp_fs_vol-5 {{ oracle_base }}/exp'
+  when:
+  - rac_install == true
+  - inventory_hostname != master_node
+
