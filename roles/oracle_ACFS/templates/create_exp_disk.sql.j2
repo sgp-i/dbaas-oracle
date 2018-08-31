@@ -1,4 +1,4 @@
-create diskgroup EXP_DG external redundancy disk '{{ oracle_external_disk }}/EXP001','{{ oracle_external_disk }}/EXP002','{{ oracle_external_disk }}/EXP003'
-attribute 'compatible.asm' = '{{ oracle_compat_version }}', 'compatible.advm' = '{{ oracle_compat_version }}';"
+create diskgroup {{ asm_exp_group }} external redundancy disk '{{ asm_exp_paths_find_result | json_query("files[].path") | join("','") }}'
+attribute 'compatible.asm' = '{{ oracle_compat_version }}', 'compatible.advm' = '{{ oracle_compat_version }}';
 
-echo "alter diskgroup EXP_DG add volume EXP_FS_VOL size 25g;
+alter diskgroup EXP_DG add volume EXP_FS_VOL size {{ exp_size }}g;
