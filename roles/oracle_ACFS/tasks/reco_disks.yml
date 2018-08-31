@@ -8,10 +8,10 @@
     use_regex: no
   register: asm_reco_paths_find_result
 
-- name: add create_exp_disk.sql script
+- name: add create_reco_disk.sql script
   template:
-    src: create_exp_disk.sql.j2
-    dest: "{{ oracle_tmp }}/create_exp_disk.sql"
+    src: create_reco_disk.sql.j2
+    dest: "{{ oracle_tmp }}/create_reco_disk.sql"
 
 - name: create RECO Disk in ASM
   become_user: '{{ oracle_user }}'
