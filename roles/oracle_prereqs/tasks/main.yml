@@ -108,18 +108,9 @@
   changed_when: False
   register: tmp_size
 
-##########################################################################
-## There is no way to 'check' this without changing it.                 ##
-## However, I don't see the harm here with this one making the change.  ##
-##                                                                      ##
-## If needed, I have left the original version in place, commented, and ##
-## updated to be idempotent should Charter prefer to use it.            ##
-##########################################################################
-- name: ensure RW permission for all on /var/tmp
-  file:
+- name: check RW permission for all on /var/tmp
+  stat:
     path: /var/tmp
-    state: directory
-    mode: 01777
   register: tmp_perms
 
 # - name: check the RW permission for all 
@@ -436,9 +427,9 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: /var/tmp Permissions
-      expected_value: 01777 (drwxrwxrwt.)
-      actual_value: "{{ tmp_perms.mode }}"
-      status: "{% if tmp_perms.changed == true -%}FIXED
+      expected_value: 1777
+      actual_value: "{{ tmp_perms.stat.mode }}"
+      status: "{% if tmp_perms.stat.mode != '1777' -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: umask Value
