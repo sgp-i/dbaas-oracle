@@ -1,0 +1,2 @@
+create diskgroup {{ asm_reco_group }} external redundancy disk '{{ asm_reco_paths_find_result | json_query("files[].path") | join("','") }}'
+attribute 'compatible.asm' = '{{ oracle_compat_version }}', 'compatible.advm' = '{{ oracle_compat_version }}';"
