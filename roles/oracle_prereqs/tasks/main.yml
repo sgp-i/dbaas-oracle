@@ -12,39 +12,13 @@
   tags:
   - apex_api
 
-- name: install required RPMs
+- name: check required RPMs
   yum: 
-   name: |
-    binutils-2.23.52.0.1-12.el7.x86_64,
-    compat-libcap1-1.10-3.el7.x86_64,
-    gcc-4.8.2-3.el7.x86_64,
-    gcc-c++-4.8.2-3.el7.x86_64,
-    glibc-2.17-36.el7.i686,
-    glibc-2.17-36.el7.x86_64,
-    glibc-devel-2.17-36.el7.i686,
-    glibc-devel-2.17-36.el7.x86_64,
-    ksh,
-    libaio-0.3.109-9.el7.i686,
-    libaio-0.3.109-9.el7.x86_64,
-    libaio-devel-0.3.109-9.el7.i686,
-    libaio-devel-0.3.109-9.el7.x86_64,
-    libgcc-4.8.2-3.el7.i686,
-    libgcc-4.8.2-3.el7.x86_64,
-    libstdc++-4.8.2-3.el7.i686,
-    libstdc++-4.8.2-3.el7.x86_64,
-    libstdc++-devel-4.8.2-3.el7.i686,
-    libstdc++-devel-4.8.2-3.el7.x86_64,
-    libXi-1.7.2-1.el7.i686,
-    libXi-1.7.2-1.el7.x86_64,
-    libXtst-1.2.2-1.el7.i686,
-    libXtst-1.2.2-1.el7.x86_64,
-    make-3.82-19.el7.x86_64,
-    sysstat-10.1.5-1.el7.x86_64,
-    compat-libstdc++-33
-    kmod-20-15.el7_4.4
-    cvuqdisk
-   state: present
-  tags: yum
+   list: installed
+  register: yum_updates
+- set_fact:
+    installed_rpms: "{{ installed_rpms | default([]) }} + {{ yum_updates | json_query('results[?name == `' + item + '`].name')}}"
+  loop: "{{ required_rpms }}"
 
 - name: populate service facts
   service_facts:
@@ -394,6 +368,12 @@
                       ansible_swaptotal_mb < 32768) -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
+    - check_name: Required RPMs
+      expected_value: "{{ required_rpms }}"
+      actual_value: "{{ installed_rpms }}"
+      status: "{% if required_rpms | difference(installed_rpms) | length > 0 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
     - check_name: SSH Service Status
       expected_value: running
       actual_value: "{{ ssh_service }}"
@@ -581,7 +561,7 @@
                {%- endif %}"   
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
-     verbosity: 1
+    verbosity: 1
   
 - name: create tmp dir
   file:

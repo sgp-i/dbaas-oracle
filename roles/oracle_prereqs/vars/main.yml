@@ -57,3 +57,24 @@ kernel_parameters:
     kernel_shmmax: "4398046511104"
     kernel_shmall: "1073741824"
     kernel_shmmni: "4096"
+
+required_rpms:
+  - binutils 
+  - compat-libcap1 
+  - gcc 
+  - gcc-c++ 
+  - glibc 
+  - glibc-devel 
+  - ksh 
+  - libaio 
+  - libaio-devel 
+  - libgcc 
+  - libstdc++ 
+  - libstdc++-devel 
+  - libXi 
+  - libXtst 
+  - make 
+  - sysstat 
+  - compat-libstdc++ 
+  - kmod 
+  - cvuqdisk
