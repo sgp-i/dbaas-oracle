@@ -1,1 +1,0 @@
-alter diskgroup EXP_DG mount;
