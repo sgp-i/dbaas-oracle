@@ -23,6 +23,6 @@
       content: "{{ deinstall_cmd.stderr }}" 
   when: inventory_hostname == master_node
 
-- import_tasks: exec_rootdeinstall_script.yml
+- include_tasks: exec_rootdeinstall_script.yml
   loop: "{{ cluster_nodes }}"
-  when: '"rootdeinstall.sh" in hostvars[inventory_hostname]['deinstall_cmd']['stdout']
+  when: '"rootdeinstall.sh" in hostvars[inventory_hostname]["deinstall_cmd"]["stdout"]'
