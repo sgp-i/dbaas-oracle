@@ -4,7 +4,7 @@ install_base: /u01/app
 
 oracle_base: "{{ install_base }}/oracle"
 
-oracle_external_disk: /dev/oracleasm/disks
+asm_disk_location: /dev/oracleasm/disks
 
 asm_reco_group: RECO
 
