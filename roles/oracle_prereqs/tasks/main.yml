@@ -625,8 +625,8 @@
                {%- endif %}"  
     - check_name: /dev/shm Size
       expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
-      actual_value: "{{ shm_size.stdout | int }}"
-      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size.stdout | int -%}FAILED
+      actual_value: "{{ shm_size | int }}"
+      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size | int -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"         
     - check_name: check kernel parameters
