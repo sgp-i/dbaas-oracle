@@ -82,78 +82,21 @@
     src: /etc/sysctl.conf
   failed_when: False
   register: read_kernel_params
-
 - set_fact:
-    read_kernel_params_value: "{{ read_kernel_params.content | default('') | b64decode }}"
-
+    kernel_params_content: "{{ read_kernel_params.content | default('') | b64decode }}"
 - set_fact:
-    read_kernel_params_value:
-      kernel.sem: "{{ read_kernel_params_value | regex_search('kernel.sem=[^\n]*') | regex_replace ('kernel.sem=','') }}"
-      fs.aio-max-nr: "{{ read_kernel_params_value | regex_search('fs.aio-max-nr=[^\n]*') | regex_replace ('fs.aio-max-nr=','') }}"
-      net.ipv4.ip_local_port_range: "{{ read_kernel_params_value | regex_search('net.ipv4.ip_local_port_range=[^\n]*') | regex_replace ('net.ipv4.ip_local_port_range=','') }}"
-      net.core.rmem_default: "{{ read_kernel_params_value | regex_search('net.core.rmem_default=[^\n]*') | regex_replace ('net.core.rmem_default=','') }}"
-      net.core.rmem_max: "{{ read_kernel_params_value | regex_search('net.core.rmem_max=[^\n]*') | regex_replace ('net.core.rmem_max=','') }}"
-      net.core.wmem_default: "{{ read_kernel_params_value | regex_search('net.core.wmem_default=[^\n]*') | regex_replace ('net.core.wmem_default=','') }}"
-      net.core.wmem_max: "{{ read_kernel_params_value | regex_search('net.core.wmem_max=[^\n]*') | regex_replace ('net.core.wmem_max=','') }}"
-      fs.file-max: "{{ read_kernel_params_value | regex_search('fs.file-max=[^\n]*') | regex_replace ('fs.file-max=','') }}"
-      kernel.shmmax: "{{ read_kernel_params_value | regex_search('kernel.shmmax=[^\n]*') | regex_replace ('kernel.shmmax=','') }}"
-      kernel.shmall: "{{ read_kernel_params_value | regex_search('kernel.shmall=[^\n]*') | regex_replace ('kernel.shmall=','') }}"
-      kernel.shmmni: "{{ read_kernel_params_value | regex_search('kernel.shmmni=[^\n]*') | regex_replace ('kernel.shmmni=','') }}"
-      
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.sem={{ read_kernel_params_value['kernel.sem'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.sem={{ kernel_parameters['kernel.sem'] }}' ]"
-  when: read_kernel_params_value['kernel.sem'] != kernel_parameters['kernel.sem']
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'fs.aio-max-nr={{ read_kernel_params_value['fs.aio-max-nr'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'fs.aio-max-nr={{ kernel_parameters['fs.aio-max-nr'] }}' ]"
-  when: read_kernel_params_value['fs.aio-max-nr'] != kernel_parameters['fs.aio-max-nr']
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.ipv4.ip_local_port_range={{ read_kernel_params_value['net.ipv4.ip_local_port_range'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.ipv4.ip_local_port_range={{ kernel_parameters['net.ipv4.ip_local_port_range'] }}' ]"  
-  when: read_kernel_params_value['net.ipv4.ip_local_port_range'] != kernel_parameters['net.ipv4.ip_local_port_range']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.rmem_default={{ read_kernel_params_value['net.core.rmem_default'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.rmem_default={{ kernel_parameters['net.core.rmem_default'] }}' ]"
-  when: read_kernel_params_value['net.core.rmem_default'] != kernel_parameters['net.core.rmem_default']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.rmem_max={{ read_kernel_params_value['net.core.rmem_max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.rmem_max={{ kernel_parameters['net.core.rmem_max'] }}' ]"
-  when: read_kernel_params_value['net.core.rmem_max'] != kernel_parameters['net.core.rmem_max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.wmem_default={{ read_kernel_params_value['net.core.wmem_default'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.wmem_default={{ kernel_parameters['net.core.wmem_default'] }}' ]"
-  when: read_kernel_params_value['net.core.wmem_default'] != kernel_parameters['net.core.wmem_default']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.wmem_max={{ read_kernel_params_value['net.core.wmem_max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.wmem_max={{ kernel_parameters['net.core.wmem_max'] }}' ]"
-  when: read_kernel_params_value['net.core.wmem_max'] != kernel_parameters['net.core.wmem_max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'fs.file-max={{ read_kernel_params_value['fs.file-max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'fs.file-max={{ kernel_parameters['fs.file-max'] }}' ]"
-  when: read_kernel_params_value['fs.file-max'] != kernel_parameters['fs.file-max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmmax={{ read_kernel_params_value['kernel.shmmax'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmmax={{ kernel_parameters['kernel.shmmax'] }}' ]"
-  when: read_kernel_params_value['kernel.shmmax'] != kernel_parameters['kernel.shmmax']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmall={{ read_kernel_params_value['kernel.shmall'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmall={{ kernel_parameters['kernel.shmall'] }}' ]"
-  when: read_kernel_params_value['kernel.shmall'] != kernel_parameters['kernel.shmall']
-  
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmmni={{ read_kernel_params_value['kernel.shmmni'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmmni={{ kernel_parameters['kernel.shmmni'] }}' ]"
-  when: read_kernel_params_value['kernel.shmmni'] != kernel_parameters['kernel.shmmni']    
+    kernel_params:
+      kernel_sem: "{{ kernel_params_content | regex_search('kernel.sem=[^\n]*') | regex_replace ('kernel.sem=','') }}"
+      fs_aio_max_nr: "{{ kernel_params_content | regex_search('fs.aio-max-nr=[^\n]*') | regex_replace ('fs.aio-max-nr=','') }}"
+      net_ipv4_ip_local_port_range: "{{ kernel_params_content | regex_search('net.ipv4.ip_local_port_range=[^\n]*') | regex_replace ('net.ipv4.ip_local_port_range=','') }}"
+      net_core_rmem_default: "{{ kernel_params_content | regex_search('net.core.rmem_default=[^\n]*') | regex_replace ('net.core.rmem_default=','') }}"
+      net_core_rmem_max: "{{ kernel_params_content | regex_search('net.core.rmem_max=[^\n]*') | regex_replace ('net.core.rmem_max=','') }}"
+      net_core_wmem_default: "{{ kernel_params_content | regex_search('net.core.wmem_default=[^\n]*') | regex_replace ('net.core.wmem_default=','') }}"
+      net_core_wmem_max: "{{ kernel_params_content | regex_search('net.core.wmem_max=[^\n]*') | regex_replace ('net.core.wmem_max=','') }}"
+      fs_file_max: "{{ kernel_params_content | regex_search('fs.file-max=[^\n]*') | regex_replace ('fs.file-max=','') }}"
+      kernel_shmmax: "{{ kernel_params_content | regex_search('kernel.shmmax=[^\n]*') | regex_replace ('kernel.shmmax=','') }}"
+      kernel_shmall: "{{ kernel_params_content | regex_search('kernel.shmall=[^\n]*') | regex_replace ('kernel.shmall=','') }}"
+      kernel_shmmni: "{{ kernel_params_content | regex_search('kernel.shmmni=[^\n]*') | regex_replace ('kernel.shmmni=','') }}"
 
 ##########################################################
 ## If this is always mounted a specific way for Charter ##
@@ -472,7 +415,6 @@
       status: "{% if ntp_service != 'running' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-
     - check_name: verifying ntpd config file
       expected_value: 
            options: '"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x"'
@@ -487,7 +429,6 @@
                      ntpd_config.date_options | default('') != '' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-
     - check_name: /var/tmp Size
       expected_value: 4 or higher
       actual_value: "{{ tmp_size.stdout }}"
@@ -632,9 +573,19 @@
                 {%- else -%}PASSED
                {%- endif %}"         
     - check_name: check kernel parameters
-      expected_value: "{{ expected_kernel_params }}"
-      actual_value: "{{ mismatching_kernel_params }}"
-      status: "{% if mismatching_kernel_params | default([]) | length > 0 -%}FAILED
+      expected_value: "{{ kernel_parameters }}"
+      actual_value: "{{ kernel_params }}"
+      status: "{% if kernel_params.kernel_sem != kernel_parameters.kernel_sem or
+                     kernel_params.fs_aio_max_nr != kernel_parameters.fs_aio_max_nr or
+                     kernel_params.net_ipv4_ip_local_port_range != kernel_parameters.net_ipv4_ip_local_port_range or
+                     kernel_params.net_core_rmem_default != kernel_parameters.net_core_rmem_default or
+                     kernel_params.net_core_rmem_max != kernel_parameters.net_core_rmem_max or
+                     kernel_params.net_core_wmem_default != kernel_parameters.net_core_wmem_default or
+                     kernel_params.net_core_wmem_max != kernel_parameters.net_core_wmem_max or
+                     kernel_params.fs_file_max != kernel_parameters.fs_file_max or
+                     kernel_params.kernel_shmmax != kernel_parameters.kernel_shmmax or
+                     kernel_params.kernel_shmall != kernel_parameters.kernel_shmall or
+                     kernel_params.kernel_shmmni != kernel_parameters.kernel_shmmni -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"   
 - debug:
