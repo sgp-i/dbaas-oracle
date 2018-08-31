@@ -3,16 +3,18 @@ oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_home: db_1
+oracle_db_home: grid
 
 # location for temporary files
 oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_db_name: demo45
+oracle_db_name: rman
 
-oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+oracle_grid_home: "/u01/app/12.1.0.2/grid"
+
+oracle_home: "/u01/app/oracle/product/12.1.0.2/db_db_1"
 
 # shell environment for the oracle user
 ora_user_env:
@@ -21,13 +23,13 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+  PATH: "{{ oracle_grid_home }}/bin:{{ ansible_env.PATH }}"
 
 oracle_db_ServiceName: db_test_RMAN
 
 # TNSNAMES: dbtest05.techlab.com
 
-oracle_db_name_node2: demo45
+oracle_db_name_node2: orcl07
 
 RMAN_user: RMANBACKUP
 
