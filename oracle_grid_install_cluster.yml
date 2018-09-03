@@ -17,6 +17,8 @@
 
     - import_role:
         name: oracle_prereqs
+      vars:
+        installation_type: rac
 
     - import_role:
         name: oracle_grid_infra_install
