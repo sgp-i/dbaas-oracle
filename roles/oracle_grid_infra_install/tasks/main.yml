@@ -39,7 +39,7 @@
 - include: run_cluvfy.yml
   tags:
     - cluvfy
-  when: inventory_hostname == master_node and grid_install_mode != "UPGRADE"
+  when: inventory_hostname == master_node and grid_install_mode == "CRS_CONFIG"
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:
