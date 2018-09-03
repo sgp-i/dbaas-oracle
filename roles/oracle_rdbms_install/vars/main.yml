@@ -19,6 +19,8 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
 
 # array  os images avaialbe
 oracle_images:

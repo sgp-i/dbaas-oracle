@@ -23,3 +23,5 @@ ora_user_env:
               {%- endif %}"
   ORACLE_HOME: "{{ oracle_home }}"
   PATH: "{{ ansible_env.PATH }}:$ORACLE_HOME/OPatch"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
