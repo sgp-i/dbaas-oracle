@@ -12,39 +12,13 @@
   tags:
   - apex_api
 
-- name: install required RPMs
+- name: check required RPMs
   yum: 
-   name: |
-    binutils-2.23.52.0.1-12.el7.x86_64,
-    compat-libcap1-1.10-3.el7.x86_64,
-    gcc-4.8.2-3.el7.x86_64,
-    gcc-c++-4.8.2-3.el7.x86_64,
-    glibc-2.17-36.el7.i686,
-    glibc-2.17-36.el7.x86_64,
-    glibc-devel-2.17-36.el7.i686,
-    glibc-devel-2.17-36.el7.x86_64,
-    ksh,
-    libaio-0.3.109-9.el7.i686,
-    libaio-0.3.109-9.el7.x86_64,
-    libaio-devel-0.3.109-9.el7.i686,
-    libaio-devel-0.3.109-9.el7.x86_64,
-    libgcc-4.8.2-3.el7.i686,
-    libgcc-4.8.2-3.el7.x86_64,
-    libstdc++-4.8.2-3.el7.i686,
-    libstdc++-4.8.2-3.el7.x86_64,
-    libstdc++-devel-4.8.2-3.el7.i686,
-    libstdc++-devel-4.8.2-3.el7.x86_64,
-    libXi-1.7.2-1.el7.i686,
-    libXi-1.7.2-1.el7.x86_64,
-    libXtst-1.2.2-1.el7.i686,
-    libXtst-1.2.2-1.el7.x86_64,
-    make-3.82-19.el7.x86_64,
-    sysstat-10.1.5-1.el7.x86_64,
-    compat-libstdc++-33
-    kmod-20-15.el7_4.4
-    cvuqdisk
-   state: present
-  tags: yum
+   list: installed
+  register: yum_updates
+- set_fact:
+    installed_rpms: "{{ installed_rpms | default([]) }} + {{ yum_updates | json_query('results[?name == `' + item + '`].name')}}"
+  loop: "{{ required_rpms }}"
 
 - name: populate service facts
   service_facts:
@@ -65,16 +39,16 @@
   slurp:
     src: /etc/sysconfig/ntpdate
   failed_when: False
-  register: ntpd_config
+  register: read_ntpd_config
   tags: debug
 - set_fact:
-    ntpd_config: "{{ ntpd_config.content | default('') | b64decode }}"
+    ntpd_config_content: "{{ read_ntpd_config.content | default('') | b64decode }}"
   tags: debug
 - set_fact:
     ntpd_config:
-      options: "{{ ntpd_config | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') }}"
-      sync: "{{ ntpd_config | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') }}"
-      date_options: "{{ ntpd_config | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') }}"
+      options: "{{ ntpd_config_content | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') | regex_replace ('None','') }}"
+      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('None','') }}"
+      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('None','') }}"
   tags: debug
 
 - name: read kernel parameters
@@ -82,78 +56,21 @@
     src: /etc/sysctl.conf
   failed_when: False
   register: read_kernel_params
-
 - set_fact:
-    read_kernel_params_value: "{{ read_kernel_params.content | default('') | b64decode }}"
-
+    kernel_params_content: "{{ read_kernel_params.content | default('') | b64decode }}"
 - set_fact:
-    read_kernel_params_value:
-      kernel.sem: "{{ read_kernel_params_value | regex_search('kernel.sem=[^\n]*') | regex_replace ('kernel.sem=','') }}"
-      fs.aio-max-nr: "{{ read_kernel_params_value | regex_search('fs.aio-max-nr=[^\n]*') | regex_replace ('fs.aio-max-nr=','') }}"
-      net.ipv4.ip_local_port_range: "{{ read_kernel_params_value | regex_search('net.ipv4.ip_local_port_range=[^\n]*') | regex_replace ('net.ipv4.ip_local_port_range=','') }}"
-      net.core.rmem_default: "{{ read_kernel_params_value | regex_search('net.core.rmem_default=[^\n]*') | regex_replace ('net.core.rmem_default=','') }}"
-      net.core.rmem_max: "{{ read_kernel_params_value | regex_search('net.core.rmem_max=[^\n]*') | regex_replace ('net.core.rmem_max=','') }}"
-      net.core.wmem_default: "{{ read_kernel_params_value | regex_search('net.core.wmem_default=[^\n]*') | regex_replace ('net.core.wmem_default=','') }}"
-      net.core.wmem_max: "{{ read_kernel_params_value | regex_search('net.core.wmem_max=[^\n]*') | regex_replace ('net.core.wmem_max=','') }}"
-      fs.file-max: "{{ read_kernel_params_value | regex_search('fs.file-max=[^\n]*') | regex_replace ('fs.file-max=','') }}"
-      kernel.shmmax: "{{ read_kernel_params_value | regex_search('kernel.shmmax=[^\n]*') | regex_replace ('kernel.shmmax=','') }}"
-      kernel.shmall: "{{ read_kernel_params_value | regex_search('kernel.shmall=[^\n]*') | regex_replace ('kernel.shmall=','') }}"
-      kernel.shmmni: "{{ read_kernel_params_value | regex_search('kernel.shmmni=[^\n]*') | regex_replace ('kernel.shmmni=','') }}"
-      
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.sem={{ read_kernel_params_value['kernel.sem'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.sem={{ kernel_parameters['kernel.sem'] }}' ]"
-  when: read_kernel_params_value['kernel.sem'] != kernel_parameters['kernel.sem']
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'fs.aio-max-nr={{ read_kernel_params_value['fs.aio-max-nr'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'fs.aio-max-nr={{ kernel_parameters['fs.aio-max-nr'] }}' ]"
-  when: read_kernel_params_value['fs.aio-max-nr'] != kernel_parameters['fs.aio-max-nr']
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.ipv4.ip_local_port_range={{ read_kernel_params_value['net.ipv4.ip_local_port_range'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.ipv4.ip_local_port_range={{ kernel_parameters['net.ipv4.ip_local_port_range'] }}' ]"  
-  when: read_kernel_params_value['net.ipv4.ip_local_port_range'] != kernel_parameters['net.ipv4.ip_local_port_range']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.rmem_default={{ read_kernel_params_value['net.core.rmem_default'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.rmem_default={{ kernel_parameters['net.core.rmem_default'] }}' ]"
-  when: read_kernel_params_value['net.core.rmem_default'] != kernel_parameters['net.core.rmem_default']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.rmem_max={{ read_kernel_params_value['net.core.rmem_max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.rmem_max={{ kernel_parameters['net.core.rmem_max'] }}' ]"
-  when: read_kernel_params_value['net.core.rmem_max'] != kernel_parameters['net.core.rmem_max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.wmem_default={{ read_kernel_params_value['net.core.wmem_default'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.wmem_default={{ kernel_parameters['net.core.wmem_default'] }}' ]"
-  when: read_kernel_params_value['net.core.wmem_default'] != kernel_parameters['net.core.wmem_default']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'net.core.wmem_max={{ read_kernel_params_value['net.core.wmem_max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'net.core.wmem_max={{ kernel_parameters['net.core.wmem_max'] }}' ]"
-  when: read_kernel_params_value['net.core.wmem_max'] != kernel_parameters['net.core.wmem_max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'fs.file-max={{ read_kernel_params_value['fs.file-max'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'fs.file-max={{ kernel_parameters['fs.file-max'] }}' ]"
-  when: read_kernel_params_value['fs.file-max'] != kernel_parameters['fs.file-max']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmmax={{ read_kernel_params_value['kernel.shmmax'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmmax={{ kernel_parameters['kernel.shmmax'] }}' ]"
-  when: read_kernel_params_value['kernel.shmmax'] != kernel_parameters['kernel.shmmax']  
-
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmall={{ read_kernel_params_value['kernel.shmall'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmall={{ kernel_parameters['kernel.shmall'] }}' ]"
-  when: read_kernel_params_value['kernel.shmall'] != kernel_parameters['kernel.shmall']
-  
-- set_fact:
-   mismatching_kernel_params: "{{ mismatching_kernel_params | default([]) }} + [ 'kernel.shmmni={{ read_kernel_params_value['kernel.shmmni'] }}' ]"
-   expected_kernel_params: "{{ expected_kernel_params | default([]) }} + [ 'kernel.shmmni={{ kernel_parameters['kernel.shmmni'] }}' ]"
-  when: read_kernel_params_value['kernel.shmmni'] != kernel_parameters['kernel.shmmni']    
+    kernel_params:
+      kernel_sem: "{{ kernel_params_content | regex_search('kernel.sem=[^\n]*') | regex_replace ('kernel.sem=','') }}"
+      fs_aio_max_nr: "{{ kernel_params_content | regex_search('fs.aio-max-nr=[^\n]*') | regex_replace ('fs.aio-max-nr=','') }}"
+      net_ipv4_ip_local_port_range: "{{ kernel_params_content | regex_search('net.ipv4.ip_local_port_range=[^\n]*') | regex_replace ('net.ipv4.ip_local_port_range=','') }}"
+      net_core_rmem_default: "{{ kernel_params_content | regex_search('net.core.rmem_default=[^\n]*') | regex_replace ('net.core.rmem_default=','') }}"
+      net_core_rmem_max: "{{ kernel_params_content | regex_search('net.core.rmem_max=[^\n]*') | regex_replace ('net.core.rmem_max=','') }}"
+      net_core_wmem_default: "{{ kernel_params_content | regex_search('net.core.wmem_default=[^\n]*') | regex_replace ('net.core.wmem_default=','') }}"
+      net_core_wmem_max: "{{ kernel_params_content | regex_search('net.core.wmem_max=[^\n]*') | regex_replace ('net.core.wmem_max=','') }}"
+      fs_file_max: "{{ kernel_params_content | regex_search('fs.file-max=[^\n]*') | regex_replace ('fs.file-max=','') }}"
+      kernel_shmmax: "{{ kernel_params_content | regex_search('kernel.shmmax=[^\n]*') | regex_replace ('kernel.shmmax=','') }}"
+      kernel_shmall: "{{ kernel_params_content | regex_search('kernel.shmall=[^\n]*') | regex_replace ('kernel.shmall=','') }}"
+      kernel_shmmni: "{{ kernel_params_content | regex_search('kernel.shmmni=[^\n]*') | regex_replace ('kernel.shmmni=','') }}"
 
 ##########################################################
 ## If this is always mounted a specific way for Charter ##
@@ -165,18 +82,9 @@
   changed_when: False
   register: tmp_size
 
-##########################################################################
-## There is no way to 'check' this without changing it.                 ##
-## However, I don't see the harm here with this one making the change.  ##
-##                                                                      ##
-## If needed, I have left the original version in place, commented, and ##
-## updated to be idempotent should Charter prefer to use it.            ##
-##########################################################################
-- name: ensure RW permission for all on /var/tmp
-  file:
+- name: check RW permission for all on /var/tmp
+  stat:
     path: /var/tmp
-    state: directory
-    mode: 01777
   register: tmp_perms
 
 # - name: check the RW permission for all 
@@ -335,97 +243,50 @@
   register: network_config
 
 - name: check data disks
-  stat:
-    path: /dev/oracleasm/disks/{{ data_lun }}
-  register: data_disks
-  loop: "{{ luns.DATA }}"
-  loop_control:
-    loop_var: data_lun
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_data_pattern }}"
+    use_regex: no
+  register: asm_data_disks
+  tags: disks
 
-- name: data disk that are not available
-  set_fact: 
-    missing_data_disks: "{{ missing_data_disks | default([]) }} + [ '{{ disk.data_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ data_disks.results }}"
-  loop_control:
-    loop_var: disk
-
-# to calculate block size
-# blockdev --getsz /dev/oracleasm/disks/DATA1  output is 419428352
-# 419428352/2/1024/1024 = 200GB
-# https://www.tachytelic.net/2014/03/posix-size-converter/
-# the stat gives block_size as 4096 but i dont know how to convert it to the actual size
-
-
+- debug:
+    var: asm_data_disks
+  tags: disks
 - name: check reco disks
-  stat:
-    path: /dev/oracleasm/disks/{{ reco_lun }}
-  register: reco_disks
-  loop: "{{ luns.RECO }}"
-  loop_control:
-    loop_var: reco_lun
-
-- name: reco disk that are not available
-  set_fact: 
-    missing_reco_disks: "{{ missing_reco_disks | default([]) }} + [ '{{ disk.reco_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ reco_disks.results }}"
-  loop_control:
-    loop_var: disk
-
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_disks
 
 - name: check exp disks
-  stat:
-    path: /dev/oracleasm/disks/{{ exp_lun }}
-  register: exp_disks
-  loop: "{{ luns.EXP }}"
-  loop_control:
-    loop_var: exp_lun
-
-- name: exp disk that are not available
-  set_fact: 
-    missing_exp_disks: "{{ missing_exp_disks | default([]) }} + [ '{{ disk.exp_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ exp_disks.results }}"
-  loop_control:
-    loop_var: disk
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_exp_pattern }}"
+    use_regex: no
+  register: asm_exp_disks
 
 - name: check gg disks
-  stat:
-    path: /dev/oracleasm/disks/{{ gg_lun }}
-  register: gg_disks
-  loop: "{{ luns.GG }}"
-  loop_control:
-    loop_var: gg_lun
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_gg_pattern }}"
+    use_regex: no
+  register: asm_gg_disks
+  when: golden_gate_check
 
-- name: gg disk that are not available
-  set_fact: 
-    missing_gg_disks: "{{ missing_gg_disks | default([]) }} + [ '{{ disk.gg_lun }}' ]"
-  when: disk.stat.exists == false
-  loop: "{{ gg_disks.results }}"
-  loop_control:
-    loop_var: disk
-- name: set missing_grid_disks variable
-  set_fact:
-    missing_grid_disks: []
-
-- name: rac specific disk check
-  block: 
-    - name: check grid disks
-      stat:
-        path: /dev/oracleasm/disks/{{ grid_lun }}
-      register: grid_disks
-      loop: "{{ rac_luns.GRID }}"
-      loop_control:
-        loop_var: grid_lun
-    - name: grid disk that are not available
-      set_fact: 
-        missing_grid_disks: "{{ missing_grid_disks | default([]) }} + [ '{{ disk.grid_lun }}' ]"
-      when: disk.stat.exists == false
-      loop: "{{ grid_disks.results }}"
-      loop_control:
-        loop_var: disk
-  when: 'installation_type == "rac"'
+- name: check ocr disks
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_ocr_pattern }}"
+    use_regex: no
+  register: asm_ocr_disks
+  when: installation_type == "rac"
 
 - name: get shm size
   command: df -h /dev/shm --output=size
@@ -460,6 +321,12 @@
                       ansible_swaptotal_mb < 32768) -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
+    - check_name: Required RPMs
+      expected_value: "{{ required_rpms }}"
+      actual_value: "{{ installed_rpms }}"
+      status: "{% if required_rpms | difference(installed_rpms) | length > 0 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
     - check_name: SSH Service Status
       expected_value: running
       actual_value: "{{ ssh_service }}"
@@ -472,20 +339,20 @@
       status: "{% if ntp_service != 'running' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-
     - check_name: verifying ntpd config file
       expected_value: 
            options: '"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x"'
            hwclock_sync: "yes"
            date_options: ""
       actual_value: 
-           options: "{{ ntpd_config.options }}"
-           hwclock_sync: "{{ ntpd_config.sync }}" 
-           date_options: "{{ ntpd_config.date_options }}"         
-      status: "{% if ntpd_config.options != '\"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x\"' and ntpd_config.sync != 'yes' -%}FAILED
+           options: "{{ ntpd_config.options | default('') }}"
+           hwclock_sync: "{{ ntpd_config.sync | default('') }}" 
+           date_options: "{{ ntpd_config.date_options | default('') }}"         
+      status: "{% if ntpd_config.options | default('') != '\"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x\"' or
+                     ntpd_config.sync | default('') != 'yes' or
+                     ntpd_config.date_options | default('') != '' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-
     - check_name: /var/tmp Size
       expected_value: 4 or higher
       actual_value: "{{ tmp_size.stdout }}"
@@ -493,9 +360,9 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: /var/tmp Permissions
-      expected_value: 01777 (drwxrwxrwt.)
-      actual_value: "{{ tmp_perms.mode }}"
-      status: "{% if tmp_perms.changed == true -%}FIXED
+      expected_value: 1777
+      actual_value: "{{ tmp_perms.stat.mode }}"
+      status: "{% if tmp_perms.stat.mode != '1777' -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: umask Value
@@ -593,51 +460,73 @@
       status: "{% if 'NOZEROCONF=yes' not in network_config.content | b64decode -%}FAILED
                {%- else -%}PASSED
                {%- endif %}" 
-    - check_name: Data Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_data_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: DATA Disks
+      expected_value: "1 or more DATA disks"
+      actual_value: "{{ asm_data_disks.matched }} DATA disks"
+      status: "{% if asm_data_disks.matched == 0 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: Reco Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_reco_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: RECO Disks
+      expected_value: "1 or more RECO disks"
+      actual_value: "{{ asm_reco_disks.matched }} RECO disks"
+      status: "{% if asm_reco_disks.matched == 0 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: Exp Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_exp_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: EXP Disks
+      expected_value: "3 EXP disks"
+      actual_value: "{{ asm_exp_disks.matched }} EXP disks"
+      status: "{% if asm_exp_disks.matched != 3 -%}FAILED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: GG Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_gg_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 -%}FAILED
-                {%- else -%}PASSED
+    - check_name: GG Disks
+      expected_value: "{% if golden_gate_check -%}3 GG disks
+                       {%- else -%}
+                       {%- endif -%}"
+      actual_value: "{% if golden_gate_check -%}{{ asm_gg_disks.matched }}
+                     {%- else -%}
+                     {%- endif -%}"
+      status: "{% if golden_gate_check and
+                     asm_gg_disks.matched != 3 -%}FAILED
+               {%- elif not golden_gate_check -%}NOT_CHECKED
+               {%- else -%}PASSED
                {%- endif %}"
-    - check_name: grid Disks that are not present
-      expected_value: ""
-      actual_value: "{{ missing_grid_disks | default([]) }}"
-      status: "{% if missing_grid_disks | default([]) | length > 0 and installation_type == 'rac' -%}FAILED
-                {%- else -%}PASSED
-               {%- endif %}"  
+    - check_name: OCR Disks
+      expected_value: "{% if installation_type == 'rac' -%}3 OCR disks
+                       {%- else -%}
+                       {%- endif -%}"
+      actual_value: "{% if installation_type == 'rac' -%}{{ asm_ocr_disks.matched }}
+                     {%- else -%}
+                     {%- endif -%}"
+      status: "{% if installation_type == 'rac' and
+                     asm_ocr_disks.matched != 3 -%}FAILED
+               {%- elif not installation_type == 'rac' -%}NOT_CHECKED
+               {%- else -%}PASSED
+               {%- endif %}"
     - check_name: /dev/shm Size
       expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
-      actual_value: "{{ shm_size.stdout | int }}"
-      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size.stdout | int -%}FAILED
+      actual_value: "{{ shm_size | int }}"
+      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size | int -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"         
     - check_name: check kernel parameters
-      expected_value: "{{ expected_kernel_params }}"
-      actual_value: "{{ mismatching_kernel_params }}"
-      status: "{% if mismatching_kernel_params | default([]) | length > 0 -%}FAILED
+      expected_value: "{{ kernel_parameters }}"
+      actual_value: "{{ kernel_params }}"
+      status: "{% if kernel_params.kernel_sem != kernel_parameters.kernel_sem or
+                     kernel_params.fs_aio_max_nr != kernel_parameters.fs_aio_max_nr or
+                     kernel_params.net_ipv4_ip_local_port_range != kernel_parameters.net_ipv4_ip_local_port_range or
+                     kernel_params.net_core_rmem_default != kernel_parameters.net_core_rmem_default or
+                     kernel_params.net_core_rmem_max != kernel_parameters.net_core_rmem_max or
+                     kernel_params.net_core_wmem_default != kernel_parameters.net_core_wmem_default or
+                     kernel_params.net_core_wmem_max != kernel_parameters.net_core_wmem_max or
+                     kernel_params.fs_file_max != kernel_parameters.fs_file_max or
+                     kernel_params.kernel_shmmax != kernel_parameters.kernel_shmmax or
+                     kernel_params.kernel_shmall != kernel_parameters.kernel_shmall or
+                     kernel_params.kernel_shmmni != kernel_parameters.kernel_shmmni -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"   
 - debug:
-    var: checklist #| json_query('[?status == `FAILED`]')
-    # verbosity: 1
+    var: checklist | json_query('[?status == `FAILED`]')
+    verbosity: 1
   
 - name: create tmp dir
   file:

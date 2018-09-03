@@ -6,8 +6,6 @@ oracle_groups:
 - oinstall
 - dba
 
-oracle_tmp: /u01/tmp/prereqs
-
 pbis:
     ignored_users:
         - root
@@ -18,42 +16,49 @@ pbis:
         - oinstall
         - dba
 
-installation_type: standalone
+asm_disk_location: /dev/oracleasm/disks
 
 # DATA and RECO disks will be varied depending on the operational incremental expansions
-luns:
-    DATA:
-        - DATA1
-        # - DATA2
-        # - DATA3
-    RECO:
-        #- R9001
-        - DATA1
-        - R9002
-    EXP:
-        - EXP001
-        - EXP002
-        - EXP003
-    GG:
-        - GG001
-        - GG002
-        - GG003
-        
-rac_luns:
-    GRID :
-        - GRID_DISK01
-        - GRID_DISK02
-        - GRID_DISK03
+asm_data_pattern: D*
+
+asm_reco_pattern: R*
+
+asm_exp_pattern: EXP*
+
+asm_gg_pattern: GG*
+
+asm_ocr_pattern: GRID_DISK*
 
 kernel_parameters:
-    kernel.sem: "250 32000 100 128"
-    fs.aio-max-nr: "3145728"
-    net.ipv4.ip_local_port_range: "9000 65500"
-    net.core.rmem_default: "262144"
-    net.core.rmem_max: "4194304"
-    net.core.wmem_default: "262144"
-    net.core.wmem_max: "1048576"
-    fs.file-max: "13631488"
-    kernel.shmmax: "4398046511104"
-    kernel.shmall: "1073741824"
-    kernel.shmmni: "4096"
+    kernel_sem: "250 32000 100 128"
+    fs_aio_max_nr: "3145728"
+    net_ipv4_ip_local_port_range: "9000 65500"
+    net_core_rmem_default: "262144"
+    net_core_rmem_max: "4194304"
+    net_core_wmem_default: "262144"
+    net_core_wmem_max: "1048576"
+    fs_file_max: "13631488"
+    kernel_shmmax: "4398046511104"
+    kernel_shmall: "1073741824"
+    kernel_shmmni: "4096"
+
+required_rpms:
+  - binutils 
+  - compat-libcap1 
+  - gcc 
+  - gcc-c++ 
+  - glibc 
+  - glibc-devel 
+  - ksh 
+  - libaio 
+  - libaio-devel 
+  - libgcc 
+  - libstdc++ 
+  - libstdc++-devel 
+  - libXi 
+  - libXtst 
+  - make 
+  - sysstat 
+  - compat-libstdc++ 
+  - kmod 
+  - cvuqdisk
