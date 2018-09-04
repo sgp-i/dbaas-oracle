@@ -15,6 +15,12 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
+
+checklist_task: "{% if ansible_play_hosts == 1 -%}host
+                 {%- elif ansible_play_hosts > 1 -%}cluster
+                 {%- endif %}"
 
 cluster_nodes: "{{ ansible_play_hosts }}"
 

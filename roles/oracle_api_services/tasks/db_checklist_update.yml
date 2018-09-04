@@ -1,6 +1,6 @@
 - name: insert new checklist entry
   include_tasks: db_checklist_insertion.yml
-  when: db_chklst_json_body.new_entry
+  when: chklst_json_body.new_entry
 
 - name: Checklist Update
   block:
@@ -10,7 +10,7 @@
       validate_certs: no  # should be removed after https certs becomes renewed
       method: PUT
       body_format: json
-      body: "{{ db_chklst_json_body }}"
+      body: "{{ chklst_json_body }}"
       register: checklist_update_response
       headers:
           Content-Type: "application/json"
@@ -23,6 +23,6 @@
       line: '{
                 "db_id": "{{ db_id }}",
                 "checklist_id": "{{ checklist_id }}",
-                "update": {{ db_chklst_json_body | to_json }} 
+                "update": {{ chklst_json_body | to_json }} 
               }'
       create: yes

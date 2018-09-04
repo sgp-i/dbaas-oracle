@@ -4,13 +4,14 @@
   no_log: true
 
 
-- import_role:
+- include_role:
     name: oracle_api_services
-    tasks_from: host_checklist_update.yml
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
   vars:
-    host_chklst_json_body:
-      new_entry: False
-      checklist_type: "5" 
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "5"
+      category_type: Install
       gi_install_status: "PENDING"
   tags:
   - apex_api
@@ -38,7 +39,7 @@
 - include: run_cluvfy.yml
   tags:
     - cluvfy
-  when: inventory_hostname == master_node and grid_install_mode != "UPGRADE"
+  when: inventory_hostname == master_node and grid_install_mode == "CRS_CONFIG"
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:
