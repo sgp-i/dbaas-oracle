@@ -249,11 +249,7 @@
     patterns: "{{ asm_data_pattern }}"
     use_regex: no
   register: asm_data_disks
-  tags: disks
 
-- debug:
-    var: asm_data_disks
-  tags: disks
 - name: check reco disks
   find:
     paths: "{{ asm_disk_location }}"
