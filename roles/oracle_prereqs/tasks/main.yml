@@ -40,16 +40,13 @@
     src: /etc/sysconfig/ntpdate
   failed_when: False
   register: read_ntpd_config
-  tags: debug
 - set_fact:
     ntpd_config_content: "{{ read_ntpd_config.content | default('') | b64decode }}"
-  tags: debug
 - set_fact:
     ntpd_config:
-      options: "{{ ntpd_config_content | regex_search('OPTIONS=[^\n]*') | regex_replace ('OPTIONS=','') | regex_replace ('None','') }}"
-      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=[^\n]*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('None','') }}"
-      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=[^\n]*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('None','') }}"
-  tags: debug
+      options: "{{ ntpd_config_content | regex_search('OPTIONS=.*') | regex_replace ('OPTIONS=','') | regex_replace ('None','') }}"
+      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=.*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('None','') }}"
+      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=.*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('None','') }}"
 
 - name: read kernel parameters
   slurp:
