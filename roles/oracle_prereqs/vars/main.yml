@@ -6,6 +6,10 @@ oracle_groups:
 - oinstall
 - dba
 
+installation_type: "{% if ansible_play_hosts > 1 -%}rac
+                    {%- else -%}standalone
+                    {%- endif %}"
+                    
 pbis:
     ignored_users:
         - root
