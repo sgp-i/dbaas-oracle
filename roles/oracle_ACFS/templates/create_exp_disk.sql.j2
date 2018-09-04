@@ -5,4 +5,6 @@ attribute 'compatible.asm' = '{{ oracle_compat_version }}', 'compatible.advm' = 
 
 alter diskgroup {{ asm_exp_group }} add volume EXP_FS_VOL size {{ exp_size }}g;
 
+alter diskgroup {{ asm_exp_group }} enable volume 'EXP_FS_VOL';
+
 spool off;
