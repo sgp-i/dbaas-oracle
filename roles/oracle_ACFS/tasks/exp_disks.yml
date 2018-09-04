@@ -12,7 +12,7 @@
   file:
     group: "{{ oracle_group }}"
     owner: "{{ oracle_user }}"
-    path: ‘{{ oracle_base }}/exp’
+    path: "{{ oracle_base }}/exp"
     state: directory
 
 - name: add create_exp_disk.sql script
