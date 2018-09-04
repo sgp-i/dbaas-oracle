@@ -8,6 +8,8 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
+oracle_dba_group: dba
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
