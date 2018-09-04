@@ -285,7 +285,7 @@
   when: installation_type == "rac"
 
 - name: get shm size
-  command: df -h /dev/shm --output=size
+  command: df -m /dev/shm --output=size
   changed_when: False
   register: shm_size
 - set_fact:
@@ -499,9 +499,9 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: /dev/shm Size
-      expected_value: "{{ (ansible_memtotal_mb/2000) | int }}"
+      expected_value: "{{ (ansible_memtotal_mb * 0.8) | int }}"
       actual_value: "{{ shm_size | int }}"
-      status: "{% if (ansible_memtotal_mb/2000) | int != shm_size | int -%}FAILED
+      status: "{% if shm_size | int < (ansible_memtotal_mb * 0.8) | int -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"         
     - check_name: check kernel parameters
