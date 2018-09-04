@@ -37,7 +37,7 @@
 
 - name: read NTP config
   slurp:
-    src: /etc/sysconfig/ntpdate
+    src: /etc/sysconfig/ntpd
   failed_when: False
   register: read_ntpd_config
 - set_fact:
@@ -334,15 +334,15 @@
                {%- endif -%}"
     - check_name: verifying ntpd config file
       expected_value: 
-           options: '"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x"'
-           hwclock_sync: "yes"
+           options: '"-u ntp:ntp -p /var/run/ntpd.pid –g -x"'
+           hwclock_sync: "no"
            date_options: ""
       actual_value: 
            options: "{{ ntpd_config.options | default('') }}"
            hwclock_sync: "{{ ntpd_config.sync | default('') }}" 
            date_options: "{{ ntpd_config.date_options | default('') }}"         
-      status: "{% if ntpd_config.options | default('') != '\"ntpd -u ntp:ntp -p /var/run/ntpd.pid –g -x\"' or
-                     ntpd_config.sync | default('') != 'yes' or
+      status: "{% if ntpd_config.options | default('') != '\"-u ntp:ntp -p /var/run/ntpd.pid –g -x\"' or
+                     ntpd_config.sync | default('') != 'no' or
                      ntpd_config.date_options | default('') != '' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
