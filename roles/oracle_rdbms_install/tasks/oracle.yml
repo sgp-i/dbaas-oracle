@@ -21,6 +21,21 @@
   ignore_errors: yes
   when: inventory_hostname == master_node
 
+# log file location is in /u01/app/oraInventory/logs/installActions2018-08-24_06-30-14AM.log
+- name: Get files in a folder
+  find:
+    paths: "{{ install_base }}/oraInventory/logs/"
+    patterns: "installActions*.log"
+  register: log_files
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: upload_log.yml
+  vars:
+    logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+  tags:
+  - apex_api
+
 - block:
   - name: general oracle post-installation
     command: "{{ install_base }}/oraInventory/orainstRoot.sh"
@@ -42,10 +57,10 @@
     name: oracle_api_services
     tasks_from: host_checklist_update.yml
   vars:
-    host_chklst_json_body:
+    chklst_json_body:
        new_entry: False
        db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
-                        hostvars[master_node]['db_install']['failed'] -%}FAILED
+                                 hostvars[master_node]['db_install']['failed'] -%}FAILED
                           {%- else -%}SUCCESSFUL
                           {%- endif -%}"
   tags:

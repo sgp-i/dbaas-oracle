@@ -7,7 +7,7 @@
   tasks:
     - import_role:
         name: oracle_api_services
-        tasks_from: cluster_member_insertion.yml
+        tasks_from: cluster_inventory_update.yml
       vars:
         cluster_name: "{{ cluster_name | mandatory }}" ## must be passed in
         gi_version: "{{ grid_version }}"
@@ -17,6 +17,8 @@
 
     - import_role:
         name: oracle_prereqs
+      vars:
+        installation_type: rac
 
     - import_role:
         name: oracle_grid_infra_install
