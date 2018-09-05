@@ -20,3 +20,5 @@ ora_user_env:
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ ansible_env.PATH }}:{{ oracle_home }}/bin"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
