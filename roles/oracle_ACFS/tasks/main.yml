@@ -1,5 +1,12 @@
 ---
 
+- import_tasks: acfs_driver_check.yml
+  tags: acfs_install
+
+- include_tasks: acfs_driver_install.yml
+  when: not acfsdriver_installed
+  tags: acfs_install
+
 - name: create tmp dir
   file:
     group: "{{ oracle_group }}"
