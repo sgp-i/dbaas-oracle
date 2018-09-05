@@ -3,7 +3,7 @@
 - name: Check Opatch Inventory
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  command: $ORACLE_HOME/OPatch/opatch lsinventory
+  command: opatch lsinventory
   register: opatch_lsinv
 
 - name: save opatch inventory stdout

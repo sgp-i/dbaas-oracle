@@ -31,10 +31,6 @@ asm_data_group: DATA
 
 asm_data_pattern: D*
 
-asm_reco_group: RECO
-
-asm_reco_pattern: R*
-
 asm_ocr_group: OCR
 
 asm_ocr_pattern: GRID_DISK*

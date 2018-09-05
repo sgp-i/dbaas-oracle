@@ -1,0 +1,9 @@
+---
+
+- name: Mount EXP (ACFS) and RECO disks
+  hosts: '{{ host }}'
+  become: yes
+  any_errors_fatal: true
+  tasks:
+  - import_role:
+      name: oracle_ACFS

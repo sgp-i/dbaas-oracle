@@ -6,7 +6,7 @@
 
 - name: PUT into V_HOST_INV_TBL
   block:
-  - name: Update {{ ansible_hostname }} in Host Inventory
+  - name: Update node in Host Inventory
     uri:
       url: "{{ apex_url }}/host_inventory/{{ host_id }}"
       validate_certs: no  # should be removed after https certs becomes renewed

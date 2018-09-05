@@ -20,6 +20,11 @@
     state: directory
     recurse: yes
 
+- import_tasks: check_opatch.yml
+
+- include_tasks: install_opatch.yml
+  when: opatch_version != opatch_version_required
+
 - include_tasks: copy_archives.yml
 
 - include_tasks: opatch_prereq.yml

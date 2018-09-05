@@ -1,0 +1,22 @@
+---
+
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
+
+asm_disk_location: /dev/oracleasm/disks
+
+asm_reco_group: RECO
+
+asm_reco_pattern: R*
+
+asm_exp_group: EXP_DG
+
+asm_exp_pattern: EXP*
+
+# Size in GB
+exp_size: 25
+
+oracle_version: 12.1.0.2
+
+oracle_db_name: +ASM
