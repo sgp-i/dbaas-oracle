@@ -5,9 +5,9 @@ SELECTED_LANGUAGES=en
 oracle.install.option={{ grid_install_mode }}
 ORACLE_BASE={{ oracle_base }}/oracle
 ORACLE_HOME={{ oracle_grid_home }}
-oracle.install.asm.OSDBA=asmdba
-oracle.install.asm.OSOPER=asmoper
-oracle.install.asm.OSASM=asmadmin
+oracle.install.asm.OSDBA={{ oracle_dba_group }}
+oracle.install.asm.OSOPER={{ oracle_dba_group }}
+oracle.install.asm.OSASM={{ oracle_dba_group }}
 oracle.install.crs.config.gpnp.scanName={% if (
       grid_install_mode == "CRS_CONFIG" or
       grid_install_mode == "CRS_SWONLY" or

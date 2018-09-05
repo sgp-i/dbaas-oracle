@@ -8,6 +8,7 @@
     - oracle_grid_infra_install
   vars:
     grid_install_mode: UPGRADE
+    installation_type: rac
 
   ## Required vars:
   # cluster_name 

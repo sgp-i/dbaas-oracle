@@ -29,7 +29,7 @@
 
 - name: set next oracle home for {{ oracle_version }}
   set_fact:
-    oracle_db_home: "db_{% if ora_home_locs | length > 0 -%}db_{{ ora_home_locs[-1] | 
+    oracle_db_home: "{% if ora_home_locs | length > 0 -%}db_{{ ora_home_locs[-1] | 
                         regex_replace(oracle_base + '/product/' + oracle_version + '/db_([0-9]*)','\\1') | 
                         int + 1 }}
                     {%- else -%}db_1
