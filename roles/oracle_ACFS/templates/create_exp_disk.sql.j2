@@ -1,0 +1,10 @@
+spool {{ oracle_tmp }}/exp_disk.out;
+
+create diskgroup {{ asm_exp_group }} external redundancy disk '{{ asm_exp_paths_find_result | json_query("files[].path") | join("','") }}'
+attribute 'compatible.asm' = '{{ oracle_compat_version }}', 'compatible.advm' = '{{ oracle_compat_version }}';
+
+alter diskgroup {{ asm_exp_group }} add volume EXP_FS_VOL size {{ exp_size }}g;
+
+alter diskgroup {{ asm_exp_group }} enable volume 'EXP_FS_VOL';
+
+spool off;

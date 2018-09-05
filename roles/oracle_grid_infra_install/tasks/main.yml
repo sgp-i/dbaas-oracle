@@ -34,14 +34,6 @@
     use_regex: no
   register: asm_data_paths_find_result
 
-- name: get asm disk paths - {{ asm_reco_group }}
-  find:
-    paths: "{{ asm_disk_location }}"
-    file_type: any
-    patterns: "{{ asm_reco_pattern }}"
-    use_regex: no
-  register: asm_reco_paths_find_result
-
 - name: get asm disk paths - {{ asm_ocr_group }}
   find:
     paths: "{{ asm_disk_location }}"
