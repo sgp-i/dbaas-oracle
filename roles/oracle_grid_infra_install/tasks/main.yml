@@ -18,21 +18,6 @@
 
 - include: copy_archives.yml
 
-- name: get cvuqdisk package name
-  find:
-    paths: "{{ oracle_tmp }}/grid/rpm"
-    file_type: file
-    patterns: cvuqdisk*
-    use_regex: yes
-  register: cvuqdisk_package
-  when: grid_install_mode != "UPGRADE"
-
-- name: install cvuqdisk package
-  yum: 
-    name: "{{ cvuqdisk_package.files[0].path }}"
-    state: present
-  when: grid_install_mode != "UPGRADE"
-
 - include_tasks: setup_ssh_user_equivalency.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
 
