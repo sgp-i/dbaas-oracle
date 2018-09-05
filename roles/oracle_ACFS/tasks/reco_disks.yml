@@ -1,0 +1,29 @@
+---
+
+- name: get asm disk paths - {{ asm_reco_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_paths_find_result
+
+- name: add create_reco_disk.sql script
+  template:
+    src: create_reco_disk.sql.j2
+    dest: "{{ oracle_tmp }}/create_reco_disk.sql"
+
+- name: create RECO Disk in ASM
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: sqlplus / as sysasm @{{ oracle_tmp }}/create_reco_disk.sql
+
+- name: add mount_asm_diskgroup.sql script
+  template:
+    src: mount_asm_diskgroup.sql.j2
+    dest: "{{ oracle_tmp }}/mount_reco_disk.sql"
+
+- name: mount RECO disk in ASM
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: sqlplus / as sysasm @{{ oracle_tmp }}/mount_reco_disk.sql

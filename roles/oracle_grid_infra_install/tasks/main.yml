@@ -18,28 +18,13 @@
 
 - include: copy_archives.yml
 
-- name: get cvuqdisk package name
-  find:
-    paths: "{{ oracle_tmp }}/grid/rpm"
-    file_type: file
-    patterns: cvuqdisk*
-    use_regex: yes
-  register: cvuqdisk_package
-  when: grid_install_mode != "UPGRADE"
-
-- name: install cvuqdisk package
-  yum: 
-    name: "{{ cvuqdisk_package.files[0].path }}"
-    state: present
-  when: grid_install_mode != "UPGRADE"
-
 - include_tasks: setup_ssh_user_equivalency.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
 
 - include: run_cluvfy.yml
   tags:
     - cluvfy
-  when: inventory_hostname == master_node and grid_install_mode != "UPGRADE"
+  when: inventory_hostname == master_node and grid_install_mode == "CRS_CONFIG"
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:
@@ -48,14 +33,6 @@
     patterns: "{{ asm_data_pattern }}"
     use_regex: no
   register: asm_data_paths_find_result
-
-- name: get asm disk paths - {{ asm_reco_group }}
-  find:
-    paths: "{{ asm_disk_location }}"
-    file_type: any
-    patterns: "{{ asm_reco_pattern }}"
-    use_regex: no
-  register: asm_reco_paths_find_result
 
 - name: get asm disk paths - {{ asm_ocr_group }}
   find:

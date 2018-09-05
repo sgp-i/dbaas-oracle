@@ -8,6 +8,8 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
+oracle_dba_group: dba
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
@@ -15,6 +17,8 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
 
 checklist_task: "{% if ansible_play_hosts == 1 -%}host
                  {%- elif ansible_play_hosts > 1 -%}cluster
@@ -33,21 +37,3 @@ grid_images:
     - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_3of7.zip", version: "11.2.0.4" }
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_1of2.zip", version: "12.1.0.2" } 
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_2of2.zip", version: "12.1.0.2" }
-
-
-known_cluvfy_issues: 
-  - "Swap Size"
-  - "/dev/shm mounted"
-  - "Package: cvuqdisk"
-  - "Multicast check"
-  - "source"
-  - "NTP"
-  - "Domain Sockets"
-  - "Physical Memory"
-  - "semopm"
-  - "file-max"
-  - "rmem_default"
-  - "rmem_max"
-  - "wmem_default"
-  - "wmem_max"
-  - "aio-max-nr"

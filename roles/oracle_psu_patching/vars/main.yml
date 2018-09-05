@@ -22,4 +22,6 @@ ora_user_env:
               {%- elif patch_type == 'GRID' -%}{{ gi_sid }}
               {%- endif %}"
   ORACLE_HOME: "{{ oracle_home }}"
-  PATH: "{{ ansible_env.PATH }}:$ORACLE_HOME/OPatch"
+  PATH: "{{ ansible_env.PATH }}:{{ oracle_home }}/OPatch"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
