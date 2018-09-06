@@ -9,12 +9,14 @@
     recurse: yes
 
 - name: unzip cluvfy
-  become_user: "{{ oracle_user }}"
   unarchive: 
     src: "{{ oracle_installer_path }}/cvupack_Linux_x86_64.zip" 
     dest: "{{ oracle_tmp }}/cluster_verify" 
     remote_src: yes 
     keep_newer: true
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
     validate_certs: no
 
 - name: set cvu_config settings
