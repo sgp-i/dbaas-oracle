@@ -4,10 +4,15 @@ OPERATION_TYPE = "createDatabase"
 [CREATEDATABASE]
 GDBNAME = "{{ oracle_db_name }}"
 SID = "{{ oracle_db_name }}"
+{% if oracle_pdb_name == '' -%}
 CREATEASCONTAINERDATABASE = false
+NUMBEROFPDBS = 0
+{% else -%}
+CREATEASCONTAINERDATABASE = true
 NUMBEROFPDBS = 1
 PDBNAME = "{{ oracle_pdb_name }}"
 PDBADMINPASSWORD = "{{ oracle_pdb_passwd }}"
+{% endif %}
 TEMPLATENAME = "General_Purpose.dbc"
 SYSPASSWORD = "{{ oracle_system_pass }}"
 SYSTEMPASSWORD = "{{ oracle_system_pass }}"
