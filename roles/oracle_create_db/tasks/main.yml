@@ -6,6 +6,7 @@
 - name: check if db has already been installed
   command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
   ignore_errors: yes
+  changed_when: false
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
 

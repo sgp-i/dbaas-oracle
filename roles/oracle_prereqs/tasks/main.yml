@@ -84,16 +84,6 @@
     path: /var/tmp
   register: tmp_perms
 
-# - name: check the RW permission for all 
-#   shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
-#   changed_when: False
-#   register: tmp_perms
-
-# - name: setting the fact 
-#   set_fact:  
-#     failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
-#   when: tmp_perms.stdout!="drwxrwxrwt."
-
 - name: umask value checker
   become: yes
   become_user: "{{ oracle_user }}"
