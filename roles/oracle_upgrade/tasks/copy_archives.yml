@@ -18,7 +18,8 @@
     src: "{{ oracle_installer_path }}/preupgrade_12.1.0.2.0_18_lf.zip" 
     dest: "{{ oracle_tmp }}/db_precheck" 
     remote_src: yes 
-    keep_newer: true 
+    keep_newer: true
+    validate_certs: no
   when: unzipped.stat.exists == false
   
 - name: place a marker for the completion
