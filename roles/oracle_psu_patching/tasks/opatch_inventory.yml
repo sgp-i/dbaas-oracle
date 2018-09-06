@@ -5,6 +5,7 @@
   environment: "{{ ora_user_env }}"
   command: opatch lsinventory
   register: opatch_lsinv
+  changed_when: False
 
 - name: save opatch inventory stdout
   copy:
