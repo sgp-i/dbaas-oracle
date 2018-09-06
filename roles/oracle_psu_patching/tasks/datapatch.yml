@@ -11,8 +11,11 @@
   copy:
     dest: "{{ oracle_tmp }}/datapatch.out"
     content: "{{ datapatch.stdout }}"
+  changed_when: False
 
 - name: save datapatch stderr
   copy:
     dest: "{{ oracle_tmp }}/datapatch.err"
     content: "{{ datapatch.stderr }}"
+  changed_when: False
+  when: datapatch.stderr_lines | length > 0

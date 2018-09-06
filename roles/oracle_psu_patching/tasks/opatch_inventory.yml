@@ -11,8 +11,11 @@
   copy:
     dest: "{{ oracle_tmp }}/opatch_lsinv.out"
     content: "{{ opatch_lsinv.stdout }}"
+  changed_when: False
 
 - name: save opatch inventory stderr
   copy:
     dest: "{{ oracle_tmp }}/opatch_lsinv.err"
     content: "{{ opatch_lsinv.stderr }}"
+  changed_when: False
+  when: datapatch.stderr_lines | length > 0
