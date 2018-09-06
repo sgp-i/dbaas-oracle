@@ -21,6 +21,7 @@
   environment: "{{ ora_user_env }}"
   command: asmcmd lsdg --suppressheader
   register: asm_disks_list
+  changed_when: False
 - set_fact:
     asm_disks: "{{ asm_disks | default('') + '\n' + asm_line | regex_search('MOUNTED.*') }}'"
   loop: "{{ asm_disks_list.stdout_lines }}"
