@@ -1,5 +1,22 @@
 ---
 
+- name: create the cluster verify directory to the oracle user
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}/cluster_verify"
+    state: directory
+    recurse: yes
+
+- name: unzip cluvfy
+  become_user: "{{ oracle_user }}"
+  unarchive: 
+    src: "{{ oracle_installer_path }}/cvupack_Linux_x86_64.zip" 
+    dest: "{{ oracle_tmp }}/cluster_verify" 
+    remote_src: yes 
+    keep_newer: true
+    validate_certs: no
+
 - name: set cvu_config settings
   lineinfile: 
     path: "{{ oracle_tmp }}/cluster_verify/cv/admin/cvu_config"
