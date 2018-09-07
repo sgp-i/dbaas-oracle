@@ -37,6 +37,22 @@
 
 - include_tasks: opatch_inventory.yml
 
+- block:
+  - name: get DBs in ORACLE_HOME
+    command: grep ":{{ oracle_home }}:" /etc/oratab
+    register: db_list
+    changed_when: False
+
+  - include_tasks: datapatch.yml
+    vars:
+      oracle_db_name: "{{ db_detail | regex_replace('([^:]*).*','\\1') }}"
+    when: db_detail | regex_replace('([^:]*):.*','\\1') != 'no_sid'
+    loop: "{{ db_list.stdout_lines }}"
+    loop_control:
+      loop_var: db_detail
+
+  when: patch_type == 'RDBMS'
+
 - import_role:
     name: oracle_api_services
     tasks_from: db_checklist_update.yml

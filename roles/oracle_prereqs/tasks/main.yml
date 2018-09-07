@@ -44,9 +44,9 @@
     ntpd_config_content: "{{ read_ntpd_config.content | default('') | b64decode }}"
 - set_fact:
     ntpd_config:
-      options: "{{ ntpd_config_content | regex_search('OPTIONS=.*') | regex_replace ('OPTIONS=','') | regex_replace ('None','') }}"
-      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=.*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('None','') }}"
-      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=.*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('None','') }}"
+      options: "{{ ntpd_config_content | regex_search('OPTIONS=.*') | regex_replace ('OPTIONS=','') | regex_replace ('\"','') }}"
+      sync: "{{ ntpd_config_content | regex_search('SYNC_HWCLOCK=.*') | regex_replace ('SYNC_HWCLOCK=','') | regex_replace ('\"','') }}"
+      date_options: "{{ ntpd_config_content | regex_search('NTPDATE_OPTIONS=.*') | regex_replace ('NTPDATE_OPTIONS=','') | regex_replace ('\"','') }}"
 
 - name: read kernel parameters
   slurp:
@@ -83,16 +83,6 @@
   stat:
     path: /var/tmp
   register: tmp_perms
-
-# - name: check the RW permission for all 
-#   shell: ls -lsrta /var |grep tmp | awk '{ print$2 }'
-#   changed_when: False
-#   register: tmp_perms
-
-# - name: setting the fact 
-#   set_fact:  
-#     failed_checks:  "{{ failed_checks | string }} the directory /var should have drwxrwxrwt. permission,"
-#   when: tmp_perms.stdout!="drwxrwxrwt."
 
 - name: umask value checker
   become: yes
@@ -334,14 +324,14 @@
                {%- endif -%}"
     - check_name: verifying ntpd config file
       expected_value: 
-           options: '"-u ntp:ntp -p /var/run/ntpd.pid –g -x"'
+           options: '-u ntp:ntp -p /var/run/ntpd.pid -g -x'
            hwclock_sync: "no"
            date_options: ""
       actual_value: 
            options: "{{ ntpd_config.options | default('') }}"
            hwclock_sync: "{{ ntpd_config.sync | default('') }}" 
            date_options: "{{ ntpd_config.date_options | default('') }}"         
-      status: "{% if ntpd_config.options | default('') != '\"-u ntp:ntp -p /var/run/ntpd.pid –g -x\"' or
+      status: "{% if ntpd_config.options | default('') != '-u ntp:ntp -p /var/run/ntpd.pid -g -x' or
                      ntpd_config.sync | default('') != 'no' or
                      ntpd_config.date_options | default('') != '' -%}FAILED
                {%- else -%}PASSED
