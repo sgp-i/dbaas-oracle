@@ -1,0 +1,24 @@
+---
+
+- name: insert cluster
+  hosts: '{{ host }}' # Comma-deliminated list (e.g. server1.domain,server2.domain,server3.domain)
+  any_errors_fatal: true
+  become: yes
+  tasks:
+  - import_role:
+      name: oracle_api_services
+      tasks_from: cluster_inventory_update.yml
+    vars:
+      gi_version: "{{ grid_version }}"
+    tags:
+    - apex_api
+
+  ## Required vars:
+  # cluster_name - Name of the cluster (i.e. SCAN name)
+
+  ## Optional vars:
+  # grid_version (default: 12.1.0.2)
+  # env_source - Must be passed in or could be HostVar
+  # network_type - Possibly HostVar?
+  # global_zone_solaris - Possibly HostVar?
+  # server_monitoring_tool - Possibly HostVar?
