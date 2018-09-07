@@ -39,11 +39,14 @@
   copy:
     dest: '{{ oracle_tmp }}/cleanup_files.out'
     content: '{{ cleanup_files.stdout }}'
+  changed_when: False
 
 - name: save cleanup_files script stderr
   copy:
     dest: "{{ oracle_tmp }}/cleanup_files.err"
     content: "{{ cleanup_files.stderr | default('') }}"
+  changed_when: False
+  when: cleanup_files.stderr_lines | length > 0
 
 - name: Set up Directory in ORACLE_ADMIN
   file:
