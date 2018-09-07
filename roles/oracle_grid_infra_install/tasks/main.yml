@@ -3,28 +3,7 @@
 - include_vars: secrets.yml
   no_log: true
 
-
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: True
-      checklist_type: "5"
-      category_type: Install
-      gi_install_status: "PENDING"
-  tags:
-  - apex_api
-
 - include: copy_archives.yml
-
-- include_tasks: setup_ssh_user_equivalency.yml
-  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
-
-- include: run_cluvfy.yml
-  tags:
-    - cluvfy
-  when: inventory_hostname == master_node and grid_install_mode == "CRS_CONFIG"
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:

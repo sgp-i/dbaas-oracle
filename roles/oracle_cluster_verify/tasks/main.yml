@@ -1,0 +1,43 @@
+---
+
+- include_tasks: setup_ssh_user_equivalency.yml
+  when: setup_ssh_user_equivalency
+
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "5"
+      category_type: Install
+      gi_install_status: "PENDING"
+  tags:
+  - apex_api
+
+- include: run_cluvfy.yml
+  when: inventory_hostname == master_node
+
+- name: Check Cluster Verify Result
+  set_fact:
+    final_result: "{% if cluvfy_results.rc | default(1) != 0 -%}FAILED
+                   {%- else -%}SUCCESSFUL
+                   {%- endif %}"
+
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: False
+      cluster_verify: "{% if final_result == 'SUCCESSFUL' -%}Y
+                       {%- else -%}N
+                       {%- endif %}"
+      gi_install_status: "{{ final_result }}"
+  tags:
+  - apex_api
+
+- name: Final Result
+  debug:
+    var: final_result
+  failed_when: final_result == 'FAILED'
