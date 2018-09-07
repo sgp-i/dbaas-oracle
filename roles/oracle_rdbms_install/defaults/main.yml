@@ -26,9 +26,7 @@ rac_install: "{% if ansible_play_hosts | length > 1 -%}true
               {%- else -%}false
               {%- endif %}"
 
-## TODO: Get standard location where binaries can reliably be found
-# For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
-oracle_installer_path: "/ansible"
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false

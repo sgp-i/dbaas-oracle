@@ -28,9 +28,9 @@ cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
 
-public_net: 10.10.98.0
+public_net: bond0.
 
-private_net: 10.10.99.0
+private_net: em1
 
 # array  os images avaialbe
 grid_images:
