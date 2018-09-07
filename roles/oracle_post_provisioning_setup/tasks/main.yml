@@ -12,10 +12,24 @@
   tags:
   - apex_api
 
+- name: get oracle_home
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  register: db_details
+  changed_when: False
+- set_fact:
+    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+
+- name: get oracle_sid
+  shell: ps -ef | grep ora_smon_{{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+- set_fact:
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+
 - name: Creating no sid entry in ORATAB file
   lineinfile:
     path: /etc/oratab
-    line: 'no_sid:{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}:N          # line added by Ansible'
+    line: 'no_sid:{{ oracle_home }}:N          # line added by Ansible'
 
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
