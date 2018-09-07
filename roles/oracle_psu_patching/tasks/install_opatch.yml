@@ -13,6 +13,7 @@
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
     mode: 0755
+    validate_certs: no
 
 - import_tasks: check_opatch.yml
 

@@ -12,4 +12,4 @@ execute_pre_fixup: false
 
 execute_post_fixup: true
 
-oracle_installer_path: "/ansible"
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
