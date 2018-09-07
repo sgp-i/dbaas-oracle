@@ -31,7 +31,7 @@
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -n {{ cluster_nodes | join(',') }} -verbose"
+  command: "{{ oracle_tmp }}/cluster_verify/bin/cluvfy stage -pre crsinst -osdba {{ oracle_dba_group }} -orainv {{ oracle_group }} -n {{ cluster_nodes | join(',') }} -r {{ oracle_major_version }} -verbose"
   ignore_errors: yes
   register: cluvfy_results
 
