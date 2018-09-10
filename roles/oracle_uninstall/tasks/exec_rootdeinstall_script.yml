@@ -1,0 +1,19 @@
+---
+
+- name: get script path
+  set_fact:
+    script_path: "{{ deinstall_cmd.stdout | regex_search('/tmp/deinstall.*/rootdeinstall.sh') }}"
+
+- name: execute rootdeinstall.sh
+  command: "{{ script_path }}"
+  register: rootdeinstall_script
+
+- name: save rootdeinstall_script stdout
+  copy:
+    dest: "{{ oracle_tmp }}/rootdeinstall_script.out"
+    content: "{{ rootdeinstall_script.stdout }}"
+
+- name: save rootdeinstall_script stderr
+  copy:
+    dest: "{{ oracle_tmp }}/rootdeinstall_script.err"
+    content: "{{ rootdeinstall_script.stderr }}" 
