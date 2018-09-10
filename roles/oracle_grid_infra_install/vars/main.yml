@@ -1,5 +1,7 @@
 ---
 
+oracle_major_version: "{{ grid_version | regex_replace('^([0-9]{1,2}.[0-9]{1,}).*','\\1') }}"
+
 oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid"
 
 oracle_home: "{{ oracle_base }}/oracle/product/{{ grid_version }}/{{ oracle_db_home }}"
@@ -20,8 +22,8 @@ ora_user_env:
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
 
-checklist_task: "{% if ansible_play_hosts == 1 -%}host
-                 {%- elif ansible_play_hosts > 1 -%}cluster
+checklist_task: "{% if ansible_play_hosts | length == 1 -%}host
+                 {%- elif ansible_play_hosts | length > 1 -%}cluster
                  {%- endif %}"
 
 cluster_nodes: "{{ ansible_play_hosts }}"
