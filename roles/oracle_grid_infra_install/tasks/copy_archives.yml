@@ -6,7 +6,6 @@
     owner: "{{ oracle_user }}"
     path: "{{ oracle_tmp }}/grid"
     state: directory
-    recurse: yes
 
 - name: unzip grid installer
   unarchive: 
@@ -15,5 +14,7 @@
     remote_src: yes 
     keep_newer: true
     validate_certs: no
-  when: item.version == grid_version
+  when: 
+  - item.version == grid_version
+  - inventory_hostname == master_node
   with_items: "{{ grid_images }}"
