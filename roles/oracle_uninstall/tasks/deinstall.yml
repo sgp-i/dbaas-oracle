@@ -1,0 +1,28 @@
+---
+
+- block:
+  - name: create {{ deinstall_product }}_deinstall.rsp file
+    template:
+      owner: "{{ oracle_user }}"
+      src: "{{ deinstall_product }}_deinstall.rsp.j2"
+      dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
+
+  - name: Run Deinstall
+    become_user: "{{ oracle_user }}"
+    command: "{{ oracle_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
+    register: deinstall_cmd
+
+  - name: save deinstall stdout
+    copy:
+      dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall_cmd.out"
+      content: "{{ deinstall_cmd.stdout }}"
+
+  - name: save deinstall stderr
+    copy:
+      dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall_cmd.err"
+      content: "{{ deinstall_cmd.stderr }}" 
+  when: inventory_hostname == master_node
+
+- include_tasks: exec_rootdeinstall_script.yml
+  loop: "{{ cluster_nodes }}"
+  when: '"rootdeinstall.sh" in hostvars[inventory_hostname]["deinstall_cmd"]["stdout"]'

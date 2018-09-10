@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+set timeout 35
+spawn {{ oracle_base }}/product/{{ oracle_version }}/{{ rdbms_name }}/deinstall/deinstall
+expect "The product version number of the specified home cannot be determined. Is the product version 12.1.0.2.0 (y - yes, n - no)? \[n\]\r"
+send -- "y\r"
+expect -re "The deinstall tool cannot determine the home type needed to deconfigure the selected home.  Please select the type of Oracle home you are trying to deinstall*"
+send -- "4\r"
+expect "The product version number of the specified home cannot be determined. Is the product version at least 11.2.0.1.0 (y - yes, n - no)? \[n\]\r"
+send -- "y\r"
+expect "Do you want to continue (y - yes, n - no)? \[n\]: "
+send -- "y\r"
+expect eof
