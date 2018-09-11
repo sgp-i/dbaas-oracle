@@ -32,4 +32,7 @@
 - include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
 
-- include: grid_install.yml
+- include_tasks: grid_install.yml
+
+- include_tasks: ocr_disk.yml
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
