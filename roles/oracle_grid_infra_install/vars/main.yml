@@ -1,6 +1,6 @@
 ---
 
-oracle_major_version: "{{ grid_version | regex_replace('^([0-9]{1,2}.[0-9]{1,}).*','\\1') }}"
+oracle_compat_version: "{{ grid_version | regex_replace('^([0-9]{1,2}.[0-9]{1,}).*','\\1') }}"
 
 oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid"
 
@@ -17,8 +17,9 @@ ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
   ORACLE_SID: "{{ oracle_db_name }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home }}"
+  ORACLE_HOME: "{{ oracle_grid_home }}"
   NLS_LANG: "American_America.UTF8"
+  PATH: "{{ oracle_grid_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
 

@@ -127,8 +127,8 @@
       chklst_json_body:
         new_entry: False
         gi_install_status: "FAILED"
-    tags:
     when: inventory_hostname == master_node
+    tags:
     - apex_api
   
   - name: Install Failed
