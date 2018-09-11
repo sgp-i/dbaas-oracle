@@ -40,10 +40,25 @@
     path: "{{ oracle_home }}"
     state: absent
 
-##########################################################
-## Need details on what to clean out of these files:    ##
-## - tnsnames.ora                                       ##
-## - protocol.ora                                       ##
-## - listener.ora                                       ##
-## - /etc/oratab                                        ##
-##########################################################
+- name: get oraInventory location
+  slurp:
+    src: /etc/oraInst.loc
+  register: orainst_file
+- set_fact:
+    orainst_location: "{{ 
+                          orainst_file.content | 
+                          b64decode | 
+                          regex_search('inventory_loc=.*') | 
+                          regex_replace('inventory_loc=(.*)','\\1')
+                      }}"
+
+- name: cleanup Oracle Grid directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  when: deinstall_product == 'grid'
+  loop:
+  - "/etc/oracle"
+  - "/etc/oraInst.loc"
+  - "/etc/oratab"
+  - "{{ orainst_location }}"
