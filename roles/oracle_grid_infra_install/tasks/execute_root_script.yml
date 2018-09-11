@@ -1,7 +1,7 @@
 ---
 
 - block:
-  - name: db-specific oracle post-installation
+  - name: execute root.sh post-installation script
     command: "{{ oracle_grid_home }}/root.sh"
     register: root_script
 
