@@ -1,11 +1,7 @@
 ---
 
-- name: get script path
-  set_fact:
-    script_path: "{{ deinstall_cmd.stdout | regex_search('/tmp/deinstall.*/rootdeinstall.sh') }}"
-
 - name: execute rootdeinstall.sh
-  command: "{{ script_path }}"
+  command: "{{ script_path }}/rootdeinstall.sh"
   register: rootdeinstall_script
 
 - name: save rootdeinstall_script stdout

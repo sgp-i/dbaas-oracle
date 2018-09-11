@@ -20,9 +20,35 @@
   - name: save deinstall stderr
     copy:
       dest: "{{ oracle_tmp }}/{{ deinstall_product }}_deinstall_cmd.err"
-      content: "{{ deinstall_cmd.stderr }}" 
+      content: "{{ deinstall_cmd.stderr }}"
+    when: deinstall_cmd.stderr_lines | length > 0
+     
   when: inventory_hostname == master_node
 
+- name: get script path
+  set_fact:
+    script_path: "{{ hostvars[master_node]['deinstall_cmd']['stdout'] | regex_search('/tmp/deinstall[^/]*') }}"
+
+- block:
+  - include_role:
+      name: oracle_cluster_verify
+      tasks_from: setup_ssh_user_equivalency.yml
+
+  - name:  copy deinstall scripts
+    become_user: "{{ oracle_user }}"
+    command: rsync --delay-updates -F --compress --archive {{ master_node }}:{{ script_path }}/* {{ script_path }}/
+    synchronize:
+      src: "{{ script_path }}"
+      dest: "{{ inventory_hostname }}:{{ script_path }}/"
+    delegate_to: "{{ master_node }}"
+    when: inventory_hostname != master_node
+
+  - include_tasks: exec_rootcrsdc_script.yml
+    when: inventory_hostname != master_node  
+    loop: "{{ cluster_nodes }}"
+  when: '"crsdc.run" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
+
 - include_tasks: exec_rootdeinstall_script.yml
-  loop: "{{ cluster_nodes }}"
-  when: '"rootdeinstall.sh" in hostvars[inventory_hostname]["deinstall_cmd"]["stdout"]'
+  when: 
+  - '"rootdeinstall.sh" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
+  - inventory_hostname == master_node

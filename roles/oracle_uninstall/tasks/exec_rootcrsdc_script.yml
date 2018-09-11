@@ -1,0 +1,15 @@
+---
+
+- name: execute crsdc.run
+  command: "{{ script_path }}/crsdc.run"
+  register: crsdc_run_script
+
+- name: save crsdc_run_script stdout
+  copy:
+    dest: "{{ oracle_tmp }}/rootdeinstall_script.out"
+    content: "{{ crsdc_run_script.stdout }}"
+
+- name: save crsdc_run_script stderr
+  copy:
+    dest: "{{ oracle_tmp }}/crsdc_run_script.err"
+    content: "{{ crsdc_run_script.stderr }}" 
