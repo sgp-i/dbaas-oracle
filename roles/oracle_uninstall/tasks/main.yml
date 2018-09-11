@@ -35,11 +35,6 @@
 
 - include_tasks: deinstall.yml
 
-- name: cleanup ORACLE_HOME directory
-  file:
-    path: "{{ oracle_home }}"
-    state: absent
-
 - name: get oraInventory location
   slurp:
     src: /etc/oraInst.loc
@@ -58,7 +53,10 @@
     state: absent
   when: deinstall_product == 'grid'
   loop:
+  - "{{ install_base }}/{{ oracle_version }}"
   - "/etc/oracle"
   - "/etc/oraInst.loc"
   - "/etc/oratab"
   - "{{ orainst_location }}"
+  - "/var/tmp/.oracle"
+  - "{{ oracle_base }}/diag"

@@ -60,7 +60,7 @@
 
   - name: execute orainstRoot.sh script
     block:
-    - name: general oracle post-installation
+    - name: execute orainstRoot.sh script
       command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
       register: orainstroot_script
 

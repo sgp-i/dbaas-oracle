@@ -1,4 +1,6 @@
 ORACLE_HOME={{ oracle_home }}
+CLUSTER_NODES={{ cluster_node_string | join(',') }}
+REMOTE_NODES={{ cluster_node_string[1:] | join(',') }}
 LOCAL_NODE={{ ansible_hostname }}
 HOME_TYPE=SIHA
 ASM_REDUNDANCY=EXTERNAL
