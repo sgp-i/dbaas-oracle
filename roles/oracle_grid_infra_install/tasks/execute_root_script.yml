@@ -18,7 +18,7 @@
       content: "{{ root_script.stderr | default('') }}"
     when: root_script.changed
 
-  Need to add a way to upload to a separate checklist_id for each node ##
+  ## Need to add a way to upload to a separate checklist_id for each node ##
   - name: Get files in a folder
     find:
       paths: "{{ oracle_grid_home }}/install/"
