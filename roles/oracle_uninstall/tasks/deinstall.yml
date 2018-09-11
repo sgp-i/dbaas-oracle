@@ -30,10 +30,13 @@
   set_fact:
     script_path: "{{ hostvars[master_node]['deinstall_cmd']['stdout'] | regex_search('/tmp/deinstall[^/]*') }}"
 
-  - include_tasks: exec_rootcrsdc_script.yml
-    when: inventory_hostname != master_node  
-    loop: "{{ cluster_nodes }}"
-  when: '"crsdc.run" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
+- include_tasks: exec_rootcrsdc_script.yml
+  when: 
+  - curr_node != master_node  
+  - '"crsdc.run" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
+  loop: "{{ cluster_nodes }}"
+  loop_control:
+    loop_var: curr_node
 
 - include_tasks: exec_rootdeinstall_script.yml
   when: 
