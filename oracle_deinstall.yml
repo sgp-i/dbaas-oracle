@@ -3,6 +3,7 @@
 - name: install oracle database
   hosts: '{{ host }}'
   become: yes
+  any_errors_fatal: yes
   tasks:
   - import_role:
       name: oracle_uninstall
