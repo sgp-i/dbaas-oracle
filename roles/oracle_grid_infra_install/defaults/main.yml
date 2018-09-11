@@ -16,7 +16,7 @@ oracle_base: /u01/app
 
 oracle_db_home: db_1 
 
-oracle_db_name: db
+oracle_db_name: +ASM
 
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
