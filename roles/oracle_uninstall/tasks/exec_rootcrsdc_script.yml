@@ -2,6 +2,8 @@
 
 - name: execute crsdc.run
   command: "{{ script_path }}/crsdc.run"
+  ignore_errors: yes
+  failed_when: "'successfully deconfigured' not in crsdc_run_script.stdout"
   register: crsdc_run_script
 
 - name: save crsdc_run_script stdout

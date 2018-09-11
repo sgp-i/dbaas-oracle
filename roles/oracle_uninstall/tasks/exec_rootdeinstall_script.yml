@@ -2,6 +2,8 @@
 
 - name: execute rootdeinstall.sh
   command: "{{ script_path }}/rootdeinstall.sh"
+  ignore_errors: yes
+  failed_when: "'successfully deconfigured' not in crsdc_run_script.stdout"
   register: rootdeinstall_script
 
 - name: save rootdeinstall_script stdout
