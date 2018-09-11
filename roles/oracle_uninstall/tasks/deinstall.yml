@@ -30,22 +30,6 @@
   set_fact:
     script_path: "{{ hostvars[master_node]['deinstall_cmd']['stdout'] | regex_search('/tmp/deinstall[^/]*') }}"
 
-- block:
-  - include_role:
-      name: oracle_cluster_verify
-      tasks_from: setup_ssh_user_equivalency.yml
-
-  - name:  copy deinstall scripts
-    become_user: "{{ oracle_user }}"
-    command: rsync --delay-updates -F --compress --archive {{ master_node }}:{{ script_path }}/* {{ script_path }}/
-    ## Possible replacement.  In testing it was getting hung but
-    ## this would be the preferred method if we can get past that
-    # synchronize:
-    #   src: "{{ script_path }}"
-    #   dest: "{{ inventory_hostname }}:{{ script_path }}/"
-    # delegate_to: "{{ master_node }}"
-    when: inventory_hostname != master_node
-
   - include_tasks: exec_rootcrsdc_script.yml
     when: inventory_hostname != master_node  
     loop: "{{ cluster_nodes }}"
