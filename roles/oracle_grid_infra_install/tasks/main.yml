@@ -13,6 +13,14 @@
     use_regex: no
   register: asm_data_paths_find_result
 
+- name: get asm disk paths - {{ asm_reco_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_paths_find_result
+
 - name: get asm disk paths - {{ asm_ocr_group }}
   find:
     paths: "{{ asm_disk_location }}"
@@ -34,9 +42,5 @@
 
 - include_tasks: grid_install.yml
 
-- include_tasks: data_disks.yml
-  vars: 
-    diskgroup_name: "{{ asm_data_group }}"
-  when: 
-  - grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
-  - inventory_hostname == master_node
+- include_tasks: configure_disk_groups.yml
+  when: inventory_hostname == master_node

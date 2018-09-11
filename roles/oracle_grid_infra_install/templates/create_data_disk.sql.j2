@@ -1,6 +1,0 @@
-spool {{ oracle_tmp }}/data_disk.out;
-
-create diskgroup {{ asm_data_group }} external redundancy disk '{{ asm_data_paths_find_result | json_query("files[].path") | join("','") }}'
-attribute 'compatible.asm' = '{{ oracle_compat_version }}';
-
-spool off;
