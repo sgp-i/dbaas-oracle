@@ -31,7 +31,7 @@ asm_data_group: DATA
 
 asm_data_pattern: D*
 
-asm_ocr_group: OCR
+asm_ocr_group: OCR_VOTE
 
 asm_ocr_pattern: GRID_DISK*
 
