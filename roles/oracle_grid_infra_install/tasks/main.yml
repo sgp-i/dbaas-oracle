@@ -34,5 +34,9 @@
 
 - include_tasks: grid_install.yml
 
-- include_tasks: ocr_disk.yml
-  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
+- include_tasks: data_disks.yml
+  vars: 
+    diskgroup_name: "{{ asm_data_group }}"
+  when: 
+  - grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY"
+  - inventory_hostname == master_node
