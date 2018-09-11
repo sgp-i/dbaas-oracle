@@ -58,7 +58,7 @@
     state: absent
   when: deinstall_product == 'grid'
   loop:
-  - "{{ install_base }}/{{ grid_version }}"
+  - "{{ install_base }}/{{ oracle_version }}"
   - "/etc/oracle"
   - "/etc/oraInst.loc"
   - "/etc/oratab"
