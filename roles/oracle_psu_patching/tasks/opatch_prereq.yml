@@ -18,4 +18,4 @@
     dest: "{{ oracle_tmp }}/prereq.err"
     content: "{{ opatch_prereq.stderr }}"
   changed_when: False
-  when: datapatch.stderr_lines | length > 0
+  when: opatch_prereq.stderr_lines | length > 0

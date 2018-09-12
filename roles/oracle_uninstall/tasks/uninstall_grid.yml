@@ -1,0 +1,16 @@
+- name: run the deinstall script
+  shell: "{{ oracle_home }}/deinstall/deinstall"
+  
+
+- name: uninstallation of grid
+  block:
+  - name: make a expect script from jinja template to uninstall grid
+    template:
+      owner: "oracle"
+      src: uninstall_standalone_grid.j2
+      dest: "{{ oracle_home }}/uninstall_standalone_grid.exp"
+
+  # - name: run the expect file
+  #   shell: expect {{ oracle_home }}/uninstall_rdbms_{{ rdbms_name }}.exp
+  #   become: yes
+  #   become_user: oracle

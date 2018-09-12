@@ -1,0 +1,32 @@
+---
+  
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
+
+oracle_tmp: /u01/tmp/{{ oracle_version }}
+
+oracle_version: 12.1.0.2
+
+oracle_db_home: db_1
+
+scan_port: 1521
+
+asm_sid: +ASM
+
+asm_disk_location: /dev/oracleasm/disks
+
+asm_data_group: DATA
+
+asm_data_pattern: D*
+
+rdbms_name: "{{ rdbms_name | mandatory }}"
+
+db_list: []
+
+uninstallation_type: "{{ uninstallation_type | mandatory  }}" # if set to standalone 
+
+database_name: "{% if uninstallation_type == 'cluster' %} {{ database_name | mandatory }} 
+                {% else %} 
+                {% endif %}"
+

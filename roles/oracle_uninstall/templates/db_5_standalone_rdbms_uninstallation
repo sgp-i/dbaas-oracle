@@ -1,0 +1,76 @@
+#!/bin/expect -f
+set timeout -1
+spawn ./db_5/deinstall/deinstall
+match_max 100000
+expect -exact "Checking for required files and bootstrapping ...\r
+Please wait ...\r
+Location of logs /tmp/deinstall2018-07-30_03-50-22AM/logs/\r
+\r
+############ ORACLE DECONFIG TOOL START ############\r
+\r
+The product version number of the specified home cannot be determined. Is the product version 12.1.0.2.0 (y - yes, n - no)? \[n\]"
+send -- "y\r"
+expect -exact "y\r
+\r
+######################### DECONFIG CHECK OPERATION START #########################\r
+## \[START\] Install check configuration ##\r
+The deinstall tool cannot determine the home type needed to deconfigure the selected home.  Please select the type of Oracle home you are trying to deinstall.\r
+Single Instance database - Enter 1\r
+Real Application Cluster database - Enter 2\r
+Grid Infrastructure for a cluster - Enter 3\r
+Grid Infrastructure for a stand-alone server - Enter 4\r
+Client Oracle Home - Enter 5\r
+Transparent Gateways Oracle Home - Enter 6\r
+GSM Oracle Home - Enter 7\r
+"
+send -- "4\r"
+expect -exact "4\r
+The product version number of the specified home cannot be determined. Is the product version at least 11.2.0.1.0 (y - yes, n - no)? \[n\]\r
+"
+send -- "y^?"
+expect -exact "^H ^H"
+send -- "^?y\r"
+expect -exact "y\r
+\r
+\r
+Checking for existence of the Oracle home location /u01/app/oracle/product/12.1.0.2/db_5\r
+Oracle Home type selected for deinstall is: Oracle Grid Infrastructure for a Standalone Server\r
+Oracle Base selected for deinstall is: \r
+Checking for existence of central inventory location /u01/app/oraInventory\r
+Checking for existence of the Oracle Grid Infrastructure home /u01/app/12.1.0.2/grid\r
+\r
+## \[END\] Install check configuration ##\r
+\r
+Traces log file: /tmp/deinstall2018-07-30_03-50-22AM/logs//crsdc_2018-07-30_03-51-31AM.log\r
+\r
+Network Configuration check config START\r
+\r
+Network de-configuration trace file location: /tmp/deinstall2018-07-30_03-50-22AM/logs/netdc_check2018-07-30_03-51-31-AM.log\r
+\r
+Network Configuration check config END\r
+\r
+Asm Check Configuration START\r
+\r
+ASM de-configuration trace file location: /tmp/deinstall2018-07-30_03-50-22AM/logs/asmcadc_check2018-07-30_03-51-32-AM.log\r
+\r
+ASM was not detected in the Oracle Home\r
+Database Check Configuration START\r
+\r
+Database de-configuration trace file location: /tmp/deinstall2018-07-30_03-50-22AM/logs/databasedc_check2018-07-30_03-51-32-AM.log\r
+\r
+Database Check Configuration END\r
+\r
+######################### DECONFIG CHECK OPERATION END #########################\r
+\r
+\r
+####################### DECONFIG CHECK OPERATION SUMMARY #######################\r
+Oracle Grid Infrastructure Home is: /u01/app/12.1.0.2/grid\r
+The following nodes are part of this cluster: null\r
+The cluster node(s) on which the Oracle home deinstallation will be performed are:null\r
+Oracle Home selected for deinstall is: /u01/app/oracle/product/12.1.0.2/db_5\r
+Inventory Location where the Oracle home registered is: /u01/app/oraInventory\r
+The home being deconfigured is NOT a configured Grid Infrastructure home (/u01/app/12.1.0.2/grid)\r
+ASM was not detected in the Oracle Home\r
+Do you want to continue (y - yes, n - no)? \[n\]: "
+send -- "y\r"
+expect eof

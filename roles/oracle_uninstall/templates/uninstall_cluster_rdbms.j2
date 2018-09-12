@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+set timeout -1
+spawn {{ oracle_base }}/product/{{ oracle_version }}/{{ rdbms_name }}/deinstall/deinstall
+expect -re "Specify the list of database names that are configured in this Oracle home*"
+send -- "{{ database_name }}\r"
+expect -re "The details of database(s)*"
+send -- "n\r"
+expect -re "Do you want to continue (y - yes, n - no)? \[n\]: "
+send -- "y\r"
+expect eof
