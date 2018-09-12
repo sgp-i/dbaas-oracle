@@ -27,14 +27,7 @@
   loop: "{{ asm_disks_list.stdout_lines }}"
   loop_control:
     loop_var: asm_line
-
-- include_tasks: reco_disks.yml
-  vars: 
-    diskgroup_name: "{{ asm_reco_group }}"
-  when: 
-  - asm_reco_group not in asm_disks
-  - inventory_hostname == master_node
-  
+    
 - include_tasks: exp_disks.yml
   vars:
     diskgroup_name: "{{ asm_exp_group }}"
