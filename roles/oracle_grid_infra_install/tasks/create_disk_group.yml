@@ -3,6 +3,7 @@
   - name: create {{ diskgroup_name }} DG
     become_user: "{{ oracle_user }}"
     environment: "{{ ora_user_env }}"
+    no_log: true
     command: asmca \
               -silent \
               -createDiskGroup \
@@ -16,6 +17,11 @@
     register: "{{ diskgroup_name }}_create"
 
   always: 
+  - name: Protected Debug Output - create {{ diskgroup_name }} DG
+    debug:                                                                  
+      var: "lookup('vars', diskgroup_name + '_create') | combine({'cmd': lookup('vars', diskgroup_name + '_create').cmd | replace(oracle_asm_syspass, '<PASSWORD HIDDEN>')})"
+    when: lookup('vars', diskgroup_name + '_create').failed
+    
   - name: save create_{{ diskgroup_name }}.out
     copy:
       dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.out"
