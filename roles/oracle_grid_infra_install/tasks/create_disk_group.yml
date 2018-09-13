@@ -19,15 +19,15 @@
   - name: save create_{{ diskgroup_name }}.out
     copy:
       dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.out"
-      content: "{{ lookup('vars', (dg_name | lower) + '_create').stdout | default('') }}"
-    when: lookup('vars', (dg_name | lower) + '_create').changed
+      content: "{{ lookup('vars', diskgroup_name + '_create').stdout | default('') }}"
+    when: lookup('vars', diskgroup_name + '_create').changed
     tags: upgrade_script 
 
   - name: save create_{{ diskgroup_name }}.err
     copy:
       dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.err"
-      content: "{{ lookup('vars', (dg_name | lower) + '_create').stderr | default('') }}"
+      content: "{{ lookup('vars', diskgroup_name + '_create').stderr | default('') }}"
     when: 
-    - lookup('vars', (dg_name | lower) + '_create').changed
-    - lookup('vars', (dg_name | lower) + '_create').stderr_lines | length > 0
+    - lookup('vars', diskgroup_name + '_create').changed
+    - lookup('vars', diskgroup_name + '_create').stderr_lines | length > 0
     tags: upgrade_script 
