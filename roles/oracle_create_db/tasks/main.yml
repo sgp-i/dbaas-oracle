@@ -66,8 +66,6 @@
                   create_db.rc != 0'
     when: inventory_hostname == master_node
 
-  # Need actual log location ##
-  # path location  /u01/app/oracle/cfgtoollogs/dbca/db1/db1.log
   - import_role:
       name: oracle_api_services
       tasks_from: upload_log.yml
