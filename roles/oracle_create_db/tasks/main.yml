@@ -3,6 +3,15 @@
 - include_vars: secrets.yml
   no_log: true
 
+- name: check if cluster is ok
+  environment: "{{ ora_user_env }}"
+  command: olsnodes -s
+  ignore_errors: yes
+  changed_when: false
+  register: crs_check
+  when: inventory_hostname == master_node
+  failed_when: '"Inactive" in crs_check.stdout'
+  
 - name: check if db has already been installed
   environment: "{{ ora_user_env }}"
   command: srvctl status database -d {{ oracle_db_name }}
