@@ -4,7 +4,11 @@ oracle_group: oinstall
 
 oracle_version: 12.1.0.2
 
-oracle_base: /u01/app/oracle
+grid_version: 12.1.0.2
+
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
 
 oracle_db_home: db_1 
 
