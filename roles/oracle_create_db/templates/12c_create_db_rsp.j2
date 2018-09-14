@@ -36,3 +36,9 @@ SYSDBAPASSWORD = "{{ oracle_db_syspass }}"
 [CREATEPLUGGABLEDATABASE]
 [DELETEPLUGGABLEDATABASE]
 [CONFIGUREPLUGGABLEDATABASE]
+
+oracle.install.db.isRACOneInstall={% if (
+      db_config_type == 'RAC ONENODE') -%}true
+{% else %}false
+{% endif %}
+oracle.install.db.racOneServiceName=

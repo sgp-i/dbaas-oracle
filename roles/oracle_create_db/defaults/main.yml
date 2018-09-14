@@ -18,4 +18,6 @@ asm_data_group: DATA
 
 oracle_pdb_name: ""
 
-rac_install: false
+db_config_type: "{% if ansible_play_hosts | length == 1 -%}STANDALONE
+                 {%- else -%}RAC
+                 {%- endif %}"
