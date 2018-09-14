@@ -62,6 +62,7 @@
       executable: /bin/bash
     failed_when: '"[FATAL]" in create_db.stdout or 
                   "failed to run command ‘dbca’" in create_db.stdout or 
+                  "DBCA Operation failed." in create_db.stdout or
                   create_db.rc != 0'
 
   # Need actual log location ##
