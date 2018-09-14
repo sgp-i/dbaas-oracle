@@ -64,6 +64,7 @@
                   "failed to run command ‘dbca’" in create_db.stdout or 
                   "DBCA Operation failed." in create_db.stdout or
                   create_db.rc != 0'
+    when: inventory_hostname == master_node
 
   # Need actual log location ##
   # path location  /u01/app/oracle/cfgtoollogs/dbca/db1/db1.log
