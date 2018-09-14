@@ -19,4 +19,6 @@ ora_user_env:
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
 
+cluster_nodes: "{{ ansible_play_hosts }}"
+
 master_node: "{{ ansible_play_hosts | first }}"

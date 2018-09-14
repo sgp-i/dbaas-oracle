@@ -11,7 +11,7 @@
   register: crs_check
   when: inventory_hostname == master_node
   failed_when: '"Inactive" in crs_check.stdout'
-  
+
 - name: check if db has already been installed
   environment: "{{ ora_user_env }}"
   command: srvctl status database -d {{ oracle_db_name }}
@@ -39,6 +39,13 @@
       path: "{{ oracle_tmp }}"
       state: directory
       recurse: yes
+
+  - name: create cluster_node_string
+    set_fact:
+      cluster_node_string: "{{ cluster_node_string | default([]) }} + [ '{{ hostvars[node_name]['ansible_hostname'] }}' ]"
+    loop: "{{ cluster_nodes }}"
+    loop_control:
+      loop_var: node_name
 
   - name: create 'create_db' rsp file
     template:
