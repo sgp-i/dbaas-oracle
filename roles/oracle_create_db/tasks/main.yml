@@ -24,7 +24,6 @@
                 {%- else -%}True
                 {%- endif %}"
 
-
 - block:
   - include_role:
       name: oracle_api_services
@@ -46,6 +45,13 @@
     loop: "{{ cluster_nodes }}"
     loop_control:
       loop_var: node_name
+  
+  - name: copy 'charter.dbt' template file
+    copy:
+      owner: "{{ oracle_user }}"
+      src: charter.dbt
+      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
+    diff: false
 
   - name: create 'create_db' rsp file
     template:
