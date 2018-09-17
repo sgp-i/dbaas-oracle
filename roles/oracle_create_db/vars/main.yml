@@ -2,6 +2,8 @@
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
+grid_home: "{{ install_base }}/{{ grid_version }}/grid"
+
 oracle_user: oracle
 
 oracle_tmp: /u01/tmp/{{ oracle_db_name}}
@@ -13,6 +15,10 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+  PATH: "{{ oracle_home }}/bin:{{ grid_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
+
+cluster_nodes: "{{ ansible_play_hosts }}"
+
+master_node: "{{ ansible_play_hosts | first }}"

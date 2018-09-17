@@ -16,4 +16,4 @@
     dest: "{{ oracle_tmp }}/opatch_apply.err"
     content: "{{ opatch_apply.stderr }}"
   changed_when: False
-  when: datapatch.stderr_lines | length > 0
+  when: opatch_apply.stderr_lines | length > 0

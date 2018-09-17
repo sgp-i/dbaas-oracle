@@ -18,4 +18,4 @@
     dest: "{{ oracle_tmp }}/opatch_lsinv.err"
     content: "{{ opatch_lsinv.stderr }}"
   changed_when: False
-  when: datapatch.stderr_lines | length > 0
+  when: opatch_lsinv.stderr_lines | length > 0

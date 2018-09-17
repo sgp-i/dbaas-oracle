@@ -3,28 +3,7 @@
 - include_vars: secrets.yml
   no_log: true
 
-
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: True
-      checklist_type: "5"
-      category_type: Install
-      gi_install_status: "PENDING"
-  tags:
-  - apex_api
-
-- include: copy_archives.yml
-
-- include_tasks: setup_ssh_user_equivalency.yml
-  when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY")
-
-- include: run_cluvfy.yml
-  tags:
-    - cluvfy
-  when: inventory_hostname == master_node and grid_install_mode == "CRS_CONFIG"
+- include_tasks: copy_archives.yml
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:
@@ -33,6 +12,14 @@
     patterns: "{{ asm_data_pattern }}"
     use_regex: no
   register: asm_data_paths_find_result
+
+- name: get asm disk paths - {{ asm_reco_group }}
+  find:
+    paths: "{{ asm_disk_location }}"
+    file_type: any
+    patterns: "{{ asm_reco_pattern }}"
+    use_regex: no
+  register: asm_reco_paths_find_result
 
 - name: get asm disk paths - {{ asm_ocr_group }}
   find:
@@ -50,7 +37,10 @@
 - include_tasks: set_net_string.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE")
 
-- include: prep_rsp_file.yml
+- include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
 
-- include: grid_install.yml
+- include_tasks: grid_install.yml
+
+- include_tasks: configure_disk_groups.yml
+  when: inventory_hostname == master_node
