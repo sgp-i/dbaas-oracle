@@ -12,10 +12,29 @@
   tags:
   - apex_api
 
+- name: get oracle_home
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  register: db_details
+  changed_when: False
+- set_fact:
+    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+
+- name: get oracle_sid
+  shell: ps -ef | grep ora_smon_{{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+- set_fact:
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+
 - name: Creating no sid entry in ORATAB file
   lineinfile:
     path: /etc/oratab
-    line: 'no_sid:{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}:N          # line added by Ansible'
+    line: 'no_sid:{{ oracle_home }}:N          # line added by Ansible'
+
+- name: Creating sid entry in ORATAB file
+  lineinfile:
+    path: /etc/oratab
+    line: '{{oracle_sid }}:{{ oracle_home }}:N          # line added by Ansible'
 
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
@@ -25,11 +44,14 @@
   copy:
     dest: '{{ oracle_tmp }}/cleanup_files.out'
     content: '{{ cleanup_files.stdout }}'
+  changed_when: False
 
 - name: save cleanup_files script stderr
   copy:
     dest: "{{ oracle_tmp }}/cleanup_files.err"
     content: "{{ cleanup_files.stderr | default('') }}"
+  changed_when: False
+  when: cleanup_files.stderr_lines | length > 0
 
 - name: Set up Directory in ORACLE_ADMIN
   file:

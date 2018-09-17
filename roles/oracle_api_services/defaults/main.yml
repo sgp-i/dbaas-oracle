@@ -9,6 +9,7 @@ clustered: "Y"
 
 ## Cluster Defaults
 cluster_type: RAC
+grid_version: 12.1.0.2
 gi_current_patchset: ""
 
 ## App Defaults

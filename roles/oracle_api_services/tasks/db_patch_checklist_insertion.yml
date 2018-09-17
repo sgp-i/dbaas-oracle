@@ -1,0 +1,32 @@
+---
+
+- include_tasks: get_db_id.yml
+  when: db_id is not defined
+
+- name: add db_id to chklst_json_body
+  set_fact:
+    chklst_json_body: 
+      db_id: "{{ db_id }}"
+      PSU_NUMBER: "{{ patch_num }}"
+      PSU_QUARTER: "{{ patch_month }}"
+      PSU_YEAR: "{{ patch_month }}"
+
+- name: POST To Insert new Checklist entry
+  uri:
+    url: "{{ apex_url }}/insertdbpatchhistory"
+    validate_certs: no  # should be removed after https certs becomes renewed
+    method: POST
+    body_format: json
+    body: "{{ chklst_json_body }}"
+    status_code: 200,201
+    headers:
+      Content-Type: "application/json"
+  ignore_errors: yes
+  register: checklist_insrt_response
+  
+- name: set checklist_id
+  set_fact:
+    checklist_id: "{{ checklist_insrt_response.json | default('{`items`:[{`id`:``}]}') | json_query('ID') }}"
+
+- debug:
+    var: checklist_insrt_response

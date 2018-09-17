@@ -84,6 +84,11 @@
     path: /var/tmp
   register: tmp_perms
 
+- name: check ownership for /u01/app
+  stat:
+    path: /u01/app
+  register: ora_base
+
 - name: umask value checker
   become: yes
   become_user: "{{ oracle_user }}"
@@ -346,6 +351,18 @@
       expected_value: 1777
       actual_value: "{{ tmp_perms.stat.mode }}"
       status: "{% if tmp_perms.stat.mode != '1777' -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: /u01/app Owner
+      expected_value: "{{ oracle_user }}"
+      actual_value: "{{ ora_base.stat.pw_name }}"
+      status: "{% if ora_base.stat.pw_name != oracle_user -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
+    - check_name: /u01/app Group
+      expected_value: "{{ oracle_groups[0] }}"
+      actual_value: "{{ ora_base.stat.gr_name }}"
+      status: "{% if ora_base.stat.gr_name != oracle_groups[0] -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: umask Value

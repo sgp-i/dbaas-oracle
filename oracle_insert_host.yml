@@ -1,0 +1,23 @@
+---
+
+- name: insert host
+  hosts: '{{ host }}'
+  become: yes
+  tasks:
+  - import_role:
+      name: oracle_api_services
+      tasks_from: host_inventory_insertion.yml
+    vars:
+      clustered: N
+      env_source: "{{ env_source | mandatory }}"  ## must be passed in
+    tags:
+    - apex_api
+
+  ## Required vars:
+  # env_source - Must be passed in or could be HostVar
+  
+  ## Optional vars:
+  # grid_version (default: 12.1.0.2)
+  # network_type - Possibly HostVar?
+  # global_zone_solaris - Possibly HostVar?
+  # server_monitoring_tool - Possibly HostVar?

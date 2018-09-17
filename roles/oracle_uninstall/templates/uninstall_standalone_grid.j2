@@ -1,0 +1,5 @@
+#!/usr/bin/expect -f
+set timeout -1
+spawn {{ oracle_home }}/deinstall/deinstall
+
+expect eof
