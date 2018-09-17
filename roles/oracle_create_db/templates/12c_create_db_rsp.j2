@@ -1,9 +1,10 @@
 [GENERAL]
 RESPONSEFILE_VERSION = "12.1.0"
 OPERATION_TYPE = "createDatabase"
-CLUSTER_NODES={{ cluster_node_string | join(',') }}
 [CREATEDATABASE]
 GDBNAME = "{{ oracle_db_name }}"
+DATABASECONFTYPE  = "{{ db_config_type }}"
+RACONENODESERVICENAME = 
 SID = "{{ oracle_db_name }}"
 {% if oracle_pdb_name == '' -%}
 CREATEASCONTAINERDATABASE = false
@@ -14,31 +15,14 @@ NUMBEROFPDBS = 1
 PDBNAME = "{{ oracle_pdb_name }}"
 PDBADMINPASSWORD = "{{ oracle_pdb_passwd }}"
 {% endif %}
-TEMPLATENAME = "General_Purpose.dbc"
+NODELIST = {{ cluster_node_string | join(',') }}
+TEMPLATENAME = "charter.dbt"
 SYSPASSWORD = "{{ oracle_system_pass }}"
 SYSTEMPASSWORD = "{{ oracle_system_pass }}"
-STORAGETYPE=ASM
-DISKGROUPNAME={{ asm_data_group }}
+STORAGETYPE = ASM
+DISKGROUPNAME = {{ asm_data_group }}
+RECOVERYGROUPNAME = {{ asm_reco_group }}
 CHARACTERSET = "AL32UTF8"
 MEMORYPERCENTAGE = "10"
 DATABASETYPE = "MULTIPURPOSE"
 AUTOMATICMEMORYMANAGEMENT = "FALSE"
-[createTemplateFromDB]
-[createCloneTemplate]
-[DELETEDATABASE]
-[generateScripts]
-TEMPLATENAME = "charter.dbt"
-GDBNAME = "{{ oracle_db_name }}.{{ ansible_domain }}"
-[CONFIGUREDATABASE]
-[ADDINSTANCE]
-SYSDBAUSERNAME = "sys"
-SYSDBAPASSWORD = "{{ oracle_db_syspass }}"
-[CREATEPLUGGABLEDATABASE]
-[DELETEPLUGGABLEDATABASE]
-[CONFIGUREPLUGGABLEDATABASE]
-
-oracle.install.db.isRACOneInstall={% if (
-      db_config_type == 'RAC ONENODE') -%}true
-{% else %}false
-{% endif %}
-oracle.install.db.racOneServiceName=

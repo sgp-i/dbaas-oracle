@@ -16,8 +16,10 @@ oracle_db_name: db
 
 asm_data_group: DATA
 
+asm_reco_group: RECO
+
 oracle_pdb_name: ""
 
-db_config_type: "{% if ansible_play_hosts | length == 1 -%}STANDALONE
+db_config_type: "{% if ansible_play_hosts | length == 1 -%}SI
                  {%- else -%}RAC
                  {%- endif %}"
