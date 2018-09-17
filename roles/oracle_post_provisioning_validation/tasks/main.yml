@@ -21,6 +21,11 @@
     loop_var: group_name
 
 - set_fact:
+    exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
+                    {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
+                    {%- endif -%}"
+
+- set_fact:
     checklist:
     - name: oracle user
       expected_value: "900"
@@ -36,6 +41,15 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+    - name: EXP Mount
+      expected_value: 300 GiB
+      actual_value: "{% if exp_disk_size == 'unmounted' -%}{{ exp_disk_size }}
+                     {%- else -%}{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }} GiB
+                     {%- endif -%}"
+      status: "{% if exp_disk_size == 'unmounted' or
+                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
 
 -  debug:
     var: checklist
