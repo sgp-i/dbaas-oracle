@@ -26,6 +26,12 @@
                     {%- endif -%}"
 
 - set_fact:
+    ggs_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`]') == [] -%}unmounted
+                    {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`].size_total|[0]') }}
+                    {%- endif -%}"
+  when: golden_gate_check
+
+- set_fact:
     checklist:
     - name: oracle user
       expected_value: "900"
@@ -46,6 +52,18 @@
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
       status: "{% if exp_disk_size == 'unmounted' or
                   (exp_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
+    - name: GG Mount (in GiB)
+      expected_value: "{% if golden_gate_check -%}300
+                       {%- else -%}
+                       {%- endif -%}"
+      actual_value: "{% if golden_gate_check -%}{{ (ggs_disk_size | int / 1024 | pow(3)) | round | int }}
+                       {%- else -%}
+                       {%- endif -%}"
+      status: "{% if not golden_gate_check -%}NOT_CHECKED
+               {%- elif ggs_disk_size == 'unmounted' or
+                       (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
 
