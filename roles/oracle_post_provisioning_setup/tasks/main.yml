@@ -59,7 +59,12 @@
     state: directory
 
 - name: Execute StandAlone Post Provisioning
-  include_tasks: post_prov_standalone.yml
+  include_tasks: "{{ filename }}"
+  loop:
+  - post_prov_standalone.yml
+  - after_postprovstalone.yml
+  loop_control:
+    loop_var: filename
   when: ansible_play_hosts | length == 1
 
 - import_role:
