@@ -1,23 +1,12 @@
 
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_host_code.yml
-  when: host_code is not defined
-
-- import_role:
-    name: oracle_api_services
-    tasks_from: get_db_id.yml
-  vars:
-    oracle_db_name: "{{ oracle_db_name }}"
-
 - include_vars: var_db_inventory_insertion.yml
 
-- name: Complete Tasks Of DB Inventory Insertion
+- name: Insert {{ oracle_db_name }} into DB Inventory
   block:
   #  "app_id" is a fk and needs to discussed and is not in body of post call
-  - name: Make A POST Call To Insert DB Inventory Details In V_DB_INVENTORY
+  - name: POST In V_DB_INVENTORY
     uri:
       url: "{{ apex_url }}/insert_db_inventory"
       validate_certs: no  # should be removed after https certs becomes renewed
@@ -25,9 +14,13 @@
       body_format: json
       body: "{{ db_invntry_insertion_body }}"
       headers:
-          Content-Type: "application/json"
+        Content-Type: "application/json"
     register: v_db_inventory_insertion_response
     when: inventory_hostname == master_node
+  
+  - name: set db_id
+    set_fact:
+      db_id: "{{ v_db_inventory_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
 
   rescue:
   - name: Store the Json If APEX Server Is Down

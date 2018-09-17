@@ -1,0 +1,34 @@
+---
+
+- import_tasks: acfs_driver_check.yml
+  tags: acfs_install
+
+- include_tasks: acfs_driver_install.yml
+  when: not acfsdriver_installed
+  tags: acfs_install
+
+- name: create tmp dir
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+
+- name: check currently mounted disks
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: asmcmd lsdg --suppressheader
+  register: asm_disks_list
+  changed_when: False
+- set_fact:
+    asm_disks: "{{ asm_disks | default('') + '\n' + asm_line | regex_search('MOUNTED.*') }}'"
+  loop: "{{ asm_disks_list.stdout_lines }}"
+  loop_control:
+    loop_var: asm_line
+    
+- include_tasks: exp_disks.yml
+  vars:
+    diskgroup_name: "{{ asm_exp_group }}"
+  when: asm_exp_group not in asm_disks

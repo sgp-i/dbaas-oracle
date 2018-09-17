@@ -1,49 +1,47 @@
 ---
 
+oracle_compat_version: "{{ grid_version | regex_replace('^([0-9]{1,2}.[0-9]{1,}).*','\\1') }}"
+
 oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid"
 
 oracle_home: "{{ oracle_base }}/oracle/product/{{ grid_version }}/{{ oracle_db_home }}"
+
+oracle_sid: "{% if checklist_task == 'cluster' -%}{{ oracle_db_name }}1
+             {%- else -%}{{ oracle_db_name }}
+             {%- endif %}"
+
 
 oracle_user: oracle
 
 oracle_group: oinstall
 
+oracle_dba_group: dba
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}/oracle"
-  ORACLE_SID: "{{ oracle_db_name }}"
+  ORACLE_SID: "{{ oracle_sid }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home }}"
+  ORACLE_HOME: "{{ oracle_grid_home }}"
   NLS_LANG: "American_America.UTF8"
+  PATH: "{{ oracle_grid_home }}/bin:{{ ansible_env.PATH }}"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
+
+checklist_task: "{% if ansible_play_hosts | length == 1 -%}host
+                 {%- elif ansible_play_hosts | length > 1 -%}cluster
+                 {%- endif %}"
 
 cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
 
-public_net: 10.10.98.0
+public_net: bond0.
 
-private_net: 10.10.99.0
+private_net: em1
 
 # array  os images avaialbe
 grid_images:
     - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_3of7.zip", version: "11.2.0.4" }
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_1of2.zip", version: "12.1.0.2" } 
     - { image: "{{ oracle_installer_path }}/linuxamd64_12102_grid_2of2.zip", version: "12.1.0.2" }
-
-
-known_cluvfy_issues: 
-  - "Swap Size"
-  - "/dev/shm mounted"
-  - "Package: cvuqdisk"
-  - "Multicast check"
-  - "source"
-  - "NTP"
-  - "Domain Sockets"
-  - "Physical Memory"
-  - "semopm"
-  - "file-max"
-  - "rmem_default"
-  - "rmem_max"
-  - "wmem_default"
-  - "wmem_max"
-  - "aio-max-nr"

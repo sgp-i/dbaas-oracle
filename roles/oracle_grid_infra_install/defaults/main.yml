@@ -16,7 +16,7 @@ oracle_base: /u01/app
 
 oracle_db_home: db_1 
 
-oracle_db_name: db
+oracle_db_name: +ASM
 
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
@@ -35,10 +35,8 @@ asm_reco_group: RECO
 
 asm_reco_pattern: R*
 
-asm_ocr_group: OCR
+asm_ocr_group: OCR_VOTE
 
 asm_ocr_pattern: GRID_DISK*
 
-## TODO: Get standard location where binaries can reliably be found
-# For the lab, this path can be mounted using: `mount 10.10.98.164:/export/techlab/ovm /ansible` (nfs-utils & nfs-utils-lib will need to be installed)
-oracle_installer_path: "/ansible"
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB

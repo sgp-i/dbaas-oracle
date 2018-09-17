@@ -3,7 +3,7 @@
 - name: Run Opatch Prereqs
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  command: $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir {{ pstage }}/{{ patch_num }}
+  command: opatch prereq CheckConflictAgainstOHWithDetail -phBaseDir {{ pstage }}/{{ patch_num }}
   ignore_errors: yes
   register: opatch_prereq
 
@@ -11,8 +11,11 @@
   copy:
     dest: "{{ oracle_tmp }}/opatch_prereq.out"
     content: "{{ opatch_prereq.stdout }}"
+  changed_when: False
 
 - name: save opatch prereq stderr
   copy:
     dest: "{{ oracle_tmp }}/prereq.err"
     content: "{{ opatch_prereq.stderr }}"
+  changed_when: False
+  when: opatch_prereq.stderr_lines | length > 0

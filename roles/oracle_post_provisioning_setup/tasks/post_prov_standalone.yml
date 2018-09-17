@@ -48,8 +48,11 @@
   copy:
     dest: '{{ oracle_tmp }}/postprovstalone.out'
     content: '{{ postprovstalone.stdout }}'
+  changed_when: False
 
 - name: save postprovstalone script stderr
   copy:
     dest: "{{ oracle_tmp }}/postprovstalone.err"
     content: "{{ postprovstalone.stderr | default('') }}"
+  changed_when: False
+  when: postprovstalone.stderr_lines | length > 0

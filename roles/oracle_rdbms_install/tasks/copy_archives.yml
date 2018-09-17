@@ -19,7 +19,8 @@
     src: "{{ item.image }}" 
     dest: "{{ oracle_tmp }}" 
     remote_src: yes 
-    keep_newer: true 
+    keep_newer: true
+    validate_certs: no
   when: item.version == oracle_version and unzipped.stat.exists == false
   with_items: "{{ oracle_images }}"
   

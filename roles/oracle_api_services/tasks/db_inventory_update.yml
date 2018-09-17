@@ -1,0 +1,38 @@
+
+---
+
+- include_tasks: get_host_code.yml
+  when: host_code is not defined
+
+- include_tasks: get_db_id.yml
+  when: db_id is not defined
+
+- include_tasks: db_inventory_insertion.yml
+  when: db_id == ""
+
+- name: Update {{ oracle_db_name }} in DB Inventory
+  block:
+  - name: PUT into V_DB_INVENTORY
+    uri:
+      url: "{{ apex_url }}/db_inventory/{{ db_id }}"
+      validate_certs: no  # should be removed after https certs becomes renewed
+      method: PUT
+      body_format: json
+      body: "{{ db_invntry_update_body }}"
+      headers:
+          Content-Type: "application/json"
+    register: v_db_inventory_insertion_response
+    when: inventory_hostname == master_node
+
+  rescue:
+  - name: Store the Json If APEX Server Is Down
+    delegate_to: localhost
+    lineinfile:
+      path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_inv_insertion.json"
+      line: "{{ db_invntry_update_body  | to_json }}"
+      create: yes
+    when: 
+    - inventory_hostname == master_node
+    - v_db_inventory_insertion_response.status == "500" or  v_db_inventory_insertion_response.status == -1
+  when: db_invntry_update_body is defined
+

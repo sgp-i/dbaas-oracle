@@ -1,5 +1,17 @@
 ---
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "??"
+      category_type: Install
+      db_install_status: IN PROGRESS
+  tags:
+  - apex_api
+
 - name: create tmp dir
   file:
     group: "{{ oracle_group }}"
@@ -7,6 +19,11 @@
     path: "{{ oracle_tmp }}"
     state: directory
     recurse: yes
+
+- import_tasks: check_opatch.yml
+
+- include_tasks: install_opatch.yml
+  when: opatch_version != opatch_version_required
 
 - include_tasks: copy_archives.yml
 
@@ -19,3 +36,29 @@
     loop_var: curr_node
 
 - include_tasks: opatch_inventory.yml
+
+- block:
+  - name: get DBs in ORACLE_HOME
+    command: grep ":{{ oracle_home }}:" /etc/oratab
+    register: db_list
+    changed_when: False
+
+  - include_tasks: datapatch.yml
+    vars:
+      oracle_db_name: "{{ db_detail | regex_replace('([^:]*).*','\\1') }}"
+    when: db_detail | regex_replace('([^:]*):.*','\\1') != 'no_sid'
+    loop: "{{ db_list.stdout_lines }}"
+    loop_control:
+      loop_var: db_detail
+
+  when: patch_type == 'RDBMS'
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: False
+      db_install_status: SUCCESSFUL #Need a way to determine Failures
+  tags:
+  - apex_api

@@ -20,15 +20,16 @@
     content: "{{ precheck_script.stderr }}"
 
 - name: get preupgrade log
-  command: cat {{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade.log
+  slurp:
+    src: "{{ oracle_base }}/cfgtoollogs/{{ oracle_db_name }}/preupgrade/preupgrade.log"
   register: preupgrade_log
 
 - name: get result counts
   set_fact:
     precheck_results_count: {
-      errors: "{{ preupgrade_log.stdout | regex_search('[0-9]* ERROR') | regex_search('[0-9]*') }}",
-      warnings: "{{ preupgrade_log.stdout | regex_search('[0-9]* WARNING') | regex_search('[0-9]*') }}",
-      informational: "{{ preupgrade_log.stdout | regex_search('[0-9]* INFORMATIONAL') | regex_search('[0-9]*') }}"
+      errors: "{{ preupgrade_log.content | b64decode | regex_search('[0-9]* ERROR') | regex_search('[0-9]*') }}",
+      warnings: "{{ preupgrade_log.content | b64decode | regex_search('[0-9]* WARNING') | regex_search('[0-9]*') }}",
+      informational: "{{ preupgrade_log.content | b64decode | regex_search('[0-9]* INFORMATIONAL') | regex_search('[0-9]*') }}"
     }
 
 - name: execute pre-fixup

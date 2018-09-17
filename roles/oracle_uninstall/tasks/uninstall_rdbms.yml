@@ -1,0 +1,33 @@
+- name: install expect 
+  yum:
+    name: expect
+    state: latest
+
+- name: uninstallation of standalone database
+  block:
+  - name: make a expect script from jinja template to uninstall standalone database
+    template:
+      owner: "oracle"
+      src: uninstall_standalone_rdbms.j2
+      dest: "{{ oracle_home }}/uninstall_rdbms_{{ rdbms_name }}.exp"
+
+  # - name: run the expect file
+  #   shell: expect {{ oracle_home }}/uninstall_rdbms_{{ rdbms_name }}.exp
+  #   become: yes
+  #   become_user: oracle
+  when: uninstallation_type == "standalone"
+
+- name: uninstallation of cluster database
+  block:
+  - name: make a expect script from jinja template to uninstall cluster database
+    template:
+      owner: "oracle"
+      src: uninstall_cluster_rdbms.j2
+      dest: "{{ oracle_home }}/uninstall_cluster_{{ rdbms_name }}.exp"
+  # - name: run the expect file
+  #   shell: expect {{ oracle_home }}/uninstall_cluster_{{ rdbms_name }}.exp
+  #   become: yes
+  #   become_user: oracle 
+  when: uninstallation_type == "cluster"    
+
+

@@ -1,10 +1,8 @@
 ---
 
 - block:
-  - name: db-specific oracle post-installation
+  - name: execute root.sh post-installation script
     command: "{{ oracle_grid_home }}/root.sh"
-    args:
-      creates: /etc/oratab
     register: root_script
 
 - always:
@@ -19,3 +17,20 @@
       dest: "{{ oracle_tmp }}/root_script_grid.err"
       content: "{{ root_script.stderr | default('') }}"
     when: root_script.changed
+
+  ## Need to add a way to upload to a separate checklist_id for each node ##
+  - name: Get files in a folder
+    find:
+      paths: "{{ oracle_grid_home }}/install/"
+      patterns: "root_{{ ansible_hostname }}*.log"
+    register: log_files
+    tags:
+    - apex_api
+
+  - import_role:
+      name: oracle_api_services
+      tasks_from: upload_log.yml
+    vars:
+      logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+    tags:
+    - apex_api
