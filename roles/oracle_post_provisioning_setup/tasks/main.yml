@@ -31,6 +31,11 @@
     path: /etc/oratab
     line: 'no_sid:{{ oracle_home }}:N          # line added by Ansible'
 
+- name: Creating sid entry in ORATAB file
+  lineinfile:
+    path: /etc/oratab
+    line: '{{oracle_sid }}:{{ oracle_home }}:N          # line added by Ansible'
+
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
   register: cleanup_files
