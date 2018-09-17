@@ -126,5 +126,5 @@
         new_entry: False
         db_install_status: "SUCCESSFUL" 
     tags:
-    - apex_api_api
+    - apex_api
   when: not db_exists
