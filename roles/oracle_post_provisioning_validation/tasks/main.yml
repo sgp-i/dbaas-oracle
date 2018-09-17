@@ -1,0 +1,41 @@
+---
+
+- name: check oracle user
+  user:
+    name: oracle
+    state: present
+  check_mode: yes
+  changed_when: False
+  register: oracle_user_check
+- name: check oracle groups
+  group:
+    name: "{{ group_name }}"
+    state: present
+  check_mode: yes
+  changed_when: False
+  register: oracle_groups
+  loop:
+  - oinstall
+  - dba
+  loop_control:
+    loop_var: group_name
+
+- set_fact:
+    checklist:
+    - name: oracle user
+      expected_value: "900"
+      actual_value: "{{ oracle_user_check.uid }}"
+      status: "{% if oracle_user_check.uid != 900 -%}FAILED
+                {%- else -%}PASSED
+                {%- endif %}"
+    - name: oracle groups
+      expected_value: 900, 901 
+      actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
+                      {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
+      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 900 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
+                {%- else -%}PASSED
+                {%- endif %}"
+
+-  debug:
+    var: checklist
