@@ -3,7 +3,7 @@ oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_home: grid
+# oracle_db_home: grid
 
 # location for temporary files
 oracle_tmp: /u01/tmp/{{ oracle_version }}
@@ -12,7 +12,7 @@ oracle_user: oracle
 
 oracle_db_name: orcl07
 
-oracle_grid_home: "/u01/app/12.1.0.2/grid"
+# oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
 oracle_home: "/u01/app/oracle/product/12.1.0.2/db_db_1"
 
@@ -25,14 +25,18 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
 
-oracle_db_ServiceName: db_test_RMAN
-
-# TNSNAMES: dbtest05.techlab.com
-
-# oracle_db_name_node2: orcl07
-
+# Local Server RAM Deatils
+#On machine that has database(s) to be backed up
 RMAN_user: RMANBACKUP
 
 RMAN_password: ja8shd7d
 
-RMAN_log: /u01/app/oracle/rman/scripts/log/
+oracle_db_ServiceName: db_test_RMAN
+
+#Remote RMAN Server catalog deatils
+
+catalog_RMAN_user: rmanbackup
+
+catalog_RMAN_password: rman123
+
+catalog_RMAN_DB: rman
