@@ -15,7 +15,7 @@
     state: directory
     recurse: yes
 
-- name: check currently mounted disks
+- name: check currently mounted ASM DGs
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
@@ -28,7 +28,7 @@
   loop_control:
     loop_var: asm_line
     
-- include_tasks: exp_disks.yml
+- include_tasks: configure_acfs.yml
   vars:
-    diskgroup_name: "{{ asm_exp_group }}"
-  when: asm_exp_group not in asm_disks
+    diskgroup: "{{ exp_dg }}"
+  when: oracle_base + '/' + exp_dg.dir not in ansible_mounts | json_query('[].mount')
