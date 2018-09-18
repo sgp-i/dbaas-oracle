@@ -1,3 +1,7 @@
+---
+- include_vars: secrets.yml
+  no_log: True
+
 - name: CREATE RMAN SERVICE
   become: yes
   become_user: '{{ oracle_user }}'

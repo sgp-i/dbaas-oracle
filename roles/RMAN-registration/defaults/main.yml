@@ -29,14 +29,10 @@ ora_user_env:
 #On machine that has database(s) to be backed up
 RMAN_user: RMANBACKUP
 
-RMAN_password: ja8shd7d
-
 oracle_db_ServiceName: db_test_RMAN
 
 #Remote RMAN Server catalog deatils
 
 catalog_RMAN_user: rmanbackup
-
-catalog_RMAN_password: rman123
 
 catalog_RMAN_DB: rman
