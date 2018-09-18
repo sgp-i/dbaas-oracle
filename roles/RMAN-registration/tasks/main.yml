@@ -1,85 +1,93 @@
-- name: CREATE RMAN SERVICE
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  when: inventory_hostname == master_node
-  block:
-  - name: Check the Status DB
-    command: srvctl status database -d {{ oracle_db_name }} -v
-    register: dbExists
+# - name: CREATE RMAN SERVICE
+#   become: yes
+#   become_user: '{{ oracle_user }}'
+#   environment: "{{ ora_user_env }}"
+#   block:
+#   - name: Check the Status DB
+#     command: srvctl status database -d {{ oracle_db_name }} -v
+#     register: dbExists
   
-  - name: Add Service
-    command: srvctl add service -s {{ oracle_db_ServiceName }} -d {{ oracle_db_name }}
-    when: '"Instance status: Open" in dbExists.stdout'
-    ignore_errors: yes
+#   - name: Add Service
+#     command: srvctl add service -s {{ oracle_db_ServiceName }} -d {{ oracle_db_name }}
+#     when: '"Instance status: Open" in dbExists.stdout' 
+#     ignore_errors: yes
 
-  - name: Start Service
-    command: srvctl start service -d {{ oracle_db_name }} -s {{ oracle_db_ServiceName }}
-    ignore_errors: yes
+#   - name: Start Service
+#     command: srvctl start service -d {{ oracle_db_name }} -s {{ oracle_db_ServiceName }}
+#     ignore_errors: yes
    
-- name: Create RMAN User & Get DBID
+# - name: Create RMAN User & Get DBID
+#   become: yes
+#   become_user: '{{ oracle_user }}'
+#   environment: "{{ ora_user_env }}"
+#   block:
+#   - name: Copy the Create-RMAN-User.sql file
+#     template: 
+#       src: create-RMAN-user.j2
+#       dest: "{{ oracle_tmp }}/create-RMAN-user.sql"
+
+#   - name: run Create-RMAN-User.sql script
+#     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-RMAN-user.sql"
+#     register: create-RMAN-user
+
+#The Below task is specific to their environment.  
+#It should be coded as is, but we won't execute it in the lab - Troy
+
+# - name: Create Symbolic Link file
+#   file:
+#     src: "/usr/openv/netbackup/bin/libobk.so64"
+#     dest: "{{ oracle_home }}/lib/libobk.so"
+#     owner: oracle
+#     group: oinstall
+#     state: link
+
+  
+# - name: Configure RMAN Parameters
+#   become: yes
+#   become_user: '{{ oracle_user }}'
+#   environment: "{{ ora_user_env }}"
+#   block:
+#   - name: Copy the RMAN-Parameters.sql file
+#     template: 
+#       src: RMAN-Parameters.j2
+#       dest: "{{ oracle_tmp }}/RMAN-Parameters.sql"
+
+#   - name: run RMAN-Parameters.sql script
+#     command: "rman target /  @{{ oracle_tmp }}/RMAN-Parameters.sql"
+
+# - name: Add TNSNAMES In RMAN 
+#   lineinfile:
+#     path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+#     line: "{{ oracle_db_name }} =
+#                 (DESCRIPTION =
+#                 (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
+#                 (CONNECT_DATA =
+#                 (SERVER = DEDICATED)
+#                 (SERVICE_NAME = {{ oracle_db_ServiceName }})
+#                 ))                # line added by Ansible"
+
+- name: Register Database in RMAN
   become: yes
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  when: inventory_hostname == master_node
-  block:
-  - name: Copy the Create-RMAN-User.sql file
-    template: 
-      src: create-RMAN-user.j2
-      dest: "{{ oracle_tmp }}/create-RMAN-user.sql"
+  command: "rman catalog CATALOG_11G_PROD/r0123#@dboralab09.techlab.com target RMANBACKUP/ja8shd7d@orcl07"
+      # REGISTER DATABASE;
+  
 
-  - name: run Create-RMAN-User.sql script
-    command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-RMAN-user.sql"
-    register: create-RMAN-user
 
-- name: Create Symbolic Link file
-  file:
-    src: "/usr/openv/netbackup/bin/libobk.so64"
-    dest: "{{ oracle_home }}/lib/libobk.so"
-    owner: oracle
-    group: oinstall
-    state: link
-  when: inventory_hostname == master_node
+# - name: Insert Backup Config Values in RMAN
+#   become: yes
+#   become_user: '{{ oracle_user }}'
+#   environment: "{{ ora_user_env }}"
+#   when: inventory_hostname != master_node
+#   block:
+#   - name: Copy the Backup-Config-Values.sql file
+#     template: 
+#       src: Backup-Config-Values.j2
+#       dest: "{{ oracle_tmp }}/Backup-Config-Values.sql"
 
-- name: Configure RMAN Parameters
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  when: inventory_hostname == master_node
-  block:
-  - name: Copy the RMAN-Parameters.sql file
-    template: 
-      src: RMAN-Parameters.j2
-      dest: "{{ oracle_tmp }}/RMAN-Parameters.sql"
-
-  - name: run RMAN-Parameters.sql script
-    command: "rman target /  @{{ oracle_tmp }}/RMAN-Parameters.sql"
-
-- name: Add TNSNAMES In RMAN 
-  lineinfile:
-    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-    line: "{{ oracle_db_name }} =
-                (DESCRIPTION =
-                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
-                (CONNECT_DATA =
-                (SERVER = DEDICATED)
-                (SERVICE_NAME = {{ oracle_db_ServiceName }})
-                ))                # line added by Ansible"
-  when: inventory_hostname != master_node
-
-- name: Insert Backup Config Values in RMAN
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  when: inventory_hostname != master_node
-  block:
-  - name: Copy the Backup-Config-Values.sql file
-    template: 
-      src: Backup-Config-Values.j2
-      dest: "{{ oracle_tmp }}/Backup-Config-Values.sql"
-
-  - name: run Backup-Config-Values.sql script
-    command: "sqlplus / as sysdba  @{{ oracle_tmp }}/Backup-Config-Values.sql"
+#   - name: run Backup-Config-Values.sql script
+#     command: "sqlplus / as sysdba  @{{ oracle_tmp }}/Backup-Config-Values.sql"
   
 
   
