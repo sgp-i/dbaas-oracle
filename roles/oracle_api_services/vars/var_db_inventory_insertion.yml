@@ -5,9 +5,7 @@ db_invntry_insertion_body:
   application_name: "{{ application_name }}"
   environment: "{{ db_environment }}"
   oracle_version: "{{ oracle_version }}"
-  rac_type: "{% if rac_install == 'true' -%}RAC
-              {%- else -%}STANDALONE
-              {%- endif %}"
+  rac_type: "{{ db_config_type }}"
   business_unit: "{{ business_unit }}" 
   appliance: "{{ appliance }}"
   database_role: "{{ database_role }}" 

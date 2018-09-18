@@ -1,7 +1,7 @@
 ---
 
 - block:
-  - name: root upgrade post-installation
+  - name: execute rootupgrade post-installation script
     command: "{{ oracle_grid_home }}/rootupgrade.sh"
     register: rootupgrade_script
     tags: upgrade_script 
