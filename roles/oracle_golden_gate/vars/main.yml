@@ -1,0 +1,3 @@
+---
+
+grid_installer: "{{ oracle_installer_path }}/123014_fbo_ggs_Linux_x64_shiphome.zip"
