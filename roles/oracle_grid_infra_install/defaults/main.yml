@@ -21,7 +21,9 @@ oracle_db_name: +ASM
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
 
-domain: localdomain
+public_net: bond0.
+
+private_net: em1
 
 scan_port: 1521
 
