@@ -18,9 +18,7 @@ oracle_tmp: /u01/tmp/PSU/{{ patch_type }}/{{ patch_num}}
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{% if patch_type == 'RDBMS' -%}{{ oracle_db_name }}
-              {%- elif patch_type == 'GRID' -%}{{ gi_sid }}
-              {%- endif %}"
+  ORACLE_SID: "{{ oracle_sid }}"
   ORACLE_HOME: "{{ oracle_home }}"
   PATH: "{{ ansible_env.PATH }}:{{ oracle_home }}/OPatch"
   TMP: "/u01/app/oracle"

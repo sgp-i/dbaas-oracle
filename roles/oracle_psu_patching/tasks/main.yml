@@ -27,6 +27,15 @@
 
 - include_tasks: copy_archives.yml
 
+- name: get oracle_sid
+  shell: ps -ef | grep smon | grep {{ gi_sid }} | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+
+- name: set oracle_sid
+  set_fact:
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
+
 - include_tasks: opatch_prereq.yml
 
 - include_tasks: opatch_apply.yml
