@@ -15,7 +15,7 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
-oracle_home: "{{ install_base }}/{{ oracle_version }}/grid"
+oracle_home: "{{ install_base }}/{{ oracle_version }}/grid_1"
 
 # shell environment for the oracle user
 ora_user_env:
