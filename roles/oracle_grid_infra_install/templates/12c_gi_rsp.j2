@@ -43,7 +43,7 @@ oracle.install.crs.config.sharedFileSystemStorage.ocrLocations={{ asm_ocr_paths_
 oracle.install.crs.config.sharedFileSystemStorage.ocrRedundancy=NORMAL
 oracle.install.crs.config.useIPMI=false
 oracle.install.asm.diskGroup.name={{ asm_ocr_group }}
-oracle.install.asm.diskGroup.redundancy=EXTERNAL
+oracle.install.asm.diskGroup.redundancy=NORMAL
 oracle.install.asm.diskGroup.AUSize=1
 oracle.install.asm.diskGroup.disks={{ asm_ocr_paths_find_result | json_query('files[].path') | join(',') }}
 {% else %}
