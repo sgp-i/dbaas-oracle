@@ -33,7 +33,7 @@
 
 - include_tasks: exec_rootcrsdc_script.yml
   when: 
-  - iventory_hostname == curr_node
+  - inventory_hostname == curr_node
   - inventory_hostname != master_node  
   - '"crsdc.run" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
   loop: "{{ cluster_nodes }}"
