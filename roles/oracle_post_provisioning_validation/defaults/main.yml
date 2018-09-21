@@ -46,4 +46,5 @@ sql_files:
   - verify_parallel_force.sql
   - verify_recyclebin_status.sql
   - verify_snapshot_interval.sql
+  - verify_redo_logs.sql
 

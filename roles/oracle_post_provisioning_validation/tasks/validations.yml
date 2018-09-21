@@ -35,7 +35,7 @@
 #   when: "'{{ tablespace_values }}' not in tablespace_names_result.stdout "
 #   loop: "{{ tablespace_check_values }}"
 #   loop_control:
-#     loop_var: tablespace_values 
+#     loop_var: tablespace_values
 
 - name: execute verify alter sql script
   become: yes
@@ -91,6 +91,23 @@
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_db_files.sql
   register: verify_db_files_result
+  changed_when: false
+
+
+- name: execute sql script to verify redo logs
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
+  register: verify_redo_logs_result
+  changed_when: false
+
+- name: execute sql script to verify redo logs
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
+  register: verify_redo_logs_result
   changed_when: false
 
 - set_fact:
@@ -159,6 +176,8 @@
             value: "{{ verify_block_tracking_result.stdout_lines }}"          
           - check_type: "verify db files"
             value: "{{ verify_db_files_result.stdout_lines }}"     
+          - check_type: "verify redo logs"
+            value: "{{ verify_redo_logs_result.stdout_lines }}"     
       status: ""
 -  debug:
     var: checklist
