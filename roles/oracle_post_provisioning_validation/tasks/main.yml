@@ -1,26 +1,4 @@
 ---
-
-- name: check oracle user
-  user:
-    name: oracle
-    state: present
-  check_mode: yes
-  changed_when: False
-  register: oracle_user_check
-- name: check oracle groups
-  group:
-    name: "{{ group_name }}"
-    state: present
-  check_mode: yes
-  changed_when: False
-  register: oracle_groups
-  loop:
-  - oinstall
-  - dba
-  loop_control:
-    loop_var: group_name
-
-
 - name: create tmp dir to store post valdation sql files
   file:
     group: "{{ oracle_group }}"
@@ -29,67 +7,30 @@
     state: directory
     recurse: yes
 
-- name: copy the tablespace_check sql file to the instance
-  copy:
-    owner: "{{ oracle_user }}"
-    src: tablespace_check.sql
-    dest: "{{ sql_file_path }}/tablespace_check.sql"
-
-- name: execute tablespace_size sql file
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/tablespace_check.sql
-  register: tablespace_names_result
-
-# - name: set a fact to validate tablespace_size
-#   set_fact:
-#     missing_tablespace: true
-#   when: "'{{ tablespace_values }}' not in tablespace_names_result.stdout "
-#   loop: "{{ tablespace_check_values }}"
-#   loop_control:
-#     loop_var: tablespace_values 
-
 - name: copy the manage profile sql file to the instance
   copy:
     owner: "{{ oracle_user }}"
     src: manage_profile.sql
     dest: "{{ sql_file_path }}/manage_profile.sql"
 
-- name: execute a manage profile sql file
+- name: execute manage profile sql file
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/manage_profile.sql
-  register: manage_profile_result
   changed_when: false
 
-- name: copy  verify alter sql script for verification
+- name: copy the alter db sql file to the instance
   copy:
     owner: "{{ oracle_user }}"
-    src: verify_alter_profile.sql
-    dest: "{{ sql_file_path }}/verify_alter_profile.sql"
+    src: alter_db.sql
+    dest: "{{ sql_file_path }}/alter_db.sql"
 
-- name: execute verify alter sql script
+- name: execute alter db sql file
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_alter_profile.sql
-  register: verify_alter_profile_result
-  changed_when: false
-
-- name: copy verify created profile sql script for verification
-  copy:
-    owner: "{{ oracle_user }}"
-    src: verify_created_profile.sql
-    dest: "{{ sql_file_path }}/verify_created_profile.sql"
-
-- name: execute verify created profile sql script
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_created_profile.sql
-  register: verify_created_profile_result
+  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/alter_db.sql
   changed_when: false
 
 - name: create a directory
@@ -112,51 +53,7 @@
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/change_snapshot_interval.sql
-  register: change_snapshot_interval_result
   changed_when: false
-
-- name: copy sql script to verify snapshot interval
-  copy:
-    owner: "{{ oracle_user }}"
-    src: verify_snapshot_interval.sql
-    dest: "{{ sql_file_path }}/verify_snapshot_interval.sql"
-
-- name: execute sql script to verify snapshot interval
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_snapshot_interval.sql
-  register: verify_snapshot_interval_result
-  changed_when: false
-
-- name: copy sql script to verify parallel force
-  copy:
-    owner: "{{ oracle_user }}"
-    src: verify_parallel_force.sql
-    dest: "{{ sql_file_path }}/verify_parallel_force.sql"
-
-- name: execute sql script to verify parallel force
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_parallel_force.sql
-  register: verify_parallel_force_result
-  changed_when: false
-
-- name: copy sql script to verify recyclebin status
-  copy:
-    owner: "{{ oracle_user }}"
-    src: verify_recyclebin_status.sql
-    dest: "{{ sql_file_path }}/verify_recyclebin_status.sql"
-
-- name: execute sql script to verify recyclebin force
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_recyclebin_status.sql
-  register: verify_recyclebin_status_result
-  changed_when: false
-
 
 - name: copy sql script to modify block tracking
   copy:
@@ -169,88 +66,7 @@
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/modify_block_tracking.sql
-  register: modify_block_tracking_result
   changed_when: false
 
-- name: copy sql script to verify block tracking
-  copy:
-    owner: "{{ oracle_user }}"
-    src: verify_block_tracking.sql
-    dest: "{{ sql_file_path }}/verify_block_tracking.sql"
+- include_tasks: validations.yml
 
-- name: execute sql script to modify block tracking
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_block_tracking.sql
-  register: verify_block_tracking_result
-  changed_when: false
-
-- set_fact:
-    exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
-                    {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
-                    {%- endif -%}"
-
-- set_fact:
-    ggs_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`]') == [] -%}unmounted
-                    {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`].size_total|[0]') }}
-                    {%- endif -%}"
-  when: golden_gate_check
-
-
-
-- set_fact:
-    checklist:
-    - name: oracle user
-      expected_value: "900"
-      actual_value: "{{ oracle_user_check.uid }}"
-      status: "{% if oracle_user_check.uid != 900 -%}FAILED
-                {%- else -%}PASSED
-                {%- endif %}"
-    - name: oracle groups
-      expected_value: 900, 901 
-      actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
-                      {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
-      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 900 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
-                {%- else -%}PASSED
-                {%- endif %}"
-    - name: EXP Mount (in GiB)
-      expected_value: 300
-      actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
-      status: "{% if exp_disk_size == 'unmounted' or
-                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}"
-    - name: GG Mount (in GiB)
-      expected_value: "{% if golden_gate_check -%}300
-                       {%- else -%}
-                       {%- endif -%}"
-      actual_value: "{% if golden_gate_check -%}{{ (ggs_disk_size | int / 1024 | pow(3)) | round | int }}
-                       {%- else -%}
-                       {%- endif -%}"
-      status: "{% if not golden_gate_check -%}NOT_CHECKED
-               {%- elif ggs_disk_size == 'unmounted' or
-                       (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}"
-    - name: results of validation done using queries
-      expected_value: ""
-      actual_value: 
-          - check_type: "tablespace"
-            value: "{{ tablespace_names_result.stdout_lines }}"
-          - check_type: "alter profile"
-            value: "{{ verify_alter_profile_result.stdout_lines }}"
-          - check_type: "created profile"
-            value: "{{ verify_created_profile_result.stdout_lines }}"
-          - check_type: "snapshot interval"
-            value: "{{ verify_snapshot_interval_result.stdout_lines }}"
-          - check_type: "verify parallel force"
-            value: "{{ verify_parallel_force_result.stdout_lines }}" 
-          - check_type: "verify recycle bin status"
-            value: "{{ verify_recyclebin_status_result.stdout_lines }}" 
-          - check_type: "verify block tracking"
-            value: "{{ verify_block_tracking_result.stdout_lines }}"            
-      status: ""
--  debug:
-    var: checklist

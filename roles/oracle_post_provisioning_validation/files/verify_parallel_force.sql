@@ -1,1 +1,1 @@
-show parameter parallel_force_local
+ select name, value from v$parameter where name like '%parallel_force_local%';
