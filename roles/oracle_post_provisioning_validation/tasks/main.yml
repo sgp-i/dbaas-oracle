@@ -7,11 +7,15 @@
     state: directory
     recurse: yes
 
-- name: copy the manage profile sql file to the instance
+
+- name: copy all the sql files that modify , alter db 
   copy:
     owner: "{{ oracle_user }}"
-    src: manage_profile.sql
-    dest: "{{ sql_file_path }}/manage_profile.sql"
+    src: "{{ sql_file }}"
+    dest: "{{ sql_file_path }}/{{ sql_file }}"
+  loop: "{{ sql_files }}"
+  loop_control:
+    loop_var: sql_file
 
 - name: execute manage profile sql file
   become: yes
@@ -19,12 +23,6 @@
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/manage_profile.sql
   changed_when: false
-
-- name: copy the alter db sql file to the instance
-  copy:
-    owner: "{{ oracle_user }}"
-    src: alter_db.sql
-    dest: "{{ sql_file_path }}/alter_db.sql"
 
 - name: execute alter db sql file
   become: yes
@@ -42,24 +40,12 @@
     state: directory
     recurse: yes
 
-- name: copy sql script to change snapshot interval
-  copy:
-    owner: "{{ oracle_user }}"
-    src: change_snapshot_interval.sql
-    dest: "{{ sql_file_path }}/change_snapshot_interval.sql"
-
 - name: execute sql script to change snapshot interval
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/change_snapshot_interval.sql
   changed_when: false
-
-- name: copy sql script to modify block tracking
-  copy:
-    owner: "{{ oracle_user }}"
-    src: modify_block_tracking.sql
-    dest: "{{ sql_file_path }}/modify_block_tracking.sql"
 
 - name: execute sql script to modify block tracking
   become: yes
