@@ -2,7 +2,7 @@
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
-grid_home: "{{ install_base }}/{{ grid_version }}/grid"
+grid_home: "{{ install_base }}/{{ grid_version }}/grid_1"
 
 oracle_user: oracle
 

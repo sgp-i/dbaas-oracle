@@ -2,6 +2,7 @@
 
 - name: Execute PSU Patch
   hosts: '{{ host }}'
+  any_errors_fatal: true
   become: yes
   tasks:
   - import_role:

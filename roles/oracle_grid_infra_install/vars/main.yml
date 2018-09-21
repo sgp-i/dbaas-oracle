@@ -2,7 +2,7 @@
 
 oracle_compat_version: "{{ grid_version | regex_replace('^([0-9]{1,2}.[0-9]{1,}).*','\\1') }}"
 
-oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid"
+oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_1"
 
 oracle_home: "{{ oracle_base }}/oracle/product/{{ grid_version }}/{{ oracle_db_home }}"
 
