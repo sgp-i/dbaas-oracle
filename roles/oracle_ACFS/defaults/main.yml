@@ -20,6 +20,8 @@ exp_dg:
   vol: EXP_FS_VOL
   size: 25
 
+create_exp_diskgroup: True
+
 create_gg_diskgroup: False
 
 oracle_version: 12.1.0.2

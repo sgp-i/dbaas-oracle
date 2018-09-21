@@ -3,4 +3,5 @@
 - include_role:
     name: oracle_ACFS
   vars:
+    create_exp_diskgroup: False
     create_gg_diskgroup: True

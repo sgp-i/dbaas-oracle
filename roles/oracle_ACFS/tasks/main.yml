@@ -40,7 +40,9 @@
 - include_tasks: configure_acfs.yml
   vars:
     diskgroup: "{{ exp_dg }}"
-  when: oracle_base + '/' + exp_dg.dir not in ansible_mounts | json_query('[].mount')
+  when: 
+  - create_exp_diskgroup
+  - oracle_base + '/' + exp_dg.dir not in ansible_mounts | json_query('[].mount')
 
 - include_tasks: configure_acfs.yml
   vars:
