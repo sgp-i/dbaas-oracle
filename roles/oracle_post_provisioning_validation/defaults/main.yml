@@ -32,7 +32,7 @@ tablespace_check_values:
 
 
 sql_files:
-  - adcri_setup.sql
+  - adrci_setup.sql
   - alter_db.sql
   - change_snapshot_interval.sql
   - dba_directories.sql

@@ -7,7 +7,6 @@
     state: directory
     recurse: yes
 
-
 - name: copy all the sql files that modify , alter db 
   copy:
     owner: "{{ oracle_user }}"
@@ -52,6 +51,13 @@
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/modify_block_tracking.sql
+  changed_when: false
+
+- name: execute txt file for adrci
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: adrci script={{ sql_file_path }}/adcri_setup.sql
   changed_when: false
 
 - include_tasks: validations.yml
