@@ -160,7 +160,7 @@
     - name: results of validation done using sql queries
       expected_value: ""
       actual_value: 
-          - check_type: "tablespace"
+          - check_type: "tablespace name and size"
             value: "{{ tablespace_names_result.stdout_lines }}"
           - check_type: "alter profile"
             value: "{{ verify_alter_profile_result.stdout_lines }}"
