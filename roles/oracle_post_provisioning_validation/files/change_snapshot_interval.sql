@@ -1,0 +1,1 @@
+execute dbms_workload_repository.modify_snapshot_settings (interval => 15,retention => 11520);

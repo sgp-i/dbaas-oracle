@@ -47,6 +47,12 @@
                           regex_replace('inventory_loc=(.*)','\\1')
                       }}"
 
+- name: check for running processes in {{ oracle_home }}
+  shell: ps -ef| grep {{ oracle_home }} | grep d.bin | grep -v grep | wc -l
+  failed_when: process_check.stdout == 0
+  register: process_check
+  when: deinstall_product == 'grid'
+
 - name: cleanup Oracle Grid directories
   file:
     path: "{{ item }}"
@@ -54,6 +60,7 @@
   when: deinstall_product == 'grid'
   loop:
   - "{{ install_base }}/{{ oracle_version }}"
+  - "{{ oracle_base }}/admin"
   - "/etc/oracle"
   - "/etc/oraInst.loc"
   - "/etc/oratab"

@@ -11,6 +11,7 @@
   - name: Run Deinstall
     become_user: "{{ oracle_user }}"
     command: "{{ oracle_home }}/deinstall/deinstall -silent -paramfile {{ oracle_tmp }}/{{ deinstall_product }}_deinstall.rsp"
+    failed_when: "'ERROR' in deinstall_cmd.stdout"
     register: deinstall_cmd
 
   - name: save deinstall stdout
@@ -32,7 +33,8 @@
 
 - include_tasks: exec_rootcrsdc_script.yml
   when: 
-  - curr_node != master_node  
+  - inventory_hostname == curr_node
+  - inventory_hostname != master_node  
   - '"crsdc.run" in hostvars[master_node]["deinstall_cmd"]["stdout"]'
   loop: "{{ cluster_nodes }}"
   loop_control:
