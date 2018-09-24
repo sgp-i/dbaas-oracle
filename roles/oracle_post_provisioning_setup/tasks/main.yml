@@ -12,43 +12,45 @@
   tags:
   - apex_api
 
-- name: get oracle_home
-  command: grep "^{{ oracle_db_name }}:" /etc/oratab
-  register: db_details
-  changed_when: False
-- set_fact:
-    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+- name: create tmp dir 
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
 
-- name: get oracle_sid
-  shell: ps -ef | grep ora_smon_{{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
-  register: ps_grep_smon
-  changed_when: False
-- set_fact:
-    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+- name: create directories for post validation setup
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ directories }}"
+    state: directory
+    recurse: yes
+  loop: "{{ create_directories }}"
+  loop_control:
+    loop_var: directories
 
-- name: Creating no sid entry in ORATAB file
-  lineinfile:
-    path: /etc/oratab
-    line: 'no_sid:{{ oracle_home }}:N          # line added by Ansible'
-
-- name: Creating sid entry in ORATAB file
-  lineinfile:
-    path: /etc/oratab
-    line: '{{oracle_sid }}:{{ oracle_home }}:N          # line added by Ansible'
+- name: untar the scripts.tar
+  unarchive:
+    src: "{{ oracle_installer_path }}/scripts.tar"
+    dest: "{{ oracle_base }}/admin/scripts"
+    remote_src: yes
 
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
   register: cleanup_files
+  ignore_errors: true
   
 - name: save cleanup_files script stdout
   copy:
-    dest: '{{ oracle_tmp }}/cleanup_files.out'
+    dest: '{{ oracle_base }}/log/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
     content: '{{ cleanup_files.stdout }}'
   changed_when: False
 
 - name: save cleanup_files script stderr
   copy:
-    dest: "{{ oracle_tmp }}/cleanup_files.err"
+    dest: "{{ oracle_base }/log/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
     content: "{{ cleanup_files.stderr | default('') }}"
   changed_when: False
   when: cleanup_files.stderr_lines | length > 0
@@ -61,11 +63,11 @@
 - name: Execute StandAlone Post Provisioning
   include_tasks: "{{ filename }}"
   loop:
-  - post_prov_standalone.yml
-  - after_postprovstalone.yml
+  - post_provisioning.yml
+  - adrci_setup.yml
   loop_control:
     loop_var: filename
-  when: ansible_play_hosts | length == 1
+  when: master_node == inventory_hostname
 
 - import_role:
     name: oracle_api_services
