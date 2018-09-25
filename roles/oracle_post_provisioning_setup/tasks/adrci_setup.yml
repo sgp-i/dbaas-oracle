@@ -12,4 +12,3 @@
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: "adrci script = {{ oracle_base }}/admin/scripts/adrci_script.sql"
-  register: adrci_script

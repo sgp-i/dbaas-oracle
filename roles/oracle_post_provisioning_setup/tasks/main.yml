@@ -60,7 +60,7 @@
     path: ‘{{ oracle_base }}/admin/chgctl’
     state: directory
 
-- name: Execute StandAlone Post Provisioning
+- name: Execute Post Provisioning
   include_tasks: "{{ filename }}"
   loop:
   - post_provisioning.yml

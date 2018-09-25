@@ -7,7 +7,7 @@
     state: directory
     recurse: yes
 
-- name: copy all the sql files that validation db
+- name: copy all the sql files that validate db
   copy:
     owner: "{{ oracle_user }}"
     src: "{{ sql_file }}"

@@ -35,3 +35,8 @@ sql_files:
   - verify_snapshot_interval.sql
   - verify_redo_logs.sql
 
+
+# vars to be take care
+# oracle_db_home
+# oracle_db_name
+# ORACLE_SID

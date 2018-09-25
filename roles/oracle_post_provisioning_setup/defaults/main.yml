@@ -36,3 +36,10 @@ create_directories:
   - "{{ oracle_base }}/admin/scripts"
   - "{{ oracle_base }}/etc"
   - "{{ oracle_base }}/log"
+
+
+
+#vars to be taken care
+# oracle_db_name
+# oracle_db_home
+# ORACLE_SID
