@@ -139,10 +139,10 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: EXP Mount (in GiB)
-      expected_value: 300
+      expected_value: 299
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
       status: "{% if exp_disk_size == 'unmounted' or
-                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
+                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 299 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - name: GG Mount (in GiB)
@@ -189,5 +189,12 @@
   copy:
     dest: "{{ oracle_tmp }}/{{ oracle_db_name }}/post_validaton_result.json"
     content: "{{ checklist }}"
-
+    
+- name: Check for Post validation Failures
+  fail:
+    msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check
+          {%- else -%}You have {{ checklist | json_query('[?status == `FAILED`]') | length }} failed checks
+          {%- endif %}"
+  when: checklist | json_query('[?status == `FAILED`]') | length > 1
+  tags: postval_fail
     
