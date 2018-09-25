@@ -13,7 +13,7 @@ oracle_home: "{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_d
 oracle_db_name: orcl07
 oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
-sql_file_path: "{{ oracle_tmp }}/{{ oracle_db_name }}/post_val_files"
+sql_file_path: "{{ oracle_tmp }}"
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"

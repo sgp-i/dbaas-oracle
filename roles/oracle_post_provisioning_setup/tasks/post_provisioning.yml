@@ -39,13 +39,13 @@
 
 - name: save postprovision script stdout
   copy:
-    dest: '{{ oracle_tmp }}/postprovision.out'
+    dest: '{{ oracle_tmp }}/post-provisioning-setup.out'
     content: '{{ postprovision.stdout }}'
   changed_when: False
 
 - name: save postprovision script stderr
   copy:
-    dest: "{{ oracle_tmp }}/postprovision.err"
+    dest: "{{ oracle_tmp }}/post-provisioning-setup.err"
     content: "{{ postprovision.stderr | default('') }}"
   changed_when: False
   when: postprovision.stderr_lines | length > 0
