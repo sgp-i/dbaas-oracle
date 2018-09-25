@@ -4,16 +4,7 @@ Rem Post provision DB install standalone
 Rem kamos created 8/7/2018
 set termout on
 prompt Modifys tablespace sizes to Standard 
-alter database datafile 1  autoextend on maxsize 5G;
-alter database datafile 3 autoextend on maxsize 10G;
-alter database tempfile 1 autoextend on maxsize 10G;
-alter database datafile 4 autoextend on maxsize unlimited;
 select file_name, autoextensible, bytes/1024/1024/1024, maxbytes/1024/1024/1024 from dba_data_files order by file_id;
-prompt Enable Database Archiving
-shutdown immediate;
-startup nomount;
-alter database archivelog;
-alter database open;
 prompt Setting up AUDIT_PURGE job
 @/u01/app/oracle/admin/scripts/setup_audit_purge.sql
 prompt Setting up Password Functions and Profiles
@@ -40,9 +31,6 @@ PASSWORD_LOCK_TIME 1
 PASSWORD_VERIFY_FUNCTION F_PWD_VERIFY_COMPLEXITY;
 prompt Set DB_FILES 
 show parameter db_files;
-Alter system set db_files=1000 scope=spfile sid='*';
-shutdown immediate;
-startup;
 prompt Setting Snapshot interval
 execute dbms_workload_repository.modify_snapshot_settings (interval => 15,retention => 11520);
 select
@@ -56,9 +44,7 @@ from dba_hist_wr_control;
 Alter system set parallel_force_local=TRUE scope=both sid='*';
 prompt Recycle Bin on
 select name, value from v$parameter where name like '%recyclebin%';
-alter system set recyclebin=ON DEFERRED;;
 prompt Enabling Block change tracking
 alter database enable block change tracking using file '+RECO DG';
 exit
 EOF
-

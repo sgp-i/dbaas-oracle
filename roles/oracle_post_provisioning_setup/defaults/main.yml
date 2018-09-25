@@ -4,19 +4,25 @@ oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_name: db
+oracle_db_name: orcl07
 
 # location for temporary files
-oracle_tmp: /u01/tmp/{{ oracle_db_name }}
+oracle_tmp: /u01/tmp/postval/{{ oracle_db_name }}
 
 oracle_user: oracle
 
 oracle_group: oinstall
 
+oracle_db_home: db_db_1
+
+oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+master_node: "{{ ansible_play_hosts | first }}"
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_sid }}"
+  ORACLE_SID: "{{ oracle_db_name }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
@@ -24,3 +30,16 @@ ora_user_env:
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"  
 
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
+
+create_directories:
+  - "{{ oracle_base }}/admin/scripts"
+  - "{{ oracle_base }}/etc"
+  - "{{ oracle_base }}/log"
+
+
+
+#vars to be taken care
+# oracle_db_name
+# oracle_db_home
+# ORACLE_SID

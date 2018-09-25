@@ -7,7 +7,7 @@
     state: directory
     recurse: yes
 
-- name: copy all the sql files that modify , alter db 
+- name: copy all the sql files that validate db
   copy:
     owner: "{{ oracle_user }}"
     src: "{{ sql_file }}"
@@ -15,50 +15,6 @@
   loop: "{{ sql_files }}"
   loop_control:
     loop_var: sql_file
-
-- name: execute manage profile sql file
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/manage_profile.sql
-  changed_when: false
-
-- name: execute alter db sql file
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/alter_db.sql
-  changed_when: false
-
-- name: create a directory
-  file:
-    group: "{{ oracle_group }}"
-    owner: "{{ oracle_user }}"
-    path: "{{ install_base }}/admin/{{ oracle_db_name }}/chgctl"
-    mode: 'u+rw,g-wr,o-wr'
-    state: directory
-    recurse: yes
-
-- name: execute sql script to change snapshot interval
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/change_snapshot_interval.sql
-  changed_when: false
-
-- name: execute sql script to modify block tracking
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/modify_block_tracking.sql
-  changed_when: false
-
-- name: execute txt file for adrci
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: adrci script={{ sql_file_path }}/adcri_setup.sql
-  changed_when: false
 
 - include_tasks: validations.yml
 

@@ -25,17 +25,9 @@
   become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/tablespace_check.sql
+  shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/verify_tablespace.sql
   register: tablespace_names_result
   changed_when: false
-  
-# - name: set a fact to validate tablespace_size
-#   set_fact:
-#     missing_tablespace: true
-#   when: "'{{ tablespace_values }}' not in tablespace_names_result.stdout "
-#   loop: "{{ tablespace_check_values }}"
-#   loop_control:
-#     loop_var: tablespace_values
 
 - name: execute verify alter sql script
   become: yes
@@ -110,6 +102,14 @@
   register: verify_redo_logs_result
   changed_when: false
 
+- name: execute sql script to verify dba directories
+  become: yes
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_dba_directories.sql
+  register: verify_dba_directories_result
+  changed_when: false
+
 - set_fact:
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
@@ -177,7 +177,17 @@
           - check_type: "verify db files"
             value: "{{ verify_db_files_result.stdout_lines }}"     
           - check_type: "verify redo logs"
-            value: "{{ verify_redo_logs_result.stdout_lines }}"     
+            value: "{{ verify_redo_logs_result.stdout_lines }}"  
+          - check_type: "verify dba directories"
+            value: "{{ verify_dba_directories_result.stdout_lines }}"     
       status: ""
+
 -  debug:
     var: checklist
+
+- name: store the result in a json
+  copy:
+    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}/post_validaton_result.json"
+    content: "{{ checklist }}"
+
+    

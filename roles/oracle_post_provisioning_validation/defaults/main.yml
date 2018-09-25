@@ -1,18 +1,19 @@
 ---
 
-oracle_tmp: /u01/tmp/prereqs
+oracle_tmp: /u01/tmp/postval
 
 golden_gate_check: False
 
 oracle_user: oracle
 
-sql_file_path: /u01/tmp/{{ oracle_db_name }}_post_val_files
 install_base: /u01/app
 oracle_version: 12.1.0.2
-oracle_home: "{{ install_base }}/oracle/product/{{ oracle_version }}/db_db_1"
+oracle_db_home: db_db_1
+oracle_home: "{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
 oracle_db_name: orcl07
 oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
+sql_file_path: "{{ oracle_tmp }}"
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
@@ -22,23 +23,9 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
   
-# tablespace_name and max_byte size is checked
-tablespace_check_values:
-  - "TABLESPACE_NAME      FILE_NAME\t\t\t\t\t\tAUTOEXTENS\t  BYTES     MAXBYTES"
-  - "SYSTEM\t\t     +DATA/ORCL07/DATAFILE/system.258.985575467 \tYES\t\t   .791        5.000"
-  - "SYSAUX\t\t     +DATA/ORCL07/DATAFILE/sysaux.257.985575423 \tYES\t\t  1.396       10.000"
-  - "UNDOTBS1\t     +DATA/ORCL07/DATAFILE/undotbs1.260.985575523\tYES\t\t   .210       32.000"
-  - "USERS\t\t     +DATA/ORCL07/DATAFILE/users.259.985575523\t\tYES\t\t   .005       10.000"
-
-
 sql_files:
-  - adrci_setup.sql
-  - alter_db.sql
-  - change_snapshot_interval.sql
-  - dba_directories.sql
-  - manage_profile.sql
-  - modify_block_tracking.sql
-  - tablespace_check.sql
+  - verify_dba_directories.sql
+  - verify_tablespace.sql
   - verify_alter_profile.sql
   - verify_block_tracking.sql
   - verify_created_profile.sql
@@ -48,3 +35,8 @@ sql_files:
   - verify_snapshot_interval.sql
   - verify_redo_logs.sql
 
+
+# vars to be take care
+# oracle_db_home
+# oracle_db_name
+# ORACLE_SID

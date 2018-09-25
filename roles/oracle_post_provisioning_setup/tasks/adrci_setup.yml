@@ -1,0 +1,14 @@
+---
+- name: Copy the "adrci_script.sql" to server
+  copy: 
+    src: adrci_script.sql
+    dest: "{{ oracle_base }}/admin/scripts"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+
+- name: run adrci_script.sql script
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "adrci script = {{ oracle_base }}/admin/scripts/adrci_script.sql"
