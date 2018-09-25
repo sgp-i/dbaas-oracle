@@ -33,9 +33,8 @@ ora_user_env:
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
 create_directories:
-  - "{{ oracle_base }}/admin/scripts"
-  - "{{ oracle_base }}/etc"
-  - "{{ oracle_base }}/log"
+  - "{{ oracle_base }}/admin"
+  - "{{ oracle_base }}/logs/archive"
 
 
 

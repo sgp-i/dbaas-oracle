@@ -43,8 +43,23 @@
 - name: untar the scripts.tar
   unarchive:
     src: "{{ oracle_installer_path }}/scripts.tar"
-    dest: "{{ oracle_base }}/admin/scripts"
+    dest: "{{ oracle_base }}/admin"
     remote_src: yes
+    validate_certs: no
+
+- name: untar the etc.tar
+  unarchive:
+    src: "{{ oracle_installer_path }}/etc.tar"
+    dest: "{{ oracle_base }}/admin"
+    remote_src: yes
+    validate_certs: no
+
+- name: untar the ctl.tar
+  unarchive:
+    src: "{{ oracle_installer_path }}/ctl.tar"
+    dest: "{{ oracle_base }}/admin"
+    remote_src: yes
+    validate_certs: no
 
 - name: Run Cleanup file job for Database
   command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'

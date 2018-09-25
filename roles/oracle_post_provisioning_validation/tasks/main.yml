@@ -16,7 +16,6 @@
   loop_control:
     loop_var: sql_file
 
-
 - name: get oracle_sid
   shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
@@ -24,7 +23,7 @@
 
 - name: set oracle_sid
   set_fact:
-    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
-    
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon(.*)', '\\1') }}"
+
 - include_tasks: validations.yml
 
