@@ -78,6 +78,17 @@
     loop_var: filename
   when: master_node == inventory_hostname
 
+
+- name: Creating no sid entry in ORATAB file
+  lineinfile:
+    path: /etc/oratab
+    line: 'no_sid:{{ oracle_home }}:N   # line added by Ansible'
+
+- name: Creating sid entry in ORATAB file
+  lineinfile:
+    path: /etc/oratab
+    line: '{{ oracle_sid }}:{{ oracle_home }}:N    # line added by Ansible'
+
 - import_role:
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
@@ -87,3 +98,5 @@
       db_install_status: SUCCESSFUL #Need a way to determine Failures
   tags:
   - apex_api
+
+
