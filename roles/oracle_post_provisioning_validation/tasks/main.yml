@@ -21,6 +21,10 @@
     - name: set oracle_home
       set_fact:
         oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+
+    - fail:
+        msg: Database named {{ oracle_db_name }} doesn't exists'
+      when: oracle_home == ""  
   when: oracle_context != 'GRID'
 
 - name: create tmp dir 
