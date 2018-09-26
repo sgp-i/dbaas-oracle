@@ -1,0 +1,1 @@
+SELECT status, filename FROM V$BLOCK_CHANGE_TRACKING;

@@ -56,45 +56,31 @@
       loop_control:
         loop_var: directories
 
-    - name: check if scripts exists
+    - name: check if untar check file exists
       stat:
-        path: "{{ oracle_base }}/admin/scripts"
-      register: scripts
+        path: "{{ oracle_base }}/admin/untar_complete"
+      register: untar_check
 
     - name: untar the scripts.tar
       unarchive:
-        src: "{{ oracle_installer_path }}/scripts.tar"
+        src: "{{ oracle_installer_path }}/{{ tars_file }}"
         dest: "{{ oracle_base }}/admin"
         remote_src: yes
         validate_certs: no
-      when: scripts.stat.exists
+      when: untar_check.stat.exists == false
+      loop:
+        - scripts.tar
+        - etc.tar
+        - ctl.tar
+      loop_control: 
+        loop_var: tars_file
 
-    - name: check if etc exists
-      stat:
-        path: "{{ oracle_base }}/admin/etc"
-      register: etc
-
-    - name: untar the etc.tar
-      unarchive:
-        src: "{{ oracle_installer_path }}/etc.tar"
-        dest: "{{ oracle_base }}/admin"
-        remote_src: yes
-        validate_certs: no
-      when: etc.stat.exists
-
-    - name: check if ctl exists
-      stat:
-        path: "{{ oracle_base }}/admin/ctl"
-      register: ctl
-
-    - name: untar the ctl.tar
-      unarchive:
-        src: "{{ oracle_installer_path }}/ctl.tar"
-        dest: "{{ oracle_base }}/admin"
-        remote_src: yes
-        validate_certs: no
-      when: ctl.stat.exists
-
+    - name: place a marker for completion
+      file:
+        path: "{{ oracle_base }}/admin/untar_complete"
+        state: touch
+      when: untar_check.stat.exists == false
+    
     - name: Run Cleanup file job for Database
       command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
       register: cleanup_files
@@ -102,13 +88,13 @@
       
     - name: save cleanup_files script stdout
       copy:
-        dest: '{{ oracle_base }}/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
+        dest: '{{ oracle_base }}/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
         content: '{{ cleanup_files.stdout }}'
       changed_when: False
 
     - name: save cleanup_files script stderr
       copy:
-        dest: "{{ oracle_base }/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
+        dest: "{{ oracle_base }/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
         content: "{{ cleanup_files.stderr | default('') }}"
       changed_when: False
       when: cleanup_files.stderr_lines | length > 0

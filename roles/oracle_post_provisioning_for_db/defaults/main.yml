@@ -36,7 +36,11 @@ create_directories:
   - "{{ oracle_base }}/admin"
   - "{{ oracle_base }}/logs/archive"
 
+pre_check_sqls:
+  - pre_check_profile.sql
+  - pre_check_default_profile.sql
+  - pre_check_block_change.sql
+  - pre_check_audit_purge.sql
+
 #vars to be taken care
-# oracle_db_name
-# oracle_db_home
 # ORACLE_SID
