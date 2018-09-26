@@ -53,14 +53,14 @@
 
 - name: Copy pfile to target
   Shell: |
-    scp -p {{ ORACLE_HOME }}/dbs/init{{ source_db_name }}.ora oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
-    scp -p {{ ORACLE_HOME }}/dbs/orapw{{ source_db_name}} oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
+    scp -p {{ oracle_home }}/dbs/init{{ source_db_name }}.ora oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
+    scp -p {{ oracle_home }}/dbs/orapw{{ source_db_name}} oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
   when: inventory_hostname == master_node
 
 - name: create adump dir
   file:
     mode: 0755
-    path: "{{ ORACLE_BASE }}/admin/orcl07/adump"
+    path: "{{ oracle_base }}/admin/orcl07/adump"
     state: directory
 
 - name: Entry for the new database
