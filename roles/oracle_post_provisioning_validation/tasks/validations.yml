@@ -21,94 +21,97 @@
   loop_control:
     loop_var: group_name
 
-- name: execute tablespace_size sql file
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/verify_tablespace.sql
-  register: tablespace_names_result
-  changed_when: false
+- name: task only for db'
+  block:
+    - name: execute tablespace_size sql file
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/verify_tablespace.sql
+      register: tablespace_names_result
+      changed_when: false
 
-- name: execute verify alter sql script
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_alter_profile.sql
-  register: verify_alter_profile_result
-  changed_when: false
+    - name: execute verify alter sql script
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_alter_profile.sql
+      register: verify_alter_profile_result
+      changed_when: false
 
-- name: execute verify created profile sql script
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_created_profile.sql
-  register: verify_created_profile_result
-  changed_when: false
+    - name: execute verify created profile sql script
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_created_profile.sql
+      register: verify_created_profile_result
+      changed_when: false
 
-- name: execute sql script to verify snapshot interval
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_snapshot_interval.sql
-  register: verify_snapshot_interval_result
-  changed_when: false
+    - name: execute sql script to verify snapshot interval
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_snapshot_interval.sql
+      register: verify_snapshot_interval_result
+      changed_when: false
 
-- name: execute sql script to verify parallel force
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_parallel_force.sql
-  register: verify_parallel_force_result
-  changed_when: false
+    - name: execute sql script to verify parallel force
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_parallel_force.sql
+      register: verify_parallel_force_result
+      changed_when: false
 
-- name: execute sql script to verify recyclebin force
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_recyclebin_status.sql
-  register: verify_recyclebin_status_result
-  changed_when: false
+    - name: execute sql script to verify recyclebin force
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_recyclebin_status.sql
+      register: verify_recyclebin_status_result
+      changed_when: false
 
-- name: execute sql script to modify block tracking
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_block_tracking.sql
-  register: verify_block_tracking_result
-  changed_when: false
+    - name: execute sql script to modify block tracking
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_block_tracking.sql
+      register: verify_block_tracking_result
+      changed_when: false
 
-- name: execute sql script to verify db files
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_db_files.sql
-  register: verify_db_files_result
-  changed_when: false
+    - name: execute sql script to verify db files
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_db_files.sql
+      register: verify_db_files_result
+      changed_when: false
 
 
-- name: execute sql script to verify redo logs
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
-  register: verify_redo_logs_result
-  changed_when: false
+    - name: execute sql script to verify redo logs
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
+      register: verify_redo_logs_result
+      changed_when: false
 
-- name: execute sql script to verify redo logs
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
-  register: verify_redo_logs_result
-  changed_when: false
+    - name: execute sql script to verify redo logs
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_redo_logs.sql
+      register: verify_redo_logs_result
+      changed_when: false
 
-- name: execute sql script to verify dba directories
-  become: yes
-  become_user: "{{ oracle_user }}"
-  environment: "{{ ora_user_env }}"
-  shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_dba_directories.sql
-  register: verify_dba_directories_result
-  changed_when: false
+    - name: execute sql script to verify dba directories
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_dba_directories.sql
+      register: verify_dba_directories_result
+      changed_when: false
+  when: oracle_home != "" and oracle_context != 'GRID'
 
 - set_fact:
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
@@ -161,25 +164,25 @@
       expected_value: ""
       actual_value: 
           - check_type: "tablespace name and size"
-            value: "{{ tablespace_names_result.stdout_lines }}"
+            value: "{{ tablespace_names_result.stdout_lines | default('')}}"
           - check_type: "alter profile"
-            value: "{{ verify_alter_profile_result.stdout_lines }}"
+            value: "{{ verify_alter_profile_result.stdout_lines | default('')}}"
           - check_type: "created profile"
-            value: "{{ verify_created_profile_result.stdout_lines }}"
+            value: "{{ verify_created_profile_result.stdout_lines | default('') }}"
           - check_type: "snapshot interval"
-            value: "{{ verify_snapshot_interval_result.stdout_lines }}"
+            value: "{{ verify_snapshot_interval_result.stdout_lines | default('')}}"
           - check_type: "verify parallel force"
-            value: "{{ verify_parallel_force_result.stdout_lines }}" 
+            value: "{{ verify_parallel_force_result.stdout_lines | default('')}}" 
           - check_type: "verify recycle bin status"
-            value: "{{ verify_recyclebin_status_result.stdout_lines }}" 
+            value: "{{ verify_recyclebin_status_result.stdout_lines | default('')}}" 
           - check_type: "verify block tracking"
-            value: "{{ verify_block_tracking_result.stdout_lines }}"          
+            value: "{{ verify_block_tracking_result.stdout_lines | default('')}}"          
           - check_type: "verify db files"
-            value: "{{ verify_db_files_result.stdout_lines }}"     
+            value: "{{ verify_db_files_result.stdout_lines | default('')}}"     
           - check_type: "verify redo logs"
-            value: "{{ verify_redo_logs_result.stdout_lines }}"  
+            value: "{{ verify_redo_logs_result.stdout_lines | default('') }}"  
           - check_type: "verify dba directories"
-            value: "{{ verify_dba_directories_result.stdout_lines }}"     
+            value: "{{ verify_dba_directories_result.stdout_lines | default('') }}"     
       status: ""
 
 -  debug:
@@ -187,9 +190,11 @@
 
 - name: store the result in a json
   copy:
-    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}/post_validaton_result.json"
+    dest: "{% if oracle_context == 'GRID' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+              {%- else -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- endif %}"
     content: "{{ checklist }}"
-    
+
 - name: Check for Post validation Failures
   fail:
     msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check

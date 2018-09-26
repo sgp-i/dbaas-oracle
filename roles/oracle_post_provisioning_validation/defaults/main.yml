@@ -5,11 +5,17 @@ oracle_tmp: /u01/tmp/postval
 golden_gate_check: False
 
 oracle_user: oracle
-
+grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
 oracle_db_home: db_db_1
-oracle_home: "{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+oracle_context: ''
+
+oracle_home: "{% if oracle_context == 'GRID' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
+              {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
+              {%- endif %}"
+
 oracle_db_name: orcl07
 oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
@@ -38,5 +44,4 @@ sql_files:
 
 # vars to be take care
 # oracle_db_home
-# oracle_db_name
-# ORACLE_SID
+# oracle_context

@@ -19,99 +19,143 @@
 
 - name: set oracle_sid
   set_fact:
-    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon(.*)', '\\1') }}"
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
 
-- name: create tmp dir 
-  file:
-    group: "{{ oracle_group }}"
-    owner: "{{ oracle_user }}"
-    path: "{{ oracle_tmp }}"
-    state: directory
-    recurse: yes
+- name: get db details
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  ignore_errors: yes
+  changed_when: false
+  register: db_details
 
-- name: create directories for post validation setup
-  file:
-    group: "{{ oracle_group }}"
-    owner: "{{ oracle_user }}"
-    path: "{{ directories }}"
-    state: directory
-    recurse: yes
-  loop: "{{ create_directories }}"
-  loop_control:
-    loop_var: directories
+- name: set oracle_home
+  set_fact:
+    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
-- name: untar the scripts.tar
-  unarchive:
-    src: "{{ oracle_installer_path }}/scripts.tar"
-    dest: "{{ oracle_base }}/admin"
-    remote_src: yes
-    validate_certs: no
+- fail:
+    msg: Database named {{ oracle_db_name }} doesn't exists'
+  when: oracle_home == ""
 
-- name: untar the etc.tar
-  unarchive:
-    src: "{{ oracle_installer_path }}/etc.tar"
-    dest: "{{ oracle_base }}/admin"
-    remote_src: yes
-    validate_certs: no
+- name: complete block of post Provisioning validation
+  block:
+    - name: create tmp dir 
+      file:
+        group: "{{ oracle_group }}"
+        owner: "{{ oracle_user }}"
+        path: "{{ oracle_tmp }}"
+        state: directory
+        recurse: yes
 
-- name: untar the ctl.tar
-  unarchive:
-    src: "{{ oracle_installer_path }}/ctl.tar"
-    dest: "{{ oracle_base }}/admin"
-    remote_src: yes
-    validate_certs: no
+    - name: create directories for post validation setup
+      file:
+        group: "{{ oracle_group }}"
+        owner: "{{ oracle_user }}"
+        path: "{{ directories }}"
+        state: directory
+        recurse: yes
+      loop: "{{ create_directories }}"
+      loop_control:
+        loop_var: directories
 
-- name: Run Cleanup file job for Database
-  command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
-  register: cleanup_files
-  ignore_errors: true
-  
-- name: save cleanup_files script stdout
-  copy:
-    dest: '{{ oracle_base }}/log/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
-    content: '{{ cleanup_files.stdout }}'
-  changed_when: False
+    - name: check if scripts exists
+      stat:
+        path: "{{ oracle_base }}/admin/scripts"
+      register: scripts
 
-- name: save cleanup_files script stderr
-  copy:
-    dest: "{{ oracle_base }/log/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
-    content: "{{ cleanup_files.stderr | default('') }}"
-  changed_when: False
-  when: cleanup_files.stderr_lines | length > 0
+    - name: untar the scripts.tar
+      unarchive:
+        src: "{{ oracle_installer_path }}/scripts.tar"
+        dest: "{{ oracle_base }}/admin"
+        remote_src: yes
+        validate_certs: no
+      when: scripts.stat.exists
 
-- name: Set up Directory in ORACLE_ADMIN
-  file:
-    path: ‘{{ oracle_base }}/admin/chgctl’
-    state: directory
+    - name: check if etc exists
+      stat:
+        path: "{{ oracle_base }}/admin/etc"
+      register: etc
 
-- name: Execute Post Provisioning
-  include_tasks: "{{ filename }}"
-  loop:
-  - post_provisioning.yml
-  - adrci_setup.yml
-  loop_control:
-    loop_var: filename
-  when: master_node == inventory_hostname
+    - name: untar the etc.tar
+      unarchive:
+        src: "{{ oracle_installer_path }}/etc.tar"
+        dest: "{{ oracle_base }}/admin"
+        remote_src: yes
+        validate_certs: no
+      when: etc.stat.exists
 
+    - name: check if ctl exists
+      stat:
+        path: "{{ oracle_base }}/admin/ctl"
+      register: ctl
 
-- name: Creating no sid entry in ORATAB file
-  lineinfile:
-    path: /etc/oratab
-    line: 'no_sid:{{ oracle_home }}:N   # line added by Ansible'
+    - name: untar the ctl.tar
+      unarchive:
+        src: "{{ oracle_installer_path }}/ctl.tar"
+        dest: "{{ oracle_base }}/admin"
+        remote_src: yes
+        validate_certs: no
+      when: ctl.stat.exists
 
-- name: Creating sid entry in ORATAB file
-  lineinfile:
-    path: /etc/oratab
-    line: '{{ oracle_sid }}:{{ oracle_home }}:N    # line added by Ansible'
+    - name: Run Cleanup file job for Database
+      command: '{{ oracle_base }}/admin/scripts/cleanup_files.ksh'
+      register: cleanup_files
+      ignore_errors: true
+      
+    - name: save cleanup_files script stdout
+      copy:
+        dest: '{{ oracle_base }}/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
+        content: '{{ cleanup_files.stdout }}'
+      changed_when: False
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_update.yml
-  vars:
-    chklst_json_body:
-      new_entry: False
-      db_install_status: SUCCESSFUL #Need a way to determine Failures
-  tags:
-  - apex_api
+    - name: save cleanup_files script stderr
+      copy:
+        dest: "{{ oracle_base }/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
+        content: "{{ cleanup_files.stderr | default('') }}"
+      changed_when: False
+      when: cleanup_files.stderr_lines | length > 0
+
+    - name: Set up Directory in ORACLE_ADMIN
+      file:
+        path: ‘{{ oracle_base }}/admin/chgctl’
+        state: directory
+
+    - name: Execute Post Provisioning
+      include_tasks: "{{ filename }}"
+      loop:
+      - post_provisioning.yml
+      - adrci_setup.yml
+      loop_control:
+        loop_var: filename
+      when: master_node == inventory_hostname
+
+    - name: Creating no sid entry in ORATAB file
+      lineinfile:
+        path: /etc/oratab
+        line: 'no_sid:{{ oracle_home }}:N   # line added by Ansible'
+      
+    - name: Creating sid entry in ORATAB file
+      lineinfile:
+        path: /etc/oratab
+        line: '{{ oracle_sid }}:{{ oracle_home }}:N    # line added by Ansible'
+
+    - import_role:
+        name: oracle_api_services
+        tasks_from: db_checklist_update.yml
+      vars:
+        chklst_json_body:
+          new_entry: False
+          db_install_status: SUCCESSFUL #Need a way to determine Failures
+      tags:
+      - apex_api
+  rescue:
+    - import_role:
+        name: oracle_api_services
+        tasks_from: db_checklist_update.yml
+      vars:
+        chklst_json_body:
+          new_entry: False
+          db_install_status: Failed
+      tags:
+      - apex_api
+
 
 

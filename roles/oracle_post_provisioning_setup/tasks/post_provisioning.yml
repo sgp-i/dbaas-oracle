@@ -8,8 +8,8 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/setup_audit_purge.sql"
   register: setup_audit_purge_result
-  failed_when: '"ORA-*" in setup_audit_purge_result.stdout'
-  
+  failed_when: '"ORA-" in setup_audit_purge_result.stdout'
+
 - name: Copy the "Password_Verification_function.sql" to server
   copy: 
     src: Password_Verification_function.sql
@@ -24,7 +24,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/Password_Verification_function.sql"
   register: Password_Verification_function_result
-  failed_when: '"ORA-*" in Password_Verification_function_result.stdout'
+  failed_when: '"ORA-" in Password_Verification_function_result.stdout'
 
 - name: Copy the "postprovision.sql" to server
   copy: 
@@ -40,7 +40,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/postprovision.sql"
   register: postprovision
-  failed_when: '"ORA-*" in postprovision.stdout'
+  failed_when: '"ORA-" in postprovision.stdout'
 
 - name: save postprovision script stdout
   copy:

@@ -36,8 +36,6 @@ create_directories:
   - "{{ oracle_base }}/admin"
   - "{{ oracle_base }}/logs/archive"
 
-
-
 #vars to be taken care
 # oracle_db_name
 # oracle_db_home
