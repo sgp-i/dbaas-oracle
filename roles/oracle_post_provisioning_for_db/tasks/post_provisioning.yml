@@ -9,7 +9,6 @@
     dest: "{{ oracle_base }}/admin/scripts"
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
-    #force: no
     mode: 0755
   loop: "{{ pre_check_sqls }}"
   loop_control:
@@ -21,6 +20,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/pre_check_audit_purge.sql"
   register: pre_check_audit_purge_result
+  failed_when: '"ERROR" in pre_check_audit_purge_result.stdout'
 
 - name: run setup_audit_purge.sql script
   become: yes
@@ -28,6 +28,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/setup_audit_purge.sql"
   register: setup_audit_purge_result
+  failed_when: '"ERROR" in setup_audit_purge_result.stdout'
   when: '"\t      1" not in pre_check_audit_purge_result.stdout_lines'
   
 - name: Copy the "Password_Verification_function.sql" to server
@@ -53,7 +54,6 @@
     dest: "{{ oracle_base }}/admin/scripts"
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
-    # force: no
     mode: 0755
 
 - name: run alter_default_profile.sql script
@@ -61,6 +61,8 @@
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/alter_default_profile.sql"
+  register: alter_default_profile_result
+  failed_when: '"ERROR" in alter_default_profile_result.stdout'
 
 - name: run pre_check_profile.sql script
   become: yes
@@ -68,6 +70,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/pre_check_profile.sql"
   register: pre_check_profile_result
+  failed_when: '"ERROR" in pre_check_profile_result.stdout'
 
 - name: tasks to create profile
   block:
@@ -77,7 +80,6 @@
         dest: "{{ oracle_base }}/admin/scripts"
         owner: "{{ oracle_user }}"
         group: "{{ oracle_group }}"
-        # force: no
         mode: 0755
     - name: run create_profiles.sql script
       become: yes
@@ -85,6 +87,7 @@
       environment: "{{ ora_user_env }}"
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/create_profiles.sql"
       register: create_profiles_result
+      failed_when: '"ERROR" in create_profiles_result.stdout'
   when: '"2 rows selected." not in pre_check_profile_result.stdout_lines'
 
 - name: run pre_check_block_change.sql script
@@ -93,6 +96,7 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/pre_check_block_change.sql"
   register: pre_check_block_change_result
+  failed_when: '"ERROR" in pre_check_block_change_result.stdout'
 
 - name: tasks to change the block tracking
   block:
@@ -102,7 +106,6 @@
         dest: "{{ oracle_base }}/admin/scripts"
         owner: "{{ oracle_user }}"
         group: "{{ oracle_group }}"
-        # force: no
         mode: 0755
     - name: run block_change.sql script
       become: yes
@@ -110,6 +113,7 @@
       environment: "{{ ora_user_env }}"
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/block_change.sql"
       register: block_change_result
+      failed_when: '"ERROR" in block_change_result.stdout'
   when: '"ENABLED" not in pre_check_block_change_result.stdout_lines'
 
 

@@ -8,7 +8,7 @@
       name: oracle_create_db
 
   - import_role:
-      name: oracle_post_provisioning_setup
+      name: oracle_post_provisioning_for_db
 
   ## Required Vars:
   # oracle_db_home - This is where the upgrade will be move to (e.g. db_1) 
