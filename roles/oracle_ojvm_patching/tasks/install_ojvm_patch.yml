@@ -40,4 +40,4 @@
     seconds: 90
 
 - include_tasks: apply_data_patch.yml
-  when: ojvm_patch_output.rc != 1
+  when: inventory_hostname == master_node

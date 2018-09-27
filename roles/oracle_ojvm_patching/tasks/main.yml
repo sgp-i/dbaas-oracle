@@ -23,10 +23,9 @@
 
 
 - include_tasks: unzip_ojvm.yml
-  when: inventory_hostname == master_node
 
 - include_tasks: install_ojvm_patch.yml
-  when: inventory_hostname == master_node
+  
 
 
 
