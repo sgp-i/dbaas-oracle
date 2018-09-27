@@ -1,0 +1,29 @@
+
+oracle_db_name: demo2
+
+oracle_version: 12.1.0.2
+
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
+
+oracle_db_home: db_db_1
+
+oracle_tmp: /u01/tmp/ojvm_patch
+
+oracle_user: oracle
+
+oracle_group: oinstall
+
+ojvm_patch: 27923320
+
+ora_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_SID: "{{ oracle_sid }}"
+  ORACLE_UNQNAME: "{{ oracle_db_name }}"
+  ORACLE_HOME: "{{ oracle_home }}"
+  NLS_LANG: "American_America.UTF8"
+  PATH: "{{ oracle_home }}/bin:{{ oracle_tmp }}/{{ ojvm_patch }}:{{ ansible_env.PATH }}"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"  
+    

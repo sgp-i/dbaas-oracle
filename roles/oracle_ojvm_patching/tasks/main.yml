@@ -1,0 +1,118 @@
+- name: get oracle_sid
+  shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+
+- name: set oracle_sid
+  set_fact:
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+
+- name: get db details
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  ignore_errors: yes
+  changed_when: false
+  register: db_details
+
+- name: set oracle_home
+  set_fact:
+    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+
+- fail:
+    msg: Database named {{ oracle_db_name }} doesn't exists'
+  when: oracle_home == ""
+
+- name: create tmp dir to unzip the patch
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+  register: tmp_dir_creation
+
+- name: unzip ojvm patch
+  unarchive: 
+    src: "{{ oracle_installer_path }}/p27923320_121020_Linux-x86-64.zip" 
+    dest: "{{ oracle_tmp }}" 
+    remote_src: yes 
+    keep_newer: true
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+    validate_certs: no
+  when: tmp_dir_creation.changed
+
+- name: stop the database
+  environment: "{{ ora_user_env }}"
+  command: srvctl stop database -d {{ oracle_db_name }}
+  ignore_errors: yes
+
+- name: copy the response file
+  copy:
+    src: "ocm_rsp"
+    dest: "{{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+
+- name: apply ojvm patch  
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home }}/OPatch/opatch apply -silent {{ oracle_tmp }}/{{ ojvm_patch }} -ocmrf {{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+  register: ojvm_patch_output
+
+- name: save ojvm patch stdout
+  copy:
+    dest: "{{ oracle_tmp }}/ojvm_patch_output_stdout.out"
+    content: "{{ ojvm_patch_output.stdout }}"
+  changed_when: False
+
+- name: save ojvm patch stderr
+  copy:
+    dest: "{{ oracle_tmp }}/ojvm_patch_output_stderr.err"
+    content: "{{ ojvm_patch_output.stderr }}" 
+  changed_when: False
+  when: ojvm_patch_output.stderr_lines | length > 0
+
+- name: start the database
+  environment: "{{ ora_user_env }}"
+  command: srvctl start database -d {{ oracle_db_name }}
+
+- name: Wait for Database to Start
+  pause:
+    seconds: 90
+
+- name: apply data patch
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home }}/OPatch/datapatch"
+  register: data_patch_result
+  failed_when: '"ERROR" in data_patch_result.stdout'
+
+- name: save data patch stdout
+  copy:
+    dest: "{{ oracle_tmp }}/data_patch_result_stdout.out"
+    content: "{{ data_patch_result.stdout }}"
+  changed_when: False
+
+- name: save data patch stderr
+  copy:
+    dest: "{{ oracle_tmp }}/data_patch_result_stderr.err"
+    content: "{{ data_patch_result.stderr }}" 
+  changed_when: False
+  when: data_patch_result.stderr_lines | length > 0
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
