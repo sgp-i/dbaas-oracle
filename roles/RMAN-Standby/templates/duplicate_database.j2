@@ -1,0 +1,6 @@
+duplicate database for standby from active database 
+dorecover 
+spfile
+set db_unique_name = '{{ TARGET_DB_NAME }}' comment 'Is a standby'
+set fal_server='{{ Source_DB_NAME }}' comment 'Is primary'
+nofilenamecheck;

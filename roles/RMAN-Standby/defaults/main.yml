@@ -1,0 +1,29 @@
+---
+#Note-In hosts file Place the Source Server at first and target in secound Place
+
+oracle_version: 12.1.0.2
+
+oracle_base: /u01/app/oracle
+
+# location for temporary files
+oracle_tmp: /u01/tmp/{{ oracle_version }}
+
+oracle_user: oracle
+
+oracle_grid_home: "/u01/app/12.1.0.2/grid"
+
+oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
+
+Source_DB_NAME: DB
+
+TARGET_DB_NAME: DB_STBY
+
+# shell environment for the oracle user- Source Server
+ora_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_SID: "{{ Source_DB_NAME }}"
+  ORACLE_UNQNAME: "{{ Source_DB_NAME }}"
+  ORACLE_HOME: "{{ oracle_home }}"
+  NLS_LANG: "American_America.UTF8"
+  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+
