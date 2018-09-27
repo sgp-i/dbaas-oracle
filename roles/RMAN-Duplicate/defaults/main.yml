@@ -10,47 +10,25 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_db_name: db
-
 oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
 oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
 
-TARGET_DB: db_copy
+#use the same db names for source and destination
 
-TARGET_DB_NAME: db_copy
+Source_DB_NAME: db
 
-sourec_db_password: oracle123
+TARGET_DB_NAME: db
 
-target_db_password: oracle123
+# used in RMAN j2 file
+db_name: db
 
 # shell environment for the oracle user- Source Server
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name }}"
+  ORACLE_SID: "{{ Source_DB_NAME }}"
+  ORACLE_UNQNAME: "{{ Source_DB_NAME }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
-
-# shell environment for the oracle user- Target Server
-# ora_user_env_2:
-#   ORACLE_BASE: "{{ oracle_base }}"
-#   ORACLE_SID: "{{ TARGET_DB }}"
-#   ORACLE_UNQNAME: "{{ TARGET_DB }}"
-#   ORACLE_HOME: "{{ oracle_home }}"
-#   NLS_LANG: "American_America.UTF8"
-#   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
-
-# Local Server RAM Deatils
-#On machine that has database(s) to be backed up
-# RMAN_user: RMANBACKUP
-
-# oracle_db_ServiceName: db_test_RMAN
-
-# #Remote RMAN Server catalog deatils
-
-# catalog_RMAN_user: rmanbackup
-
-# catalog_RMAN_DB: rman
 
