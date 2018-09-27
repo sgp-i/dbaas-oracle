@@ -1,5 +1,28 @@
 ---
-- name: Add TNSNAMES In RMAN 
+- name: Check the LOG_MODE
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Copy the check_logmode.sql file
+    copy: 
+      src: check_logmode.sql
+      dest: "{{ oracle_tmp }}/check_logmode.sql"
+  - name: check the logmode
+    command: "sqlplus / as sysdba @{{ oracle_tmp }}/check_logmode.sql"
+    register: logmode
+    failed_when: '"NOARCHIVELOG" in logmode.stdout_lines'
+  when: inventory_hostname == master_node
+  
+- name: Create tnsnames.ora if not exists
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  file:
+    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+    state: touch
+
+- name: Add TNSNAMES In RMAN- Source Server
   become: yes
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
@@ -8,30 +31,49 @@
     line: "{{ TARGET_DB }} = 
                 (DESCRIPTION =
                 (ADDRESS_LIST =
-                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ target_machine_name }})(PORT = 1521))
+                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
                 )
                 (CONNECT_DATA =
                 (ORACLE_SID = {{ TARGET_DB_NAME }})
                 )
                 ) # line added by Ansible"
+  when: inventory_hostname == master_node
 
-- name: Static Listener Configuration-Destination Server
+- name: Add TNSNAMES In RMAN- Target Server
   become: yes
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   lineinfile:
-    path: "{{ oracle_grid_home }}/network/admin/listener.ora"
-    line: "SID_LIST_LISTENER =
-                    (SID_LIST =
-                      (SID_DESC =
-                        (ORACLE_HOME = {{ oracle_home }})
-                        (SID_NAME = {{ TARGET_DB_NAME }})
-                      )
-                    ) # line added by Ansible"
+    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+    line: "{{ TARGET_DB }} = 
+                (DESCRIPTION =
+                (ADDRESS_LIST =
+                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
+                )
+                (CONNECT_DATA =
+                (ORACLE_SID = {{ TARGET_DB_NAME }})
+                )
+                ) # line added by Ansible"
   when: inventory_hostname != master_node
 
-- name: Reload the lister
-  command: lsnrctl reload
+- name: Static Listener Configuration and Reload listener-Target Server
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+    - name: Static Listener Configuration
+      lineinfile:
+        path: "{{ oracle_grid_home }}/network/admin/listener.ora"
+        line: "SID_LIST_LISTENER =
+                        (SID_LIST =
+                          (SID_DESC =
+                            (ORACLE_HOME = {{ oracle_home }})
+                            (SID_NAME = {{ TARGET_DB_NAME }})
+                          )
+                        ) # line added by Ansible"
+                        
+    - name: Reload the lister-Target Server
+      command: lsnrctl reload
   when: inventory_hostname != master_node
 
 - name: Create a pfile-Source Server
@@ -45,32 +87,83 @@
       dest: "{{ oracle_tmp }}/create-pfile.sql"
 
   - name: Create spfile
-    become: yes
-    become_user: '{{ oracle_user }}'
-    environment: "{{ ora_user_env }}"
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-pfile.sql"
   when: inventory_hostname == master_node
 
-- name: Copy pfile to target
-  Shell: |
-    scp -p {{ oracle_home }}/dbs/init{{ source_db_name }}.ora oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
-    scp -p {{ oracle_home }}/dbs/orapw{{ source_db_name}} oracle@{{ target_db_server }}:{{ ORACLE_HOME }}/dbs
+- name: Copy pfile to local
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  fetch:
+    src: '{{ oracle_home }}/dbs/{{ file }}'
+    dest: .
+  loop:
+  - 'init{{ oracle_db_name }}.ora'
+  - 'orapw{{ oracle_db_name }}'
+  loop_control:
+    loop_var: file
   when: inventory_hostname == master_node
 
-- name: create adump dir
-  file:
-    mode: 0755
-    path: "{{ oracle_base }}/admin/orcl07/adump"
-    state: directory
+- name: Copy from local to target
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  copy:
+    src: './{{ ansible_play_hosts[0] }}/{{ oracle_home }}/dbs/{{ file }}'
+    dest: '{{ oracle_home }}/dbs'
+  loop:
+  - 'init{{ oracle_db_name }}.ora'
+  - 'orapw{{ oracle_db_name }}'
+  loop_control:
+    loop_var: file
+  when: inventory_hostname != master_node
 
 - name: Entry for the new database
   lineinfile:
     path: /etc/oratab
-    line: '{{ target_db_name }}:{{ oracle_home }}:N   # line added by Ansible'
-  
+    line: '{{ TARGET_DB_NAME }}:{{ oracle_home }}:N		# line added by Agent'
+  when: inventory_hostname != master_node
+
+# - name: set orace_home on Target Server
+#   block:
+#     - name: get oracle_sid
+#       shell: ps -ef | grep smon | grep {{ TARGET_DB_NAME }} | grep -v grep | awk '{ print $8 }'
+#       register: ps_grep_smon
+#       changed_when: False
+
+#     - name: set oracle_sid
+#       set_fact:
+#         oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+        
+#     - name: get db details
+#       command: grep "^{{ TARGET_DB_NAME }}:" /etc/oratab
+#       ignore_errors: yes
+#       changed_when: false
+#       register: db_details
+
+#     - name: set oracle_home
+#       set_fact:
+#         oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+
+#     - fail:
+#         msg: Database named {{ TARGET_DB_NAME }} doesn't exists'
+#       when: oracle_home == ""  
+
+#   when: inventory_hostname != master_node
+
+
+- name: create adump dir
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  file:
+    path: "{{ oracle_base }}/admin/orcl07/adump"
+    state: directory
+  when: inventory_hostname != master_node
+
 - name: REGISTER Database
   become: yes
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
-  command: "rman target sys/{{ RMAN_password }}@{{ RMAN_DB }} auxiliary sys/{{ RMAN_password }}@{{ oracle_dup }}"
- 
+  command: "rman target sys/{{ sourec_db_password }}@{{ oracle_db_name }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB_NAME }}"
+  when: inventory_hostname == master_node
