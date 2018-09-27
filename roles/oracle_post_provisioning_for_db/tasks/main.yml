@@ -22,7 +22,7 @@
     oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
 
 - name: get db details
-  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
   ignore_errors: yes
   changed_when: false
   register: db_details
@@ -88,13 +88,13 @@
       
     - name: save cleanup_files script stdout
       copy:
-        dest: '{{ oracle_base }}/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
+        dest: '{{ oracle_base }}/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
         content: '{{ cleanup_files.stdout }}'
       changed_when: False
 
     - name: save cleanup_files script stderr
       copy:
-        dest: "{{ oracle_base }/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
+        dest: "{{ oracle_base }/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
         content: "{{ cleanup_files.stderr | default('') }}"
       changed_when: False
       when: cleanup_files.stderr_lines | length > 0

@@ -111,7 +111,7 @@
       shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_dba_directories.sql
       register: verify_dba_directories_result
       changed_when: false
-  when: oracle_home != "" and oracle_context != 'GRID'
+  when: oracle_home != "" and oracle_context != 'grid'
 
 - set_fact:
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
@@ -190,7 +190,7 @@
 
 - name: store the result in a json
   copy:
-    dest: "{% if oracle_context == 'GRID' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+    dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- else -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
     content: "{{ checklist }}"

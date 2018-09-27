@@ -12,7 +12,7 @@ oracle_db_home: db_db_1
 
 oracle_context: ''
 
-oracle_home: "{% if oracle_context == 'GRID' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
+oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
               {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
               {%- endif %}"
 

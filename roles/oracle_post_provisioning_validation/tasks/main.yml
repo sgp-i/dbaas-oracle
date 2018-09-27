@@ -13,7 +13,7 @@
         oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
         
     - name: get db details
-      command: grep "^{{ oracle_db_name }}:" /etc/oratab
+      shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
       ignore_errors: yes
       changed_when: false
       register: db_details
@@ -25,7 +25,7 @@
     - fail:
         msg: Database named {{ oracle_db_name }} doesn't exists'
       when: oracle_home == ""  
-  when: oracle_context != 'GRID'
+  when: oracle_context != 'grid'
 
 - name: create tmp dir 
   file:
@@ -54,7 +54,7 @@
       loop: "{{ sql_files }}"
       loop_control:
         loop_var: sql_file
-  when: oracle_home != "" and oracle_context != 'GRID'
+  when: oracle_home != "" and oracle_context != 'grid'
 
 - include_tasks: validations.yml
 
