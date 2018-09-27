@@ -33,7 +33,7 @@
   - name: Add target details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ TARGET_DB_NAME }} = 
+      line: "{{ TARGET_DB }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
                   (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
@@ -46,7 +46,7 @@
   - name: Add source details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ Source_DB_NAME }}_source = 
+      line: "{{ Source_DB }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
                     (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
@@ -157,5 +157,5 @@
       src: duplicate_database.j2
       dest: "{{ oracle_tmp }}/duplicate_database.sql"
   - name: REGISTER Database
-    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB_NAME }}_source auxiliary sys/{{ target_db_password }}@{{ TARGET_DB_NAME }} @{{ oracle_tmp }}/duplicate_database.sql"
+    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB }} @{{ oracle_tmp }}/duplicate_database.sql"
   when: inventory_hostname != master_node

@@ -1,4 +1,6 @@
 ---
+#Note-In hosts file Place the Source Server at first and target in secound Place
+
 oracle_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
@@ -14,7 +16,14 @@ oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
 oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
 
-#use the same db names for source and destination
+#Add target details in TNS (tnsnames.ora)
+#Dont use same name/values for below variables(Source_DB and TARGET_DB)
+
+Source_DB: db_source
+
+TARGET_DB: db
+
+#####################
 
 Source_DB_NAME: db
 
