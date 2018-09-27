@@ -1,0 +1,20 @@
+- name: create tmp dir to unzip the patch
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+  register: tmp_dir_creation
+
+- name: unzip ojvm patch
+  unarchive: 
+    src: "{{ oracle_installer_path }}/p27923320_121020_Linux-x86-64.zip" 
+    dest: "{{ oracle_tmp }}" 
+    remote_src: yes 
+    keep_newer: true
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+    validate_certs: no
+  when: tmp_dir_creation.changed
