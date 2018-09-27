@@ -8,7 +8,7 @@
     oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
 
 - name: get db details
-  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
   ignore_errors: yes
   changed_when: false
   register: db_details
