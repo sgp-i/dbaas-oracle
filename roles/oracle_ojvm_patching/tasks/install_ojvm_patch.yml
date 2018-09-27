@@ -16,6 +16,7 @@
   environment: "{{ ora_user_env }}"
   command: "{{ oracle_home }}/OPatch/opatch apply -silent {{ oracle_tmp }}/{{ ojvm_patch }} -ocmrf {{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
   register: ojvm_patch_output
+  failed_when: '"OPatch failed" in ojvm_patch_output.stdout or "ERROR" in ojvm_patch_output.stdout' 
 
 - name: save ojvm patch stdout
   copy:
