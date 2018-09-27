@@ -6,3 +6,6 @@
   tasks:
   - import_role:
       name: oracle_post_provisioning_for_db
+
+# required vars
+# oracle_db_name
