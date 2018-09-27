@@ -17,6 +17,8 @@ oracle_group: oinstall
 
 ojvm_patch: 27923320
 
+master_node: "{{ ansible_play_hosts | first }}"
+
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
   ORACLE_SID: "{{ oracle_sid }}"

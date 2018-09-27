@@ -1,0 +1,19 @@
+- name: apply data patch
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home }}/OPatch/datapatch"
+  register: data_patch_result
+  failed_when: '"ERROR" in data_patch_result.stdout'
+
+- name: save data patch stdout
+  copy:
+    dest: "{{ oracle_tmp }}/data_patch_result_stdout.out"
+    content: "{{ data_patch_result.stdout }}"
+  changed_when: False
+
+- name: save data patch stderr
+  copy:
+    dest: "{{ oracle_tmp }}/data_patch_result_stderr.err"
+    content: "{{ data_patch_result.stderr }}" 
+  changed_when: False
+  when: data_patch_result.stderr_lines | length > 0

@@ -1,0 +1,42 @@
+- name: stop the database
+  environment: "{{ ora_user_env }}"
+  command: srvctl stop database -d {{ oracle_db_name }}
+  ignore_errors: yes
+
+- name: copy the response file
+  copy:
+    src: "ocm_rsp"
+    dest: "{{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+
+- name: apply ojvm patch  
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home }}/OPatch/opatch apply -silent {{ oracle_tmp }}/{{ ojvm_patch }} -ocmrf {{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+  register: ojvm_patch_output
+
+- name: save ojvm patch stdout
+  copy:
+    dest: "{{ oracle_tmp }}/ojvm_patch_output_stdout.out"
+    content: "{{ ojvm_patch_output.stdout }}"
+  changed_when: False
+
+- name: save ojvm patch stderr
+  copy:
+    dest: "{{ oracle_tmp }}/ojvm_patch_output_stderr.err"
+    content: "{{ ojvm_patch_output.stderr }}" 
+  changed_when: False
+  when: ojvm_patch_output.stderr_lines | length > 0
+
+- name: start the database
+  environment: "{{ ora_user_env }}"
+  command: srvctl start database -d {{ oracle_db_name }}
+
+- name: Wait for Database to Start
+  pause:
+    seconds: 90
+
+- include_tasks: apply_data_patch.yml
+  when: ojvm_patch_output.rc != 1
