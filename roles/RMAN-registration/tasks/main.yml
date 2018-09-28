@@ -2,23 +2,7 @@
 - include_vars: secrets.yml
   no_log: True
 
-- name: CREATE RMAN SERVICE
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Check the Status DB
-    command: srvctl status database -d {{ oracle_db_name }} -v
-    register: dbExists
-  
-  - name: Add Service
-    command: srvctl add service -s {{ oracle_db_ServiceName }} -d {{ oracle_db_name }}
-    when: '"Instance status: Open" in dbExists.stdout' 
-    ignore_errors: yes
-
-  - name: Start Service
-    command: srvctl start service -d {{ oracle_db_name }} -s {{ oracle_db_ServiceName }}
-    ignore_errors: yes
+- include_tasks: CREATE_RMAN_SERVICE.yml
    
 - name: Create RMAN User & Get DBID
   become: yes
@@ -50,43 +34,6 @@
 # # - name: GET BACKNET DETAILS FROM HIGHEST NODE  
 # #   command: grep -i bn /etc/hosts 
   
-- name: Configure RMAN Parameters
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Copy the RMAN-Parameters.sql file
-    template: 
-      src: RMAN-Parameters.j2
-      dest: "{{ oracle_tmp }}/RMAN-Parameters.sql"
+- include_tasks: Configure_RMAN.yml
 
-  - name: Run RMAN-Parameters.sql script
-    command: "rman target /  @{{ oracle_tmp }}/RMAN-Parameters.sql"
-
-- name: Add TNSNAMES In RMAN 
-  lineinfile:
-    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-    line: "{{ oracle_db_name }} =
-                (DESCRIPTION =
-                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
-                (CONNECT_DATA =
-                (SERVER = DEDICATED)
-                (SERVICE_NAME = {{ oracle_db_ServiceName }})
-                ))                # line added by Ansible"
-
-- name: REGISTER Database
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Copy the REGISTER.sql file
-    copy: 
-      src: REGISTER.sql
-      dest: "{{ oracle_tmp }}/REGISTER.sql"
-
-- name: Register Database in RMAN
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  command: "rman catalog {{ catalog_RMAN_user }}/{{ catalog_RMAN_password }}@{{ catalog_RMAN_DB }} target {{ RMAN_user }}/{{ RMAN_password }}@{{ oracle_db_name }} @{{ oracle_tmp }}/REGISTER.sql"
-  ignore_errors: yes
+- include_tasks: REGISTER_Database.yml
