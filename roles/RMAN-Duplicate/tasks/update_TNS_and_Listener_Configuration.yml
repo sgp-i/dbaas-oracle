@@ -1,0 +1,60 @@
+---
+- name: Create tnsnames.ora if not exists
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  file:
+    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+    state: touch
+
+- name: Add TNSNAMES In RMAN- Source Server
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Add target details in TNS
+    lineinfile:
+      path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+      line: "{{ TARGET_DB }} = 
+                  (DESCRIPTION =
+                  (ADDRESS_LIST =
+                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
+                  )
+                  (CONNECT_DATA =
+                  (ORACLE_SID = {{ TARGET_DB_NAME }})
+                  (UR = A)
+                  )
+                  ) # line added by Ansible"
+  - name: Add source details in TNS
+    lineinfile:
+      path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+      line: "{{ Source_DB }} = 
+                  (DESCRIPTION =
+                  (ADDRESS_LIST =
+                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
+                  )
+                  (CONNECT_DATA =
+                  (ORACLE_SID = {{ Source_DB_NAME }})
+                  (UR = A)
+                  )
+                  ) # line added by Ansible"
+
+- name: Static Listener Configuration and Reload listener-Target Server
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+    - name: Static Listener Configuration
+      lineinfile:
+        path: "{{ oracle_grid_home }}/network/admin/listener.ora"
+        line: "SID_LIST_LISTENER =
+                        (SID_LIST =
+                          (SID_DESC =
+                            (ORACLE_HOME = {{ oracle_home }})
+                            (SID_NAME = {{ TARGET_DB_NAME }})
+                          )
+                        ) # line added by Ansible"
+                        
+    - name: Reload the lister-Target Server
+      command: lsnrctl reload
+  when: inventory_hostname != master_node

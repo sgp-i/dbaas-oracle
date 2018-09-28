@@ -17,107 +17,11 @@
     failed_when: '"NOARCHIVELOG" in logmode.stdout_lines'
   when: inventory_hostname == master_node
   
-- name: Create tnsnames.ora if not exists
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  file:
-    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-    state: touch
+- include_tasks: update_TNS_and_Listener_Configuration.yml
 
-- name: Add TNSNAMES In RMAN- Source Server
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Add target details in TNS
-    lineinfile:
-      path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ TARGET_DB }} = 
-                  (DESCRIPTION =
-                  (ADDRESS_LIST =
-                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
-                  )
-                  (CONNECT_DATA =
-                  (ORACLE_SID = {{ TARGET_DB_NAME }})
-                  (UR = A)
-                  )
-                  ) # line added by Ansible"
-  - name: Add source details in TNS
-    lineinfile:
-      path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ Source_DB }} = 
-                  (DESCRIPTION =
-                  (ADDRESS_LIST =
-                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
-                  )
-                  (CONNECT_DATA =
-                  (ORACLE_SID = {{ Source_DB_NAME }})
-                  (UR = A)
-                  )
-                  ) # line added by Ansible"
+- include_tasks: Create_pfile.yml
 
-- name: Static Listener Configuration and Reload listener-Target Server
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-    - name: Static Listener Configuration
-      lineinfile:
-        path: "{{ oracle_grid_home }}/network/admin/listener.ora"
-        line: "SID_LIST_LISTENER =
-                        (SID_LIST =
-                          (SID_DESC =
-                            (ORACLE_HOME = {{ oracle_home }})
-                            (SID_NAME = {{ TARGET_DB_NAME }})
-                          )
-                        ) # line added by Ansible"
-                        
-    - name: Reload the lister-Target Server
-      command: lsnrctl reload
-  when: inventory_hostname != master_node
-
-- name: Create a pfile-Source Server
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Copy the create-pfile.sql file
-    copy: 
-      src: create-pfile.sql
-      dest: "{{ oracle_tmp }}/create-pfile.sql"
-
-  - name: Create spfile
-    command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-pfile.sql"
-  when: inventory_hostname == master_node
-
-- name: Copy pfile to local
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  fetch:
-    src: '{{ oracle_home }}/dbs/{{ file }}'
-    dest: .
-  loop:
-  - 'init{{ Source_DB_NAME }}.ora'
-  - 'orapw{{ Source_DB_NAME }}'
-  loop_control:
-    loop_var: file
-  when: inventory_hostname == master_node
-
-- name: Copy from local to target
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  copy:
-    src: './{{ ansible_play_hosts[0] }}/{{ oracle_home }}/dbs/{{ file }}'
-    dest: '{{ oracle_home }}/dbs'
-  loop:
-  - 'init{{ Source_DB_NAME }}.ora'
-  - 'orapw{{ Source_DB_NAME }}'
-  loop_control:
-    loop_var: file
-  when: inventory_hostname != master_node
+- include_tasks: scp_spfile.yml
 
 - name: Entry for the new database
   lineinfile:
@@ -147,15 +51,4 @@
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/startup_nomount.sql"
   when: inventory_hostname != master_node
 
-- name: Copy duplicate_database.sql and REGISTER Database
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  block:
-  - name: Copy the duplicate_database.sql file
-    template: 
-      src: duplicate_database.j2
-      dest: "{{ oracle_tmp }}/duplicate_database.sql"
-  - name: REGISTER Database
-    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB }} @{{ oracle_tmp }}/duplicate_database.sql"
-  when: inventory_hostname != master_node
+- include_tasks: duplicate_database.yml
