@@ -1,6 +1,6 @@
 ---
-# - include_vars: secrets.yml
-#   no_log: True
+- include_vars: secrets.yml
+  no_log: True
 
 - name: Check the LOG_MODE
   become: yes
@@ -33,7 +33,7 @@
   - name: Add target details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ TARGET_DB_NAME }} = 
+      line: "{{ TARGET_DB }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
                   (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
@@ -46,7 +46,7 @@
   - name: Add source details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ Source_DB_NAME }} = 
+      line: "{{ Source_DB }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
                     (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
@@ -140,7 +140,7 @@
   block:
   - name: Copy the standby_controlfile.sql file
     template: 
-      src: Pstandby_controlfile.j2
+      src: standby_controlfile.j2
       dest: "{{ oracle_tmp }}/standby_controlfile.sql"
 
   - name: Create controlfile by sqlplus
@@ -180,7 +180,7 @@
     line: '{{ TARGET_DB_NAME }}:{{ oracle_home }}:N		# line added by Agent'
   when: inventory_hostname != master_node
 
-- name: Check the LOG_MODE
+- name: Change the LOG_MODE
   become: yes
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
@@ -189,7 +189,7 @@
     copy: 
       src: startup_nomount.sql
       dest: "{{ oracle_tmp }}/startup_nomount.sql"
-  - name: check the logmode
+  - name: change the logmode
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/startup_nomount.sql"
   when: inventory_hostname != master_node
 
@@ -203,7 +203,7 @@
       src: duplicate_database.j2
       dest: "{{ oracle_tmp }}/duplicate_database.sql"
   - name: duplicate Database
-    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB_NAME }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB_NAME }} @{{ oracle_tmp }}/duplicate_database.sql"
+    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB }} @{{ oracle_tmp }}/duplicate_database.sql"
   when: inventory_hostname != master_node
 
 - name: standby database disconnect
@@ -215,6 +215,6 @@
     copy: 
       src: disconnect_session.sql
       dest: "{{ oracle_tmp }}/disconnect_session.sql"
-  - name: check the logmode
+  - name: check the disconnect_session
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/disconnect_session.sql"
   when: inventory_hostname != master_node

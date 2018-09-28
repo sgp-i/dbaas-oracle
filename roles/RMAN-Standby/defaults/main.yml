@@ -14,9 +14,17 @@ oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
 oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
 
-Source_DB_NAME: DB
+#Add target details in TNS (tnsnames.ora)
+#Dont use same name/values for below variables(Source_DB and TARGET_DB)
 
-TARGET_DB_NAME: DB_STBY
+Source_DB: db
+
+TARGET_DB: db_stby
+
+############################################
+Source_DB_NAME: db
+
+TARGET_DB_NAME: db
 
 # shell environment for the oracle user- Source Server
 ora_user_env:
