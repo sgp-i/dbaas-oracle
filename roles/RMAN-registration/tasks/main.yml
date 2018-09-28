@@ -16,6 +16,8 @@
 
   - name: run Create-RMAN-User.sql script
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-RMAN-user.sql"
+    register: opt2
+    failed_when: '"ERROR" in opt2.stdout'
 
 # #The Below task is specific to Charter environment.  
 # #It should be coded as is, but we won't execute it in the lab

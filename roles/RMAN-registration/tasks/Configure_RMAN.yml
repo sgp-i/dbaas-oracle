@@ -11,6 +11,8 @@
 
   - name: Run RMAN-Parameters.sql script
     command: "rman target /  @{{ oracle_tmp }}/RMAN-Parameters.sql"
+    register: opt1
+    failed_when: '"ERROR" in opt1.stdout'
 
 - name: Add TNSNAMES In RMAN 
   lineinfile:
