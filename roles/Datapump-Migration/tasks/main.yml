@@ -1,0 +1,59 @@
+---
+- include_vars: secrets.yml
+  no_log: True
+   
+- name: Create Directory-Source
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Copy the create-directory.sql file-Source
+    template: 
+      src: create-directory.j2
+      dest: "{{ oracle_tmp }}/create-directory.sql"
+
+  - name: run create-directory.sql script-Source
+    command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-directory.sql"
+  when: inventory_hostname == master_node
+
+- name: run source database to export the FULL database
+  command: "expdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp full=y logfile={{ logfile_name }}.log"
+  when: inventory_hostname == master_node
+
+- name: Copy dump to local
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  fetch:
+    src: '{{ directory_name }}/{{ export_filename }}.dmp'
+    dest: .
+  when: inventory_hostname == master_node
+
+- name: Copy dump from local to target
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  copy:
+    src: './{{ ansible_play_hosts[0] }}/{{ directory_name }}/{{ export_filename }}.dmp'
+    dest: '{{ path_to_directory }}/{{ export_filename }}.dmp'
+  when: inventory_hostname != master_node
+
+- name: Create Directory-target
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Copy the create-directory.sql file-target
+    template: 
+      src: create-directory.j2
+      dest: "{{ oracle_tmp }}/create-directory.sql"
+
+  - name: run create-directory.sql script-target
+    command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-directory.sql"
+  when: inventory_hostname != master_node
+
+- name: Import the FULL database
+  command: "impdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp table_exists_action={{ table_exists_action }} logfile={{ logfile_name }}.log"
+  when: inventory_hostname != master_node
+
+  
