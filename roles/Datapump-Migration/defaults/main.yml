@@ -10,7 +10,7 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_db_name: orcl07
+oracle_db_name: rman
 
 # oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
@@ -27,13 +27,13 @@ ora_user_env:
 
 
 
-directory_name: 
+directory_name: datadump
 
-path_to_directory:
+path_to_directory: /u01/tmp/{{ oracle_version }}
 
-export_filename:
+export_filename: export_db
 
-logfile_name:
+logfile_name: dump
 
 #table_exists_action=<SKIP|REPLACE|APPEND>
 

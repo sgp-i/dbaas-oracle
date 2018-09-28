@@ -1,7 +1,7 @@
 ---
 - include_vars: secrets.yml
   no_log: True
-   
+
 - name: Create Directory-Source
   become: yes
   become_user: '{{ oracle_user }}'
@@ -14,10 +14,25 @@
 
   - name: run create-directory.sql script-Source
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-directory.sql"
+    register: opt1
+    failed_when: '"ERROR" in opt1.stdout'
   when: inventory_hostname == master_node
 
+- name: create tmp dir
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  file:
+    mode: 0755
+    path: "{{ directory_name }}"
+    state: directory
+
 - name: run source database to export the FULL database
-  command: "expdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp full=y logfile={{ logfile_name }}.log"
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  shell: |
+     'expdp '/ as sysdba' directory={{ directory_name }} dumpfile={{ export_filename }}.dmp full=y logfile={{ logfile_name }}.log'
   when: inventory_hostname == master_node
 
 - name: Copy dump to local
@@ -50,10 +65,12 @@
 
   - name: run create-directory.sql script-target
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-directory.sql"
+    register: opt2
+    failed_when: '"ERROR" in opt2.stdout'
   when: inventory_hostname != master_node
 
 - name: Import the FULL database
-  command: "impdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp table_exists_action={{ table_exists_action }} logfile={{ logfile_name }}.log"
+  shell: "impdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp table_exists_action={{ table_exists_action }} logfile={{ logfile_name }}.log"
   when: inventory_hostname != master_node
 
   
