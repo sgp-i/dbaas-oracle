@@ -6,16 +6,23 @@ oracle_base: "{{ install_base }}/oracle"
 
 asm_disk_location: /dev/oracleasm/disks
 
-asm_reco_group: RECO
+gg_dg:
+  name: GG_DG
+  dir: gg
+  pattern: GG*
+  vol: GG_FS_VOL
+  size: 25
 
-asm_reco_pattern: R*
+exp_dg:
+  name: EXP_DG
+  dir: exp
+  pattern: EXP*
+  vol: EXP_FS_VOL
+  size: 25
 
-asm_exp_group: EXP_DG
+create_exp_diskgroup: True
 
-asm_exp_pattern: EXP*
-
-# Size in GB
-exp_size: 25
+create_gg_diskgroup: False
 
 oracle_version: 12.1.0.2
 
