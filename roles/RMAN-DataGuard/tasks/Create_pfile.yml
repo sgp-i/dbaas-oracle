@@ -11,4 +11,6 @@
 
   - name: Create spfile
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/create-pfile.sql"
+    register: opt2
+    failed_when: '"ERROR" in opt2.stdout'
   when: inventory_hostname == master_node
