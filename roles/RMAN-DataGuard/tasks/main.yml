@@ -14,7 +14,7 @@
   - name: check the logmode
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/check_logmode.sql"
     register: logmode
-    failed_when: '"NOARCHIVELOG" in logmode.stdout_lines'
+    failed_when: '"NOARCHIVELOG" in logmode.stdout'
   when: inventory_hostname == master_node
   
 - include_tasks: update_TNS_and_Listener_Configuration.yml
@@ -53,6 +53,8 @@
       dest: "{{ oracle_tmp }}/startup_nomount.sql"
   - name: change the logmode
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/startup_nomount.sql"
+    register: opt4
+    failed_when: '"ERROR" in opt4.stdout'
   when: inventory_hostname != master_node
 
 - include_tasks: duplicate_database.yml

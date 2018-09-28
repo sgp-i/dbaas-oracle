@@ -11,6 +11,8 @@
 
   - name: Create controlfile by sqlplus
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/standby_controlfile.sql"
+    register: opt1
+    failed_when: '"ERROR" in opt1.stdout'
   when: inventory_hostname == master_node
 
 - name: Copy controlfile to local

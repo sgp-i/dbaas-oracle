@@ -23,4 +23,6 @@
       dest: "{{ oracle_tmp }}/disconnect_session.sql"
   - name: check the disconnect_session
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/disconnect_session.sql"
+    register: opt3
+    failed_when: '"ERROR" in opt3.stdout'
   when: inventory_hostname != master_node

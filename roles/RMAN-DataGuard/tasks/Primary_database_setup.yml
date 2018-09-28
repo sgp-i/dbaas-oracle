@@ -11,4 +11,6 @@
 
   - name: run Primary_database_setup.sql
     command: "sqlplus / as sysdba @{{ oracle_tmp }}/Primary_database_setup.sql"
+    register: opt5
+    failed_when: '"ERROR" in opt5.stdout'
   when: inventory_hostname == master_node
