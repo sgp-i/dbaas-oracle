@@ -1,0 +1,24 @@
+---
+- name: Configure RMAN Parameters
+  become: yes
+  become_user: '{{ oracle_user }}'
+  environment: "{{ ora_user_env }}"
+  block:
+  - name: Copy the RMAN-Parameters.sql file
+    template: 
+      src: RMAN-Parameters.j2
+      dest: "{{ oracle_tmp }}/RMAN-Parameters.sql"
+
+  - name: Run RMAN-Parameters.sql script
+    command: "rman target /  @{{ oracle_tmp }}/RMAN-Parameters.sql"
+
+- name: Add TNSNAMES In RMAN 
+  lineinfile:
+    path: "{{ oracle_home }}/network/admin/tnsnames.ora"
+    line: "{{ oracle_db_name }} =
+                (DESCRIPTION =
+                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
+                (CONNECT_DATA =
+                (SERVER = DEDICATED)
+                (SERVICE_NAME = {{ oracle_db_ServiceName }})
+                ))                # line added by Ansible"
