@@ -32,7 +32,7 @@
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   shell: |
-     'expdp '/ as sysdba' directory={{ directory_name }} dumpfile={{ export_filename }}.dmp full=y logfile={{ logfile_name }}.log'
+     'expdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp full=y logfile={{ logfile_name }}.log'
   when: inventory_hostname == master_node
 
 - name: Copy dump to local
@@ -70,7 +70,8 @@
   when: inventory_hostname != master_node
 
 - name: Import the FULL database
-  shell: "impdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp table_exists_action={{ table_exists_action }} logfile={{ logfile_name }}.log"
+  shell: |
+     'impdp "'/ as sysdba'" directory={{ directory_name }} dumpfile={{ export_filename }}.dmp table_exists_action={{ table_exists_action }} logfile={{ logfile_name }}.log'
   when: inventory_hostname != master_node
 
   
