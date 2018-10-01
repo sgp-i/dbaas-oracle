@@ -11,6 +11,11 @@
   tags:
   - apex_api
 
+- name: check if post_provisoning_done check file exists
+  stat:
+    path: "{{ oracle_base }}/admin/post_provisoning_done"
+  register: post_provisoning_done
+
 - name: get oracle_sid
   shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
@@ -30,9 +35,24 @@
   set_fact:
     oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
+- name: to get the database name in each node of rac
+  block: 
+    - name: get the database name in rac
+      become_user: '{{ oracle_user }}'
+      environment: "{{ ora_user_env }}"
+      shell: srvctl config database -d {{ oracle_db_name }} | grep -e "instance" | awk -F ':' '{ print $2 }'
+      register: rac_database_name
+
+    - name: set rac_oracle_db_name
+      set_fact:
+        rac_oracle_db_name: "{{ rac_database_name.stdout | trim }}"
+  when: '(ansible_play_hosts | length) > 1'
+
 - fail:
-    msg: Database named {{ oracle_db_name }} doesn't exists'
-  when: oracle_home == ""
+    msg: Database named {{ oracle_db_name }} doesn't exists since oracle_home and oracle_sid is not set properly'
+  when: 
+    - oracle_home == ""
+    - oracle_sid == ""
 
 - name: complete block of post Provisioning validation
   block:
@@ -46,14 +66,11 @@
 
     - name: create directories for post validation setup
       file:
+        path: "{{ oracle_base }}/admin/logs/archive"
+        owner: "{{ oracle_user }}"	
         group: "{{ oracle_group }}"
-        owner: "{{ oracle_user }}"
-        path: "{{ directories }}"
         state: directory
         recurse: yes
-      loop: "{{ create_directories }}"
-      loop_control:
-        loop_var: directories
 
     - name: check if untar check file exists
       stat:
@@ -81,22 +98,34 @@
       when: untar_check.stat.exists == false
     
     - include_tasks: cleanup_files_setup.yml
+      when: post_provisoning_done.stat.exists == false
 
     - name: Set up Directory in ORACLE_ADMIN
       file:
+        group: "{{ oracle_group }}"
+        owner: "{{ oracle_user }}"
         path: ‘{{ oracle_base }}/admin/chgctl’
         state: directory
 
     - name: Execute Post Provisioning
       include_tasks: "{{ filename }}"
       loop:
-      - post_provisioning.yml
+      - post_provisioning_sql.yml
       - adrci_setup.yml
       loop_control:
         loop_var: filename
-      when: master_node == inventory_hostname
+      when: 
+        - master_node == inventory_hostname
+        - post_provisoning_done.stat.exists == false
 
     - include_tasks: oratab_entry.yml
+      when: post_provisoning_done.stat.exists == false
+
+    - name: place a marker for completion
+      file:
+        path: "{{ oracle_base }}/admin/post_provisoning_done"
+        state: touch
+      when: post_provisoning_done.stat.exists == false
 
     - import_role:
         name: oracle_api_services

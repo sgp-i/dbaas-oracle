@@ -13,6 +13,7 @@
   loop: "{{ pre_check_sqls }}"
   loop_control:
     loop_var: pre_check_sql
+  changed_when: false
 
 - name: run pre_check_audit_purge.sql script
   become: yes
@@ -88,7 +89,7 @@
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/create_profiles.sql"
       register: create_profiles_result
       failed_when: '"ERROR" in create_profiles_result.stdout'
-  when: '"2 rows selected." not in pre_check_profile_result.stdout_lines'
+  when: '"APP_ACCOUNT_PROFILE" not in pre_check_profile_result.stdout_lines or "USER_ACCOUNT_PROFILE" not in pre_check_profile_result.stdout_lines'
 
 - name: run pre_check_block_change.sql script
   become: yes
