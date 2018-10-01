@@ -37,4 +37,19 @@ logfile_name: dump
 
 #table_exists_action=<SKIP|REPLACE|APPEND>
 
-table_exists_action: 
+table_exists_action: APPEND
+
+#Target DB details
+
+dest_db_name: db
+
+dest_oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
+
+# shell environment for the oracle user
+dest_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_SID: "{{ dest_db_name }}"
+  ORACLE_UNQNAME: "{{ dest_db_name }}"
+  ORACLE_HOME: "{{ dest_oracle_home }}"
+  NLS_LANG: "American_America.UTF8"
+  PATH: "{{ dest_oracle_home }}/bin:{{ ansible_env.PATH }}"
