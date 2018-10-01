@@ -2,15 +2,15 @@
 /u01/app/oracle/admin/logs/rman:*.log:delete:none:30:0
 /u01/app/oracle/admin/logs/archive:*.gz:delete:none:30:0
 /u01/app/oracle/diag/asm/+asm/+ASM1/trace:alert_+ASM1.log:archive:clear:7:100
-/u01/app/12.1/grid_1/rdbms/audit:*.aud:delete:none:1:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/cssd:ocssd.l0*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/cssd:ocssd.l1*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/cssd:core*:delete:none:30:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/agent/crsd/scriptagent_oracle:scriptagent_oracle.l0*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/agent/crsd/oraagent_oracle:oraagent_oracle.l0*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/agent/ohasd/oraagent_oracle:oraagent_oracle.l0*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/gipcd:gipcd.l0*:delete:none:7:0
-/u01/app/12.1/grid_1/log/{{ ansible_hostname }}/diskmon:diskmon.l0*:delete:none:7:0
+{{ oracle_grid_home }}/rdbms/audit:*.aud:delete:none:1:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/cssd:ocssd.l0*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/cssd:ocssd.l1*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/cssd:core*:delete:none:30:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/agent/crsd/scriptagent_oracle:scriptagent_oracle.l0*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/agent/crsd/oraagent_oracle:oraagent_oracle.l0*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/agent/ohasd/oraagent_oracle:oraagent_oracle.l0*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/gipcd:gipcd.l0*:delete:none:7:0
+{{ oracle_grid_home }}/log/{{ ansible_hostname }}/diskmon:diskmon.l0*:delete:none:7:0
 /u01/app/oracle/diag/tnslsnr/{{ ansible_hostname }}/listener_scan2/alert:*.xml:delete:none:30:0
 /u01/app/oracle/diag/tnslsnr/{{ ansible_hostname }}/listener_scan2/trace:*.log:archive:clear:30:100
 /u01/app/oracle/diag/tnslsnr/{{ ansible_hostname }}/listener_scan1/alert:*.xml:delete:none:30:0

@@ -17,12 +17,12 @@
     
 - name: save cleanup_files script stdout
   copy:
-    dest: '{{ oracle_base }}/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'
+    dest: '{{ oracle_base }}/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.out'  
     content: '{{ cleanup_files.stdout }}'
 
 - name: save cleanup_files script stderr
   copy:
-    dest: "{{ oracle_base }/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
+    dest: "{{ oracle_base }}/admin/logs/cleanup_files_{{ ansible_date_time.iso8601 }}.err"
     content: "{{ cleanup_files.stderr | default('') }}"
   when: cleanup_files.stderr_lines | length > 0
 
