@@ -67,6 +67,8 @@
     - name: create directories for post validation setup
       file:
         path: "{{ oracle_base }}/admin/logs/archive"
+        owner: "{{ oracle_user }}"	
+        group: "{{ oracle_group }}"
         state: directory
         recurse: yes
 
