@@ -35,6 +35,19 @@
   set_fact:
     oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
+- name: to get the database name in each node of rac
+  block: 
+    - name: get the database name in rac
+      become_user: '{{ oracle_user }}'
+      environment: "{{ ora_user_env }}"
+      shell: srvctl config database -d {{ oracle_db_name }} | grep -e "instance" | awk -F ':' '{ print $2 }'
+      register: rac_database_name
+
+    - name: set rac_oracle_db_name
+      set_fact:
+        rac_oracle_db_name: "{{ rac_database_name.stdout | trim }}"
+  when: '(ansible_play_hosts | length) > 1'
+
 - fail:
     msg: Database named {{ oracle_db_name }} doesn't exists since oracle_home and oracle_sid is not set properly'
   when: 
