@@ -6,7 +6,7 @@ grid_version: 12.1.0.2
 
 oracle_base: /u01/app/oracle
 
-oracle_db_name: orcl07
+oracle_db_name: "{{ oracle_db_name | mandatory }}"
 
 # location for temporary files
 oracle_tmp: /u01/tmp/postval/{{ oracle_db_name }}
@@ -15,7 +15,7 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
-oracle_db_home: db_db_1
+oracle_db_home: db_1
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
