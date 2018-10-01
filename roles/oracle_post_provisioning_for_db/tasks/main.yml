@@ -66,19 +66,19 @@
         path: "{{ oracle_base }}/admin/untar_complete"
       register: untar_check
 
-    # - name: untar the tars
-    #   unarchive:
-    #     src: "{{ oracle_installer_path }}/{{ tars_file }}"
-    #     dest: "{{ oracle_base }}/admin"
-    #     remote_src: yes
-    #     validate_certs: no
-    #   when: untar_check.stat.exists == false
-    #   loop:
-    #     - scripts.tar
-    #     - etc.tar
-    #     - ctl.tar
-    #   loop_control: 
-    #     loop_var: tars_file
+    - name: untar the tars
+      unarchive:
+        src: "{{ oracle_installer_path }}/{{ tars_file }}"
+        dest: "{{ oracle_base }}/admin"
+        remote_src: yes
+        validate_certs: no
+      when: untar_check.stat.exists == false
+      loop:
+        - scripts.tar
+        - etc.tar
+        - ctl.tar
+      loop_control: 
+        loop_var: tars_file
 
     - name: place a marker for completion
       file:
@@ -98,7 +98,7 @@
     - name: Execute Post Provisioning
       include_tasks: "{{ filename }}"
       loop:
-      - post_provisioning.yml
+      - post_provisioning_sql.yml
       - adrci_setup.yml
       loop_control:
         loop_var: filename
