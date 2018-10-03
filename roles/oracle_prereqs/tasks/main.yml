@@ -347,6 +347,12 @@
       status: "{% if tmp_size.stdout | int < 4 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
+    - check_name: /tmp Size
+      expected_value: 1 or higher
+      actual_value: "{{ tmp_size.stdout }}"
+      status: "{% if tmp_size.stdout | int < 1 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
     - check_name: /var/tmp Permissions
       expected_value: 1777
       actual_value: "{{ tmp_perms.stat.mode }}"
