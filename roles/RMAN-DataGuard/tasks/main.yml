@@ -2,6 +2,14 @@
 - include_vars: secrets.yml
   no_log: True
 
+- name: get oracle grid home
+  shell: "ps -ef | grep ohasd | grep oracle | tail -n1 |  awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin','') }}"
+    
 - name: Check the LOG_MODE
   become: yes
   become_user: '{{ oracle_user }}'

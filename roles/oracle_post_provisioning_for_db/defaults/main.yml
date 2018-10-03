@@ -21,7 +21,7 @@ oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }
 
 master_node: "{{ ansible_play_hosts | first }}"
 
-oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_1"
+oracle_grid_home: "{{ oracle_grid_home }}"
 
 # shell environment for the oracle user
 ora_user_env:

@@ -37,6 +37,19 @@
 - include_tasks: set_net_string.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE")
 
+- name: find number of oracle grid homes
+  find:
+    paths: "{{ oracle_base }}/{{ grid_version }}"
+    file_type: directory
+    patterns: "grid_+"
+    use_regex: yes
+    recurse: no
+  register: number_of_oracle_grid_homes
+
+- name: set oracle grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
+
 - include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
 

@@ -4,9 +4,9 @@ crs_type: "{%- if ansible_play_hosts | length > 1 -%}crs
            {%- else -%}has
            {%- endif %}"
 
-oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_1"
+oracle_grid_home: "{{ oracle_grid_home }}"
 
-oracle_home: "{% if oracle_context == 'GRID' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
+oracle_home: "{% if oracle_context == 'GRID' -%} {{ oracle_grid_home }}
               {%- else -%}{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
               {%- endif %}"
 

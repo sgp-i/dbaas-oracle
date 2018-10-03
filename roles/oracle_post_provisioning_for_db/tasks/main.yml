@@ -11,6 +11,14 @@
   tags:
   - apex_api
 
+- name: get oracle grid home
+  shell: "ps -ef | grep ohasd | grep oracle | tail -n1 |  awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin','') }}"
+    
 - name: check if post_provisoning_done check file exists
   stat:
     path: "{{ oracle_base }}/admin/post_provisoning_done"
