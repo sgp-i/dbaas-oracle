@@ -1,7 +1,8 @@
 - name: Creating no sid entry in ORATAB file
   lineinfile:
     path: /etc/oratab
-    line: 'no_sid:{{ oracle_home }}:N   # line added by Ansible'
+    line: 'no_sid:   # line added by Ansible'
+  check_mode: yes
     
 - name: Creating sid entry in ORATAB file
   lineinfile:
