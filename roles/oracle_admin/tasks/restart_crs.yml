@@ -1,15 +1,4 @@
 ---
-- name: block to get oracle grid home
-  block:
-    - name: get oracle grid home
-    shell: "ps -ef | grep ohasd | grep oracle | tail -n1 |  awk -F ' ' '{ print $8 }'"
-    register: oracle_ohasd_process
-
-    - name: set grid home
-    set_fact:
-        oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin','') }}"
-  when: oracle_context == 'GRID'
-    
 - import_tasks: stop_crs.yml
 
 - import_tasks: start_crs.yml

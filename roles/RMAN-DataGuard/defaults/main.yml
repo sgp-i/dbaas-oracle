@@ -10,7 +10,7 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_grid_home: "{{ oracle_grid_home }}"
+oracle_grid_home: "/u01/app/12.1.0.2/grid"
 
 oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
 
