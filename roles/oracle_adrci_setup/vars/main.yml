@@ -1,0 +1,17 @@
+oracle_user: oracle
+
+oracle_group: oinstall
+
+oracle_grid_home: "/u01/app/12.1.0.2/grid"
+
+ora_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
+  ORACLE_SID: "{{ oracle_sid }}"
+  ORACLE_HOME: "{{ oracle_grid_home }}"
+  PATH: "{{ oracle_grid_home }}/bin:{{ ansible_env.PATH }}"
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"
+
+
+# vars to be taken care
+# oracle_grid_home

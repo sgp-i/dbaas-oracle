@@ -1,0 +1,6 @@
+- name: Adrci Setup
+  hosts: '{{ host }}'
+  become: yes
+  tasks:
+  - import_role:
+      name: oracle_adrci_setup
