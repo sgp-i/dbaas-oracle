@@ -20,13 +20,4 @@ asm_data_group: DATA
 
 asm_data_pattern: D*
 
-rdbms_name: "{{ rdbms_name | mandatory }}"
-
 db_list: []
-
-uninstallation_type: "{{ uninstallation_type | mandatory  }}" # if set to standalone 
-
-database_name: "{% if uninstallation_type == 'cluster' %} {{ database_name | mandatory }} 
-                {% else %} 
-                {% endif %}"
-
