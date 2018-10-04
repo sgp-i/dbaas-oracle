@@ -195,6 +195,11 @@
               {%- endif %}"
     content: "{{ checklist }}"
 
+- name: Create json template for verify result
+  template:
+    src: post_validaton_result_list.json.j2
+    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result_list.json"
+
 - name: Check for Post validation Failures
   fail:
     msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check

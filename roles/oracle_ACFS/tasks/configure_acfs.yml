@@ -90,9 +90,23 @@
     become_user: '{{ oracle_user }}'
     environment: "{{ ora_user_env }}"
     command: sqlplus / as sysasm @{{ oracle_tmp }}/mount_{{ diskgroup.dir }}_disk.sql
-    
-  - name: Mount the disk
-    command: '/bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}'
-  when:
-  - rac_install
-  - inventory_hostname != master_node
+
+  - name: mount directories...
+    mount:
+      name: "{{ oracle_base }}/{{ diskgroup.dir }}"
+      src: "{{ dev_path }}
+      fstype: acfs
+      opts: defaults,relatime
+      state: mounted
+      owner: oracle
+      group: oinstall
+    become: yes
+    when:
+    - rac_install
+    - inventory_hostname != master_node
+
+#  - name: Mount the disk
+#    command: '/bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}'
+#  when:
+#  - rac_install
+#  - inventory_hostname != master_node

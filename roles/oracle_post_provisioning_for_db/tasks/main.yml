@@ -133,7 +133,7 @@
       file:
         path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
         state: touch
-      when: post_provisoning_done_{{ oracle_db_name }}.stat.exists == false
+      when: post_provisoning_done.stat.exists == false
 
     - import_role:
         name: oracle_api_services
