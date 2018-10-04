@@ -8,7 +8,7 @@
     recurse: yes
 
 - name: get oracle grid home
-  shell: "ps -ef | grep -u oracle | grep ohasd |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  shell: "ps -ef | grep ohasd | grep /u01/app/12.1.0.2/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
   register: oracle_ohasd_process
 
 - name: set grid home
