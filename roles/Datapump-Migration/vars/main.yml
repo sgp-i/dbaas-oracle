@@ -1,2 +1,4 @@
 ---
 master_node: "{{ ansible_play_hosts | first }}"
+
+HOST_COUNT: "{{ ansible_play_hosts | length }}"
