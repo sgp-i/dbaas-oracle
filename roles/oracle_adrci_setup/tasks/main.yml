@@ -7,6 +7,14 @@
     state: directory
     recurse: yes
 
+- name: get oracle grid home
+  shell: "ps -ef | grep -u oracle | grep ohasd |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
+    
 - name: get oracle_sid
   shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon

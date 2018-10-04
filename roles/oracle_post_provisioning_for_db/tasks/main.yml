@@ -16,6 +16,14 @@
     path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
   register: post_provisoning_done
 
+- name: get oracle grid home
+  shell: "ps -ef | grep -u oracle | grep ohasd |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
+
 - name: get oracle_sid
   shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
@@ -121,7 +129,7 @@
     - include_tasks: oratab_entry.yml
       when: post_provisoning_done.stat.exists == false
 
-   - name: place a marker for completion
+    - name: place a marker for completion
       file:
         path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
         state: touch
