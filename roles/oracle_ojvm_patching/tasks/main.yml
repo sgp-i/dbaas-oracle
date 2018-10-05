@@ -1,30 +1,92 @@
-- name: get oracle_sid
-  shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
-  register: ps_grep_smon
-  changed_when: False
-
-- name: set oracle_sid
-  set_fact:
-    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
-
-- name: get db details
-  shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
-  ignore_errors: yes
-  changed_when: false
-  register: db_details
-
-- name: set oracle_home
-  set_fact:
-    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
-
-- fail:
-    msg: Database named {{ oracle_db_name }} doesn't exists'
-  when: oracle_home == ""
-
 
 - include_tasks: unzip_ojvm.yml
 
+- name: get db details
+  command: grep ":{{ oracle_base }}.*:" /etc/oratab
+  register: db_details
+  ignore_errors: yes
+  changed_when: False
+
+- name: create db_list
+  set_fact:
+    db_list: "{{ db_list }} + [ '{{ item | regex_replace('^([^:]*).*','\\1') }}' ]"
+  loop: "{{ db_details.stdout_lines }}"
+
+- debug:
+    var: db_list
+
+- name: get oracle grid home
+  shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
+
+- fail:
+    msg: oracle grid is not running
+  when: oracle_grid_home == ""
+
+- name: get oracle grid sid
+  shell:  ps -ef | grep smon | grep asm | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+
+- name: set oracle_sid of grid
+  set_fact:
+    oracle_grid_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
+
+- name: set the oracle_home and oracle_sid
+  set_fact:
+    oracle_home: "{{ oracle_grid_home }}"
+    oracle_sid: "{{ oracle_grid_sid }}"
+
+- name: stop CRS
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home}}/bin/crsctl stop {{ crs_type }}"
+  when: inventory_hostname == master_node
+
+- name: Wait for CRS to stop
+  pause:
+    seconds: 90
+
+- name: copy the response file
+  copy:
+    src: "ocm_rsp"
+    dest: "{{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+
 - include_tasks: install_ojvm_patch.yml
+  loop: "{{ db_list }}"
+  when: oracle_db != "no_sid"
+  loop_control:
+    loop_var: oracle_db
+
+- name: set the oracle_home and oracle_sid of grid
+  set_fact:
+    oracle_home: "{{ oracle_grid_home }}"
+    oracle_sid: "{{ oracle_grid_sid }}"
+
+- name: start CRS
+  environment: "{{ ora_user_env }}"
+  command: "{{ oracle_home }}/bin/crsctl start {{ crs_type }}"
+  when: inventory_hostname == master_node
+
+- name: Wait for CRS to start
+  pause:
+    seconds: 180
+
+- include_tasks: apply_data_patch.yml
+  when: inventory_hostname == master_node
+
+
+
+
+
+
+
   
 
 

@@ -16,7 +16,7 @@
 
 - name: Insert a line at the end of a file.
   lineinfile:
-        path: {{ oracle_base }}/admin/ctl/cleanup_files.ctl
+        path: "{{ oracle_base }}/admin/ctl/cleanup_files.ctl"
         line: "/u01/app/oracle/diag/rdbms/{{ oracle_db_name }}/{{ oracle_sid }}/trace:alert_{{ oracle_sid }}.log:archive:clear:7:100
                /u01/app/oracle/admin/{{ oracle_db_name }}/adump:*aud:delete:none:1:0"
   when: post_provisoning_done.stat.exists == false
