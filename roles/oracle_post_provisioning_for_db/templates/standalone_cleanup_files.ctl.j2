@@ -19,7 +19,5 @@
 #{{ oracle_grid_home }}/log/diag/tnslsnr/{{ ansible_hostname }}/listener_scan3/trace:*.log:archive:clear:30:100
 /u01/app/oracle/diag/tnslsnr/{{ ansible_hostname }}/listener/alert:*.xml:delete:none:30:0
 /u01/app/oracle/diag/tnslsnr/{{ ansible_hostname }}/listener/trace:*.log:archive:clear:30:100
-/u01/app/oracle/diag/rdbms/{{ oracle_db_name }}/{{ oracle_db_name }}/trace:alert_{{ oracle_db_name }}.log:archive:clear:7:100
-/u01/app/oracle/admin/{{ oracle_db_name }}/adump:*aud:delete:none:1:0
-
-
+#/u01/app/oracle/diag/rdbms/{{ oracle_db_name }}/{{ oracle_db_name }}/trace:alert_{{ oracle_db_name }}.log:archive:clear:7:100
+#/u01/app/oracle/admin/{{ oracle_db_name }}/adump:*aud:delete:none:1:0
