@@ -27,19 +27,19 @@
     msg: oracle grid is not running
   when: oracle_grid_home == ""
 
-- name: get oracle grid sid
+- name: get asm grid sid
   shell:  ps -ef | grep smon | grep asm | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
   changed_when: False
 
-- name: set oracle_sid of grid
+- name: set asm_sid of grid
   set_fact:
     oracle_grid_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
 - name: set the oracle_home and oracle_sid
   set_fact:
     oracle_home: "{{ oracle_grid_home }}"
-    oracle_sid: "{{ oracle_grid_sid }}"
+    asm_sid: "{{ oracle_grid_sid }}"
 
 - name: stop CRS
   environment: "{{ ora_user_env }}"
@@ -72,37 +72,35 @@
 - name: start CRS
   environment: "{{ ora_user_env }}"
   command: "{{ oracle_home }}/bin/crsctl start {{ crs_type }}"
-  when: inventory_hostname == master_node
+#  when: inventory_hostname == master_node
 
 - name: Wait for CRS to start
   pause:
     seconds: 180
 
-- include_tasks: apply_data_patch.yml
-  when: inventory_hostname == master_node
+- name: Get oracle Database Home
+  shell: "awk -F : 'NF > 1 {print $2}' /etc/oratab |grep -v grid" 
+  register: db_home_oratab
 
+- name: Set Oracle Home 
+  set_fact: 
+     db_home: "{{ db_home_oratab.stdout_lines }}"
 
+- name: Get Database name
+  shell: "{{ oracle_home }}/bin/srvctl status database -thishome | grep unique | awk -F : '{print $2}'"
+  register: db_name_info
 
+- debug: var=db_name_info
 
+- name: Set Database name
+  set_fact:
+     db_name: "{{ db_name_info.stdout_lines }}"
 
+- include_tasks: datapatch.yml
+  loop: "{{ db_name.stdout_lines }}"
+  loop_control:
+    loop_var: db_detail
+  when: patch_type == 'RDBMS'
 
-
-  
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
+#- include_tasks: apply_data_patch.yml
+#  when: inventory_hostname == master_node
