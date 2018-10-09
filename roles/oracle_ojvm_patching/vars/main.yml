@@ -5,7 +5,7 @@ crs_type: "{%- if ansible_play_hosts | length > 1 -%}crs
            
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ asm_sid }}"
+  ORACLE_SID: "{{ oracle_sid | default('') }}"
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
