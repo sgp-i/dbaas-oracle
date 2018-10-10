@@ -1,22 +1,28 @@
 
 - include_tasks: unzip_ojvm.yml
 
-- name: get db details
-  command: grep ":{{ oracle_base }}.*:" /etc/oratab
-  register: db_details
-  ignore_errors: yes
+- name: Get oracle Database Home
+  shell: "awk -F : 'NF > 1 {print $2}' /etc/oratab |grep -v grid|grep {{ oracle_version }}" 
   changed_when: False
+  register: db_home_oratab
 
-- name: create db_list
+- name: Get Database name
+  environment: "{{ ora_user_env }}"
+  shell: "srvctl status database -thishome | grep -B1 'Database is running.'| awk -F : 'NF > 1 {print $2}'"
+  changed_when: False
+  register: db_name_info
+  loop: "{{ db_home_oratab.stdout_lines }}"
+  loop_control:
+    loop_var: oracle_home
+
+- name: Set db_name_list
   set_fact:
-    db_list: "{{ db_list }} + [ '{{ item | regex_replace('^([^:]*).*','\\1') }}' ]"
-  loop: "{{ db_details.stdout_lines }}"
-
-- debug:
-    var: db_list
+     db_name_list: "{{ db_name_list | default ([]) }} + {{ item.stdout_lines }}"
+  with_items: "{{ db_name_info.results }}"
 
 - name: get oracle grid home
   shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  changed_when: False
   register: oracle_ohasd_process
 
 - name: set grid home
