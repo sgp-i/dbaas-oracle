@@ -14,9 +14,11 @@
 - name: set network details
   set_fact:
     crs_net_interfaces: |
-      {% if public_net in net_interface_detail['device'] -%}
+      {% if public_net[0] in net_interface_detail['device'] -%}
         {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'1' ] %}
-      {% elif private_net in net_interface_detail['device'] -%}
+      {% if public_net[1] in net_interface_detail['device'] -%}
+        {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'1' ] %}
+      {% elif private_net in net_interface_detail['ipv4']['address'] -%}
         {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'2' ] %}
       {% else -%}
         {% set net_string = [ net_interface_detail['device'],net_interface_detail['ipv4']['network'],'3' ] %}
