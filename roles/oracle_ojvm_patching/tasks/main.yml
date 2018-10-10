@@ -58,10 +58,9 @@
     mode: 0755
 
 - include_tasks: install_ojvm_patch.yml
-  loop: "{{ db_list }}"
-  when: oracle_db != "no_sid"
+  loop: "{{ db_home_oratab.stdout_lines }}"
   loop_control:
-    loop_var: oracle_db
+    loop_var: oracle_home
 
 - include_role:
     name: oracle_admin
