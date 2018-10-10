@@ -74,36 +74,17 @@
     msg: "OJVM failed for the following Oracle Homes: {{ ojvm_failures | join(',') }}"
   when: ojvm_failures | length > 0
 
-- name: Wait for CRS to start
-  pause:
-    seconds: 180
-
-- name: Get oracle Database Home
-  shell: "awk -F : 'NF > 1 {print $2}' /etc/oratab |grep -v grid" 
-  register: db_home_oratab
-
-- name: Set Oracle Home 
-  set_fact: 
-     db_home: "{{ db_home_oratab.stdout_lines }}"
-
-- name: Get Database name
-  shell: "{{ oracle_home }}/bin/srvctl status database -thishome | grep unique | awk -F : '{print $2}'"
-  register: db_name_info
-
-- debug: var=db_name_info
-
-- name: Set Database name
-  set_fact:
-     db_name: "{{ db_name_info.stdout_lines }}"
-
-- include_tasks: datapatch.yml
-  loop: "{{ db_name.stdout_lines }}"
+- include_tasks: apply_data_patch.yml
+  vars:
+    oracle_home: "{{ oracle_grid_home }}"
+    oracle_sid: "{{ oracle_grid_sid }}"
+  loop: "{{ db_name_list }}"
   loop_control:
-    loop_var: db_detail
-  when: patch_type == 'RDBMS'
-
-#- include_tasks: apply_data_patch.yml
-#  when: inventory_hostname == master_node
+    loop_var: curr_db_name
+  when: 
+  - patch_type == 'RDBMS'
+  - db_name_list | length > 0
+  - inventory_hostname == master_node
 
 - name: check for failures
   fail:
