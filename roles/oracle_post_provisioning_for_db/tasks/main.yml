@@ -1,6 +1,6 @@
 ---
 - name: get asm_sid
-  shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+  shell: ps -ef | grep smon | grep ASM | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
   changed_when: False
 
