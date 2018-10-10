@@ -28,11 +28,13 @@
     patterns: "{{ asm_ocr_pattern }}"
     use_regex: no
   register: asm_ocr_paths_find_result
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE"
 
 - name: set cluster_nodes_table
   set_fact:
     cluster_nodes_table: "{{ cluster_nodes_table | default([]) }} + [ '{{ item }}:{{ item | regex_replace('([^.]*)(.*)','\\1-vip\\2')}}' ]"
   with_items: "{{ cluster_nodes }}"
+  when: grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE"
 
 - include_tasks: set_net_string.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE")
