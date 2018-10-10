@@ -36,19 +36,12 @@
   set_fact:
     oracle_grid_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
-- name: set the oracle_home and oracle_sid
-  set_fact:
+- include_role:
+    name: oracle_admin
+    tasks_from: stop_crs.yml
+  vars:
     oracle_home: "{{ oracle_grid_home }}"
-    asm_sid: "{{ oracle_grid_sid }}"
-
-- name: stop CRS
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_home}}/bin/crsctl stop {{ crs_type }}"
-  when: inventory_hostname == master_node
-
-- name: Wait for CRS to stop
-  pause:
-    seconds: 90
+    oracle_sid: "{{ oracle_grid_sid }}"
 
 - name: copy the response file
   copy:
@@ -64,8 +57,10 @@
   loop_control:
     loop_var: oracle_db
 
-- name: set the oracle_home and oracle_sid of grid
-  set_fact:
+- include_role:
+    name: oracle_admin
+    tasks_from: start_crs.yml
+  vars:
     oracle_home: "{{ oracle_grid_home }}"
     oracle_sid: "{{ oracle_grid_sid }}"
 
