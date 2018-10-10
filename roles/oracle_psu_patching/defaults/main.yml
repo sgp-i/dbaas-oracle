@@ -4,9 +4,9 @@ oracle_version: 12.1.0.2
 
 grid_version: 12.1.0.2
 
-opatch_version_required: 12.2.0.1.14
+patch_quarter: ""
 
-opatch_util_installer: p6880880_121010_Linux-x86-64.zip
+patch_year: ""
 
 install_base: /u01/app
 
