@@ -64,10 +64,10 @@
     oracle_home: "{{ oracle_grid_home }}"
     oracle_sid: "{{ oracle_grid_sid }}"
 
-- name: start CRS
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_home }}/bin/crsctl start {{ crs_type }}"
-#  when: inventory_hostname == master_node
+- name: check for failures
+  fail:
+    msg: "OJVM failed for the following Oracle Homes: {{ ojvm_failures | join(',') }}"
+  when: ojvm_failures | length > 0
 
 - name: Wait for CRS to start
   pause:
@@ -99,3 +99,8 @@
 
 #- include_tasks: apply_data_patch.yml
 #  when: inventory_hostname == master_node
+
+- name: check for failures
+  fail:
+    msg: "Datapatch failed for the following DBs: {{ datapatch_failures | join(',') }}"
+  when: datapatch_failures | length > 0
