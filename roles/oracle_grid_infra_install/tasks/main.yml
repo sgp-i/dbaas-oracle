@@ -57,5 +57,10 @@
 
 - include_tasks: grid_install.yml
 
+- name: check ASM is running
+  shell: ps -ef|grep asm_smon|grep -v grep
+  register: asm_running_check
+  failed_when: asm_running_check.stdout_lines | length == 0
+
 - include_tasks: configure_disk_groups.yml
   when: inventory_hostname == master_node
