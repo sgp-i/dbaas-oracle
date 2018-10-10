@@ -13,3 +13,5 @@ ora_user_env:
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"  
   
+ojvm_failures: []
+datapatch_failures: []
