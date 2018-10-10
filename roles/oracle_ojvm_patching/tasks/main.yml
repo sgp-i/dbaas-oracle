@@ -1,22 +1,28 @@
 
 - include_tasks: unzip_ojvm.yml
 
-- name: get db details
-  command: grep ":{{ oracle_base }}.*:" /etc/oratab
-  register: db_details
-  ignore_errors: yes
+- name: Get oracle Database Home
+  shell: "awk -F : 'NF > 1 {print $2}' /etc/oratab |grep -v grid|grep {{ oracle_version }}" 
   changed_when: False
+  register: db_home_oratab
 
-- name: create db_list
+- name: Get Database name
+  environment: "{{ ora_user_env }}"
+  shell: "srvctl status database -thishome | grep -B1 'Database is running.'| awk -F : 'NF > 1 {print $2}'"
+  changed_when: False
+  register: db_name_info
+  loop: "{{ db_home_oratab.stdout_lines }}"
+  loop_control:
+    loop_var: oracle_home
+
+- name: Set db_name_list
   set_fact:
-    db_list: "{{ db_list }} + [ '{{ item | regex_replace('^([^:]*).*','\\1') }}' ]"
-  loop: "{{ db_details.stdout_lines }}"
-
-- debug:
-    var: db_list
+     db_name_list: "{{ db_name_list | default ([]) }} + {{ item.stdout_lines }}"
+  with_items: "{{ db_name_info.results }}"
 
 - name: get oracle grid home
   shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  changed_when: False
   register: oracle_ohasd_process
 
 - name: set grid home
@@ -36,19 +42,12 @@
   set_fact:
     oracle_grid_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
-- name: set the oracle_home and oracle_sid
-  set_fact:
+- include_role:
+    name: oracle_admin
+    tasks_from: stop_crs.yml
+  vars:
     oracle_home: "{{ oracle_grid_home }}"
-    asm_sid: "{{ oracle_grid_sid }}"
-
-- name: stop CRS
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_home}}/bin/crsctl stop {{ crs_type }}"
-  when: inventory_hostname == master_node
-
-- name: Wait for CRS to stop
-  pause:
-    seconds: 90
+    oracle_sid: "{{ oracle_grid_sid }}"
 
 - name: copy the response file
   copy:
@@ -59,48 +58,35 @@
     mode: 0755
 
 - include_tasks: install_ojvm_patch.yml
-  loop: "{{ db_list }}"
-  when: oracle_db != "no_sid"
+  loop: "{{ db_home_oratab.stdout_lines }}"
   loop_control:
-    loop_var: oracle_db
+    loop_var: oracle_home
 
-- name: set the oracle_home and oracle_sid of grid
-  set_fact:
+- include_role:
+    name: oracle_admin
+    tasks_from: start_crs.yml
+  vars:
     oracle_home: "{{ oracle_grid_home }}"
     oracle_sid: "{{ oracle_grid_sid }}"
 
-- name: start CRS
-  environment: "{{ ora_user_env }}"
-  command: "{{ oracle_home }}/bin/crsctl start {{ crs_type }}"
-#  when: inventory_hostname == master_node
+- name: check for failures
+  fail:
+    msg: "OJVM failed for the following Oracle Homes: {{ ojvm_failures | join(',') }}"
+  when: ojvm_failures | length > 0
 
-- name: Wait for CRS to start
-  pause:
-    seconds: 180
-
-- name: Get oracle Database Home
-  shell: "awk -F : 'NF > 1 {print $2}' /etc/oratab |grep -v grid" 
-  register: db_home_oratab
-
-- name: Set Oracle Home 
-  set_fact: 
-     db_home: "{{ db_home_oratab.stdout_lines }}"
-
-- name: Get Database name
-  shell: "{{ oracle_home }}/bin/srvctl status database -thishome | grep unique | awk -F : '{print $2}'"
-  register: db_name_info
-
-- debug: var=db_name_info
-
-- name: Set Database name
-  set_fact:
-     db_name: "{{ db_name_info.stdout_lines }}"
-
-- include_tasks: datapatch.yml
-  loop: "{{ db_name.stdout_lines }}"
+- include_tasks: apply_data_patch.yml
+  vars:
+    oracle_home: "{{ oracle_grid_home }}"
+    oracle_sid: "{{ oracle_grid_sid }}"
+  loop: "{{ db_name_list }}"
   loop_control:
-    loop_var: db_detail
-  when: patch_type == 'RDBMS'
+    loop_var: curr_db_name
+  when: 
+  - patch_type == 'RDBMS'
+  - db_name_list | length > 0
+  - inventory_hostname == master_node
 
-#- include_tasks: apply_data_patch.yml
-#  when: inventory_hostname == master_node
+- name: check for failures
+  fail:
+    msg: "Datapatch failed for the following DBs: {{ datapatch_failures | join(',') }}"
+  when: datapatch_failures | length > 0
