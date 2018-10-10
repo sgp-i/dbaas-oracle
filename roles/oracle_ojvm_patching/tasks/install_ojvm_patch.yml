@@ -1,38 +1,27 @@
-- name: get oracle_sid for db
-  shell: ps -ef | grep smon | grep {{ oracle_db }} | grep -v grep | awk '{ print $8 }'
-  register: ps_grep_smon
-  changed_when: False
-
-- name: set oracle_sid for db
-  set_fact:
-    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
-
-- name: get db details from /etc/oratab 
-  shell: grep "^{{ oracle_db }}:" /etc/oratab | awk 'NR == 1'
-  ignore_errors: yes
-  changed_when: false
-  register: db_details
-
-- name: set oracle_home for db
-  set_fact:
-    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+---
 
 - name: apply ojvm patch  
   become_user: '{{ oracle_user }}'
   environment: "{{ ora_user_env }}"
   command: "{{ oracle_home }}/OPatch/opatch apply -silent {{ oracle_tmp }}/{{ ojvm_patch }} -ocmrf {{ oracle_tmp }}/{{ ojvm_patch }}/ocm.rsp"
+  ignore_errors: yes
   register: ojvm_patch_output
   failed_when: '"OPatch failed" in ojvm_patch_output.stdout or "ERROR" in ojvm_patch_output.stdout' 
 
 - name: save ojvm patch stdout
   copy:
-    dest: "{{ oracle_tmp }}/{{ oracle_db}}_ojvm_patch_output_stdout.out"
+    dest: "{{ oracle_tmp }}/{{ oracle_home | basename }}_ojvm_patch_output_stdout.out"
     content: "{{ ojvm_patch_output.stdout }}"
   changed_when: False
 
 - name: save ojvm patch stderr
   copy:
-    dest: "{{ oracle_tmp }}/{{ oracle_db}}_ojvm_patch_output_stderr.err"
+    dest: "{{ oracle_tmp }}/{{ oracle_home | basename }}_ojvm_patch_output_stderr.err"
     content: "{{ ojvm_patch_output.stderr }}" 
   changed_when: False
   when: ojvm_patch_output.stderr_lines | length > 0
+
+- name: add failures to ojvm_failures
+  set_fact:
+      ojvm_failures: "{{ ojvm_failures }} + ['{{ oracle_home | basename }}']"
+  when: ojvm_patch_output is failed
