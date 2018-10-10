@@ -94,7 +94,7 @@
   - name: mount directories...
     mount:
       name: "{{ oracle_base }}/{{ diskgroup.dir }}"
-      src: "{{ dev_path }}
+      src: "{{ dev_path }}"
       fstype: acfs
       opts: defaults,relatime
       state: mounted

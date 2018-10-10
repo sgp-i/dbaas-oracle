@@ -293,16 +293,16 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Swap Size
-      expected_value: "{% if ansible_memtotal_mb | int < 65536 -%}8192 or higher
-                       {%- elif ansible_memtotal_mb | int >= 65536 and 
+      expected_value: "{% if ansible_memtotal_mb | int < 64536 -%}8192 or higher
+                       {%- elif ansible_memtotal_mb | int >= 64536 and 
                               ansible_memtotal_mb | int < 262144 -%}16384 or higher
                        {%- elif ansible_memtotal_mb | int >= 262144 -%}32768 or higher
                       {%- else -%}0
                       {%- endif %}"
       actual_value: "{{ ansible_swaptotal_mb }}"
-      status: "{% if (ansible_memtotal_mb | int < 65536 and 
+      status: "{% if (ansible_memtotal_mb | int < 64536 and 
                       ansible_swaptotal_mb < 8192) or
-                     (ansible_memtotal_mb | int >= 65536 and 
+                     (ansible_memtotal_mb | int >= 64536 and 
                       ansible_memtotal_mb | int < 262144 and
                       ansible_swaptotal_mb < 16384) or
                      (ansible_memtotal_mb | int >= 262144 and
