@@ -8,6 +8,8 @@ oracle_base: "{{ install_base }}/oracle"
 
 oracle_tmp: /u01/tmp/ojvm_patch
 
+oracle_db_name: +ASM
+
 oracle_user: oracle
 
 oracle_group: oinstall
