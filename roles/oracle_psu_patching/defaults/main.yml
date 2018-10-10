@@ -4,6 +4,8 @@ oracle_version: 12.1.0.2
 
 grid_version: 12.1.0.2
 
+opatch_detail_file: opatch_details.txt
+
 patch_quarter: ""
 
 patch_year: ""

@@ -29,6 +29,14 @@
   set_fact:
     oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
+- set_fact:
+    opatch_version_required: "{{ lookup('url', '{{ psu_patch_path }}/{{ opatch_detail_file }}', split_lines=False) |
+                                 regex_search('version=.*') |
+                                 regex_replace('version=(.*)','\\1')}}"
+    opatch_util_installer: "{{ lookup('url', '{{ psu_patch_path }}/{{ opatch_detail_file }}', split_lines=False) |
+                               regex_search('file=.*') |
+                               regex_replace('file=(.*)','\\1')}}"
+
 - import_tasks: check_opatch.yml
 
 - include_tasks: install_opatch.yml
