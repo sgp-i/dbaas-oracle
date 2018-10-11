@@ -1,4 +1,13 @@
 ---
+
+- name: create tmp dir
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+
 - name: get asm_sid
   shell: ps -ef | grep smon | grep ASM | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
@@ -68,14 +77,6 @@
 
 - name: complete block of post Provisioning validation
   block:
-    - name: create tmp dir
-      file:
-        group: "{{ oracle_group }}"
-        owner: "{{ oracle_user }}"
-        path: "{{ oracle_tmp }}"
-        state: directory
-        recurse: yes
-
     - name: Insert a line at the end of a file.
       lineinfile:
         path: "{{ oracle_base }}/admin/ctl/cleanup_files.ctl"
