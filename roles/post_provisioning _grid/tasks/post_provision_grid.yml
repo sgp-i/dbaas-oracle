@@ -1,0 +1,106 @@
+---
+  
+- name: get oracle grid home
+  shell: "ps -ef | grep ohasd | grep /u01/app/12.1.0.2/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  register: oracle_ohasd_process
+
+- name: set grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
+
+- name: get asm_sid
+  shell: ps -ef | grep smon | grep ASM | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+
+- name: set asm_sid
+  set_fact:
+    asm_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "10"
+      category_type: Install
+      db_install_status: IN PROGRESS
+  tags:
+  - apex_api
+
+
+  - name: Creating no sid entry in ORATAB file
+    lineinfile:
+     path: /etc/oratab
+     line: 'no_sid:   # line added by Ansible'
+    check_mode: yes
+
+  - name: create directories for post validation setup
+    file:
+      path: "{{ oracle_base }}/admin/logs/archive"
+      owner: "{{ oracle_user }}"
+      group: "{{ oracle_group }}"
+      state: directory
+      recurse: yes
+
+  - name: check if untar check file exists
+    stat:
+      path: "{{ oracle_base }}/admin/untar_complete"
+    register: untar_check
+
+  - name: untar the tars
+    unarchive:
+      src: "{{ oracle_installer_path }}/{{ tars_file }}"
+      dest: "{{ oracle_base }}/admin"
+      remote_src: yes
+      validate_certs: no
+    when: untar_check.stat.exists == false
+    loop:
+      - scripts.tar
+      - etc.tar
+      - ctl.tar
+    loop_control:
+      loop_var: tars_file
+
+  - name: place a marker for completion
+    file:
+      path: "{{ oracle_base }}/admin/untar_complete"
+      state: touch
+    when: untar_check.stat.exists == false
+
+  - include_tasks: cleanup_files_setup.yml
+
+
+  - name: Set up Directory in ORACLE_ADMIN
+    file:
+      group: "{{ oracle_group }}"
+      owner: "{{ oracle_user }}"
+      path: ‘{{ oracle_base }}/admin/chgctl’
+      state: directory
+  
+  - name: place a marker for completion
+    file:
+      path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ ansible_hostname }}"
+      state: touch
+      mode: 0400
+      
+  - import_role:
+      name: oracle_api_services
+      tasks_from: db_checklist_update.yml
+    vars:
+      chklst_json_body:
+        new_entry: False
+        db_install_status: SUCCESSFUL
+      tags:
+      - apex_api
+  rescue:
+    - import_role:
+        name: oracle_api_services
+        tasks_from: db_checklist_update.yml
+      vars:
+        chklst_json_body:
+          new_entry: False
+          db_install_status: Failed
+      tags:
+      - apex_api

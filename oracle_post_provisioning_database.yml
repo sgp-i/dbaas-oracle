@@ -1,6 +1,6 @@
 ---
 
-- name: Create DB Instance
+- name: Post Provisioning for Database Creation
   hosts: '{{ host }}'
   become: yes
   tasks:
