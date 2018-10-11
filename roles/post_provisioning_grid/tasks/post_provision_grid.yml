@@ -33,7 +33,7 @@
   - name: Creating no sid entry in ORATAB file
     lineinfile:
      path: /etc/oratab
-     line: 'no_sid:   # line added by Ansible'
+     line: 'no_sid:{{ oracle_grid_home }}:N   # line added by Ansible'
 
   - name: create directories for post validation setup
     file:
@@ -69,7 +69,7 @@
     when: untar_check.stat.exists == false
 
   - include_tasks: cleanup_files_setup.yml
-
+    become_user: "{{ oracle_user }}"
 
   - name: Set up Directory in ORACLE_ADMIN
     file:
