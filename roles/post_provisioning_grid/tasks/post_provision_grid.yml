@@ -34,7 +34,6 @@
     lineinfile:
      path: /etc/oratab
      line: 'no_sid:   # line added by Ansible'
-    check_mode: yes
 
   - name: create directories for post validation setup
     file:
