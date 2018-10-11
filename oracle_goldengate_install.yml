@@ -1,6 +1,6 @@
 ---
 
-- name: Mount EXP (ACFS) diskgroup
+- name: Install Golden Gate
   hosts: '{{ host }}'
   become: yes
   any_errors_fatal: true
