@@ -80,7 +80,7 @@
   
   - name: place a marker for completion
     file:
-      path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ ansible_hostname }}"
+      path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ ansible_hostname }}"
       state: touch
       mode: 0400
       
@@ -91,8 +91,9 @@
       chklst_json_body:
         new_entry: False
         db_install_status: SUCCESSFUL
-      tags:
+    tags:
       - apex_api
+
   rescue:
     - import_role:
         name: oracle_api_services
