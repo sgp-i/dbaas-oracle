@@ -9,7 +9,7 @@
               -createDiskGroup \
               -diskGroupName {{ diskgroup_name }} \
               -diskList '{{ diskgroup_list  | json_query("files[].path") | join("','") }}' \
-              -redundancy external \
+              -redundancy {{ diskgroup_redun }} \
               -au_size 4 \
               -compatible.asm {{ oracle_compat_version }} \
               -compatible.rdbms {{ oracle_compat_version }} \

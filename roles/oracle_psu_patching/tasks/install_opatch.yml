@@ -7,7 +7,7 @@
 
 - name: install updated opatch ({{ opatch_version_required }})
   unarchive:
-    src: "{{ oracle_installer_path }}/{{ opatch_util_installer }}"
+    src: "{{ psu_patch_path }}/{{ opatch_util_installer }}"
     dest: "{{ oracle_home }}"
     remote_src: yes
     owner: "{{ oracle_user }}"

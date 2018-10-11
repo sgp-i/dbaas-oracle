@@ -11,7 +11,7 @@
 - name: unzip patch
   become_user: "{{ oracle_user }}"
   unarchive: 
-    src: "{{ oracle_installer_path }}/{{ patch_file }}" 
+    src: "{{ psu_patch_path }}/{{ patch_file }}" 
     dest: "{{ pstage }}" 
     remote_src: yes 
     keep_newer: true

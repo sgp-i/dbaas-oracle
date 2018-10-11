@@ -17,6 +17,7 @@
   vars:
     diskgroup_name: "{{ dg_name }}"
     diskgroup_list: "{{ lookup('vars', 'asm_' + (dg_name | lower) + '_paths_find_result')}}"
+    diskgroup_redun: "{{ lookup('vars', 'asm_' + (dg_name | lower) + '_redun')}}"
   when: dg_name not in asm_disks
   loop: 
   - "{{ asm_data_group }}"

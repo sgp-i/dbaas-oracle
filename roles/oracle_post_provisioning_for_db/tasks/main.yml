@@ -1,4 +1,13 @@
 ---
+- name: get asm_sid
+  shell: ps -ef | grep smon | grep ASM | grep -v grep | awk '{ print $8 }'
+  register: ps_grep_smon
+  changed_when: False
+
+- name: set asm_sid
+  set_fact:
+    asm_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
+
 - import_role:
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
