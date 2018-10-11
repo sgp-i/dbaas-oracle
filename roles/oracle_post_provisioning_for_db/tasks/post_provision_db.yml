@@ -103,7 +103,7 @@
 
     - name: place a marker for completion
       file:
-        path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
+        path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ oracle_db_name }}"
         state: touch
         mode: 0400
   
