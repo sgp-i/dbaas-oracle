@@ -29,7 +29,7 @@
   tags:
   - apex_api
 
-
+- block:
   - name: Creating no sid entry in ORATAB file
     lineinfile:
      path: /etc/oratab
