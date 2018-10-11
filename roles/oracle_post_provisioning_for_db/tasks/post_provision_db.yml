@@ -17,7 +17,6 @@
       checklist_type: "10"
       category_type: Install
       db_install_status: IN PROGRESS
-  when: post_provisoning_done.stat.exists == false
   tags:
   - apex_api
 
@@ -93,7 +92,6 @@
         loop_var: filename
       when:
         - master_node == inventory_hostname
-        - post_provisoning_done.stat.exists == false
 
     - name: Creating sid entry in ORATAB file
       lineinfile:
