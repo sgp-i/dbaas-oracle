@@ -8,7 +8,7 @@ oracle_user: oracle
 grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
-oracle_db_home: db_db_1
+oracle_db_home: db_1
 
 oracle_context: ''
 
@@ -16,19 +16,20 @@ oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_versio
               {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
               {%- endif %}"
 
-oracle_db_name: orcl07
+
 oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
 sql_file_path: "{{ oracle_tmp }}"
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_sid }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name }}"
+  ORACLE_SID: "{{ oracle_sid | default('') }}"
+  ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
-  
+  TMP: "/u01/app/oracle"
+  TMPDIR: "/u01/app/oracle"  
 sql_files:
   - verify_dba_directories.sql
   - verify_tablespace.sql

@@ -293,20 +293,20 @@
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Swap Size
-      expected_value: "{% if ansible_memtotal_mb | int < 64536 -%}8192 or higher
-                       {%- elif ansible_memtotal_mb | int >= 64536 and 
-                              ansible_memtotal_mb | int < 262144 -%}16384 or higher
-                       {%- elif ansible_memtotal_mb | int >= 262144 -%}32768 or higher
+      expected_value: "{% if ansible_memtotal_mb | int < 64000 -%}8192 or higher
+                       {%- elif ansible_memtotal_mb | int >= 64000 and 
+                              ansible_memtotal_mb | int < 262144 -%}16300 or higher
+                       {%- elif ansible_memtotal_mb | int >= 262144 -%}32000 or higher
                       {%- else -%}0
                       {%- endif %}"
       actual_value: "{{ ansible_swaptotal_mb }}"
-      status: "{% if (ansible_memtotal_mb | int < 64536 and 
+      status: "{% if (ansible_memtotal_mb | int < 64000 and 
                       ansible_swaptotal_mb < 8192) or
-                     (ansible_memtotal_mb | int >= 64536 and 
+                     (ansible_memtotal_mb | int >= 64000 and 
                       ansible_memtotal_mb | int < 262144 and
-                      ansible_swaptotal_mb < 16384) or
+                      ansible_swaptotal_mb < 16300) or
                      (ansible_memtotal_mb | int >= 262144 and
-                      ansible_swaptotal_mb < 32768) -%}FAILED
+                      ansible_swaptotal_mb < 32000) -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: Required RPMs
