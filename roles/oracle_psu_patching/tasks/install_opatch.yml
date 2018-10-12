@@ -6,8 +6,9 @@
     removes: "{{ oracle_home }}/OPatch"
 
 - name: install updated opatch ({{ opatch_version_required }})
+  ignore_errors: yes
   unarchive:
-    src: "{{ oracle_installer_path }}/{{ opatch_util_installer }}"
+    src: "{{ oracle_installer_path }}/OPATCH/{{ opatch_util_installer }}"
     dest: "{{ oracle_home }}"
     remote_src: yes
     owner: "{{ oracle_user }}"
@@ -17,6 +18,11 @@
 
 - import_tasks: check_opatch.yml
 
-- fail:
-    msg: opatch not installed
+- name: Failure Block
+  block:
+  - name: restore opatch from backup
+    command: mv {{ oracle_home }}/OPatch.old {{ oracle_home }}/OPatch
+
+  - fail:
+      msg: opatch not installed
   when: opatch_version != opatch_version_required
