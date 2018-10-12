@@ -22,7 +22,7 @@
 
 - name: unzip cluvfy
   unarchive: 
-    src: "{{ oracle_installer_path }}/GRID/{{ grid_version }}/cvupack_Linux_x86_64.zip" 
+    src: "{{ oracle_installer_path }}/GRID/cvupack_Linux_x86_64.zip" 
     dest: "{{ oracle_tmp }}/cluster_verify" 
     remote_src: yes 
     keep_newer: true
