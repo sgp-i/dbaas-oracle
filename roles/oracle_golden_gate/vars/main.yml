@@ -20,6 +20,6 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
 
-gg_installer: "{{ oracle_installer_path }}/123014_fbo_ggs_Linux_x64_shiphome.zip"
+gg_installer: "{{ oracle_installer_path }}/GG/{{ oracle_version }}/123014_fbo_ggs_Linux_x64_shiphome.zip"
 
 gg_install_dir: "{{ oracle_tmp }}/123014_fbo_ggs_Linux_x64_shiphome/fbo_ggs_Linux_x64_shiphome/Disk1"

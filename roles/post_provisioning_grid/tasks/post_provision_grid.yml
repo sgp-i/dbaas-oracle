@@ -50,7 +50,7 @@
 
   - name: untar the tars
     unarchive:
-      src: "{{ oracle_installer_path }}/{{ tars_file }}"
+      src: "{{ oracle_installer_path }}/scripts/{{ tars_file }}"
       dest: "{{ oracle_base }}/admin"
       remote_src: yes
       validate_certs: no

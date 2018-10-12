@@ -19,10 +19,11 @@
     path: "{{ oracle_tmp }}/cluster_verify"
     state: directory
     recurse: yes
+    register: cluster_verify_dir
 
 - name: unzip cluvfy
   unarchive: 
-    src: "{{ oracle_installer_path }}/cvupack_Linux_x86_64.zip" 
+    src: "{{ oracle_installer_path }}/GRID/cluvfy/cvupack_Linux_x86_64.zip" 
     dest: "{{ oracle_tmp }}/cluster_verify" 
     remote_src: yes 
     keep_newer: true
@@ -30,6 +31,7 @@
     group: "{{ oracle_group }}"
     mode: 0755
     validate_certs: no
+  when: cluster_verify_dir.changed
 
 - name: set cvu_config settings
   lineinfile: 
