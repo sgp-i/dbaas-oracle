@@ -62,5 +62,21 @@
   register: asm_running_check
   failed_when: asm_running_check.stdout_lines | length == 0
 
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: 'Configuring Disk Groups'
+      category_type: Install
+      gi_install_status: IN PROGRESS
+  when: inventory_hostname == master_node
+  tags:
+  - apex_api
+
 - include_tasks: configure_disk_groups.yml
   when: inventory_hostname == master_node
+- fail:
+    msg: 'DiskGroup Creation Failed'
+  when: diskgroup_failed 

@@ -6,9 +6,9 @@
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "5"
-      category_type: Install
-      gi_install_status: "PENDING"
+      checklist_type: "CLUVFY"
+      category_type: PRE-CHECK
+      gi_install_status: "IN PROGRESS"
   tags:
   - apex_api
 
@@ -80,9 +80,6 @@
   vars:
     chklst_json_body:
       new_entry: False
-      cluster_verify: "{% if final_result == 'SUCCESSFUL' -%}Y
-                       {%- else -%}N
-                       {%- endif %}"
       gi_install_status: "{{ final_result }}"
   tags:
   - apex_api

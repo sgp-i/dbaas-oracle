@@ -8,7 +8,7 @@
 - block:
   - name: execute 'upload DB patch lsinv' API call
     uri:
-      url: "{{ apex_url }}/ls_inventory/"
+      url: "{{ apex_url }}/charter_patch_history/ls_inventory/"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body: "{{ logfile_text.content | b64decode | string }}"
