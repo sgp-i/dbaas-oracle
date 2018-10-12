@@ -14,13 +14,9 @@ oracle_user: oracle
 
 oracle_group: oinstall
 
-ojvm_patch: 27923320
-
 master_node: "{{ ansible_play_hosts | first }}"
 
 db_list: []
 
-
 # vars to be taken care
-# ojvm_patch
-    
+# ojvm_patch - Patch filename   
