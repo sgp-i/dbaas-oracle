@@ -7,22 +7,14 @@
     path: "{{ oracle_tmp }}/grid"
     state: directory
   
-- name: get grid installer zipfiles
-  find:
-    paths: "{{ oracle_installer_path }}/GRID/{{ grid_version }}"
-    file_type: file
-    patterns: '*.zip'
-  failed_when: grid_images.matched == 0
-  register: grid_images
-  
 - name: unzip grid installer
   unarchive: 
-    src: "{{ grid_zipfile }}" 
+    src: "{{ oracle_installer_path }}/GRID/{{ grid_version }}/{{ grid_zipfile }}" 
     dest: "{{ oracle_tmp }}" 
     remote_src: yes 
     keep_newer: true
     validate_certs: no
   when: inventory_hostname == master_node
-  loop: "{{ grid_images | json_query('files[].path') | sort }}"
+  loop: "{{ grid_images }}"
   loop_control:
     loop_var: grid_zipfile
