@@ -12,6 +12,7 @@
     paths: "{{ oracle_installer_path }}/GRID/{{ grid_version }}"
     file_type: file
     patterns: '*.zip'
+  failed_when: grid_images.matched == 0
   register: grid_images
   
 - name: unzip grid installer

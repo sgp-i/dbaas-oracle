@@ -19,6 +19,7 @@
     paths: "{{ oracle_installer_path }}/RDBMS/{{ oracle_version }}"
     file_type: file
     patterns: '*.zip'
+  failed_when: oracle_images.matched == 0
   register: oracle_images
 
 - name: unzip installer

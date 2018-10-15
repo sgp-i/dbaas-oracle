@@ -84,9 +84,9 @@
     path: /var/tmp
   register: tmp_perms
 
-- name: check ownership for /u01/app
+- name: check ownership for /u01
   stat:
-    path: /u01/app
+    path: /u01
   register: ora_base
 
 - name: umask value checker
@@ -359,10 +359,13 @@
       status: "{% if tmp_perms.stat.mode != '1777' -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
-    - check_name: /u01/app Owner
+    - check_name: /u01 Owner
       expected_value: "{{ oracle_user }}"
-      actual_value: "{{ ora_base.stat.pw_name }}"
-      status: "{% if ora_base.stat.pw_name != oracle_user -%}FAILED
+      actual_value: "{% if not ora_base.stat.exists -%}/u01 doesn't exist
+                     {%- else -%}{{ ora_base.stat.pw_name }}
+                     {%- endif %}"
+      status: "{% if not ora_base.stat.exists or
+                         ora_base.stat.pw_name != oracle_user -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: /u01/app Group
