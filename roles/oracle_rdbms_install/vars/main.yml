@@ -21,11 +21,3 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
-
-## This is the using a Default that can be maintained in Tower as a Group Var
-oracle_image_query: "[?version == `{{ oracle_version }}`].image"
-oracle_images: "{{ oracle_image_map | json_query(oracle_image_query) }}"
-
-## You can also use the following instead and store the list of files in
-## the RDBMS/<version> folder on the Yum Server
-# oracle_images: "{{ lookup('url', oracle_installer_path + '/image_details.txt', validate_certs=no, wantlist=True) }}"
