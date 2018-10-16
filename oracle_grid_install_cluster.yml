@@ -15,3 +15,4 @@
 
   ## Optional vars:
   # grid_version (default: 12.1.0.2)
+  # grid_images (default: ['linuxamd64_12102_grid_1of2.zip','linuxamd64_12102_grid_2of2.zip'])
