@@ -1,3 +1,4 @@
+.DS_Store
 .imported_roles/
 ./oracle/Vagrantfile
 ./oracle/.vagrant/*

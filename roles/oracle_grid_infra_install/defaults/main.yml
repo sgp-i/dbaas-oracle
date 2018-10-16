@@ -48,3 +48,7 @@ asm_ocr_group: OCR_VOTE
 asm_ocr_pattern: GRID_DISK*
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
+
+grid_images: 
+- linuxamd64_12102_grid_1of2.zip
+- linuxamd64_12102_grid_2of2.zip

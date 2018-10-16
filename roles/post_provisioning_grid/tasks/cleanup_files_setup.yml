@@ -31,6 +31,7 @@
 - name: create a crontab
   cron:
     name: "run cleanup_files.ksh"
+    user: "{{ oracle_user }}"
     minute: "45"
     hour: "1"
     day: "*"

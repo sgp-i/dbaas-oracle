@@ -28,6 +28,10 @@ rac_install: "{% if ansible_play_hosts | length > 1 -%}true
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
+oracle_images:
+- linuxamd64_12102_database_1of2.zip
+- linuxamd64_12102_database_2of2.zip
+
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false
 

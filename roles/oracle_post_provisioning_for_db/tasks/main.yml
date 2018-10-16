@@ -1,8 +1,9 @@
 ---
-- name: check if post_provisoning_done check file exists
+
+- name: check if post_provisioning_done check file exists
   stat:
-    path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
-  register: post_provisoning_done
+    path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ oracle_db_name }}"
+  register: post_provisioning_done
 
 - include_tasks: post_provision_db.yml
   when: post_provisioning_done.stat.exists ==false

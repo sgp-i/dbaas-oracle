@@ -1,9 +1,0 @@
----
-- name: check if post_provisoning_done check file exists
-  stat:
-    path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ ansible_hostname }}"
-  register: post_provisoning_done_gi
-
-
-- include_tasks: post_provision_grid.yml
-  when: post_provisioning_done_gi.stat.exists ==false

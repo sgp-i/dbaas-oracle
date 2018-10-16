@@ -6,15 +6,15 @@
     owner: "{{ oracle_user }}"
     path: "{{ oracle_tmp }}/grid"
     state: directory
-
+  
 - name: unzip grid installer
   unarchive: 
-    src: "{{ item.image }}" 
+    src: "{{ oracle_installer_path }}/GRID/{{ grid_version }}/{{ grid_zipfile }}" 
     dest: "{{ oracle_tmp }}" 
     remote_src: yes 
     keep_newer: true
     validate_certs: no
-  when: 
-  - item.version == grid_version
-  - inventory_hostname == master_node
-  with_items: "{{ grid_images }}"
+  when: inventory_hostname == master_node
+  loop: "{{ grid_images }}"
+  loop_control:
+    loop_var: grid_zipfile

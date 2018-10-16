@@ -29,12 +29,11 @@
   tags:
   - apex_api
 
-
+- block:
   - name: Creating no sid entry in ORATAB file
     lineinfile:
      path: /etc/oratab
-     line: 'no_sid:   # line added by Ansible'
-    check_mode: yes
+     line: 'no_sid:{{ oracle_grid_home }}:N   # line added by Ansible'
 
   - name: create directories for post validation setup
     file:
@@ -51,7 +50,7 @@
 
   - name: untar the tars
     unarchive:
-      src: "{{ oracle_installer_path }}/{{ tars_file }}"
+      src: "{{ oracle_installer_path }}/scripts/{{ tars_file }}"
       dest: "{{ oracle_base }}/admin"
       remote_src: yes
       validate_certs: no
@@ -70,7 +69,7 @@
     when: untar_check.stat.exists == false
 
   - include_tasks: cleanup_files_setup.yml
-
+    become_user: "{{ oracle_user }}"
 
   - name: Set up Directory in ORACLE_ADMIN
     file:
@@ -81,7 +80,7 @@
   
   - name: place a marker for completion
     file:
-      path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ ansible_hostname }}"
+      path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ ansible_hostname }}"
       state: touch
       mode: 0400
       
@@ -92,8 +91,9 @@
       chklst_json_body:
         new_entry: False
         db_install_status: SUCCESSFUL
-      tags:
+    tags:
       - apex_api
+
   rescue:
     - import_role:
         name: oracle_api_services

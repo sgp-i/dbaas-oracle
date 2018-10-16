@@ -16,13 +16,17 @@
 
 - name: unzip installer
   unarchive: 
-    src: "{{ item.image }}" 
+    src: "{{ oracle_installer_path }}/RDBMS/{{ oracle_version }}/{{ db_zipfile }}" 
     dest: "{{ oracle_tmp }}" 
     remote_src: yes 
     keep_newer: true
     validate_certs: no
-  when: item.version == oracle_version and unzipped.stat.exists == false
-  with_items: "{{ oracle_images }}"
+  when: 
+  - inventory_hostname == master_node
+  - unzipped.stat.exists == false
+  loop: "{{ oracle_images }}"
+  loop_control:
+    loop_var: db_zipfile
   
 - name: place a marker for the completion
   file:
