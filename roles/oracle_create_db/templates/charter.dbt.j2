@@ -31,6 +31,7 @@
          <initParam name="compatible" value="12.1.0.2.0"/>
          <initParam name="remote_login_passwordfile" value="EXCLUSIVE"/>
          <initParam name="db_create_online_log_dest_1" value="+RECO"/>
+         <initParam name="sga_max_size" value= {{ sga_max_size }} unit= {{ sga_unit }}/>
          <initParam name="sga_target" value= {{ sga_target }} unit= {{ sga_unit }}/>
          <initParam name="processes" value="{{ processes }}"/>
          <initParam name="undo_tablespace" value="UNDOTBS1"/>
