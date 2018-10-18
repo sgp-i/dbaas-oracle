@@ -3,35 +3,15 @@
 
 oracle_version: 12.1.0.2
 
-oracle_base: /u01/app/oracle
+grid_version: 12.1.0.2
+
+install_base: /u01/app
+
+oracle_base: "{{ install_base }}/oracle"
 
 # location for temporary files
 oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-oracle_grid_home: "{{ oracle_grid_home }}"
-
-oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
-
-#Add target details in TNS (tnsnames.ora)
-#Dont use same name/values for below variables(Source_DB and TARGET_DB)
-
-Source_DB: db
-
-TARGET_DB: db_stby
-
-############################################
-Source_DB_NAME: db
-
-TARGET_DB_NAME: db
-
-# shell environment for the oracle user- Source Server
-ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ Source_DB_NAME }}"
-  ORACLE_UNQNAME: "{{ Source_DB_NAME }}"
-  ORACLE_HOME: "{{ oracle_home }}"
-  NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
-
+scan_port: 1521

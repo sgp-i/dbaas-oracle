@@ -9,7 +9,7 @@
       src: duplicate_database.j2
       dest: "{{ oracle_tmp }}/duplicate_database.sql"
   - name: duplicate Database
-    command: "rman target sys/{{ sourec_db_password }}@{{ Source_DB }} auxiliary sys/{{ target_db_password }}@{{ TARGET_DB }} @{{ oracle_tmp }}/duplicate_database.sql"
+    command: "rman target sys/{{ sourec_db_password }}@{{ source_db }} auxiliary sys/{{ target_db_password }}@{{ target_db }} @{{ oracle_tmp }}/duplicate_database.sql"
   when: inventory_hostname != master_node
 
 - name: standby database disconnect
