@@ -3,12 +3,21 @@
   no_log: True
 
 - name: get oracle grid home
-  shell: "ps -ef | grep ohasd | grep /u01/app/12.1.0.2/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
   register: oracle_ohasd_process
 
 - name: set grid home
   set_fact:
     oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
+
+- name: get db details
+  command: grep "^{{ oracle_db_name }}:" /etc/oratab
+  register: db_details
+  changed_when: False
+
+- name: set oracle_home
+  set_fact:
+    oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
 
 - name: Check the LOG_MODE
   become: yes
@@ -34,7 +43,7 @@
 - name: Entry for the new database
   lineinfile:
     path: /etc/oratab
-    line: '{{ TARGET_DB_NAME }}:{{ oracle_home }}:N		# line added by Agent'
+    line: '{{ oracle_db_name }}:{{ oracle_home }}:N		# line added by Agent'
   when: inventory_hostname != master_node
 
 - name: create adump dir

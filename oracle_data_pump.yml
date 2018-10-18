@@ -1,6 +1,8 @@
-- name: Adrci Setup
+---
+
+- name: Oracle Data Pump
   hosts: '{{ host }}'
   become: yes
   tasks:
   - import_role:
-      name: oracle_adrci_setup
+      name: Datapump-Migration
