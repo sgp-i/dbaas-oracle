@@ -186,18 +186,20 @@
 - oracle_images (default: ['linuxamd64_12102_database_1of2.zip','linuxamd64_12102_database_2of2.zip'])
 
 # oracle_rman_dataguard.yml
-This one still needs some detail as I don't fully understand the DB Name pieces
 ## Required Inputs
 - host: the host or group to execute the playbook against.  This can also be a Group from the Inventory
+- oracle_db_name: The name of the DB to setup with DataGuard
 ## Optional Inputs
 - oracle_version (default: 12.1.0.2) 
+- grid_version (default: 12.1.0.2) 
 
 # oracle_rman_duplicate.yml
-This one still needs some detail as I don't fully understand the DB Name pieces
 ## Required Inputs
 - host: the host or group to execute the playbook against.  This can also be a Group from the Inventory
+- oracle_db_name: The name of the DB to setup RMAN Duplicate with
 ## Optional Inputs
-- oracle_version (default: 12.1.0.2) 
+- oracle_version (default: 12.1.0.2)
+- grid_version (default: 12.1.0.2) 
 
 # oracle_rman_registration.yml
 ## Required Inputs
