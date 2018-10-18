@@ -172,6 +172,8 @@
 - host: the host or group to execute the playbook against.  This can also be a Group from the Inventory
 - patch_file - The full name of the Patch file
 - patch_type - GRID or ORACLE (if combined use GRID)
+- patch_quarter - The Patch Quarter to use in 3 char format (e.g. Jul)
+- patch_year - The Patch Year to use in full format (e.g. 2018)
 - opatch_version_required - The expected OPatch Version for this PSU (as returned by `opatch version`)
 - opatch_util_installer - The name of the zipfile at '/yum/source/ORACLE_DB/OPATCH/' to install the expected OPatch version
 ## Optional Inputs
