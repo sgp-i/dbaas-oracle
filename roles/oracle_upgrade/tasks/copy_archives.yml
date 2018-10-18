@@ -13,9 +13,9 @@
   register: unzipped
   ignore_errors: yes
 
-- name: unzip installer
+- name: unzip preupgrade scripts
   unarchive: 
-    src: "{{ oracle_installer_path }}/preupgrade_12.1.0.2.0_18_lf.zip" 
+    src: "{{ oracle_installer_path }}/UPGRADE/{{ preupgrade_scripts_file }}" 
     dest: "{{ oracle_tmp }}/db_precheck" 
     remote_src: yes 
     keep_newer: true

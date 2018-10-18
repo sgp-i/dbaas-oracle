@@ -1,4 +1,13 @@
 ---
+
+- name: create tmp dir
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}"
+    state: directory
+    recurse: yes
+
 - name: get asm_sid
   shell: ps -ef | grep smon | grep ASM | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
@@ -17,7 +26,6 @@
       checklist_type: "10"
       category_type: Install
       db_install_status: IN PROGRESS
-  when: post_provisoning_done.stat.exists == false
   tags:
   - apex_api
 
@@ -69,19 +77,15 @@
 
 - name: complete block of post Provisioning validation
   block:
-    - name: create tmp dir
-      file:
-        group: "{{ oracle_group }}"
-        owner: "{{ oracle_user }}"
-        path: "{{ oracle_tmp }}"
-        state: directory
-        recurse: yes
-
     - name: Insert a line at the end of a file.
       lineinfile:
         path: "{{ oracle_base }}/admin/ctl/cleanup_files.ctl"
-        line: "/u01/app/oracle/diag/rdbms/{{ oracle_db_name }}/{{ oracle_sid }}/trace:alert_{{ oracle_sid }}.log:archive:clear:7:100
-               /u01/app/oracle/admin/{{ oracle_db_name }}/adump:*aud:delete:none:1:0"
+        line: "{{ cleanup_file_line }}"
+        loop:
+        - /u01/app/oracle/diag/rdbms/{{ oracle_db_name }}/{{ oracle_sid }}/trace:alert_{{ oracle_sid }}.log:archive:clear:7:100
+        - /u01/app/oracle/admin/{{ oracle_db_name }}/adump:*aud:delete:none:1:0
+        loop_control:
+          loop_var: cleanup_file_line
       
 
     - name: Execute Post Provisioning
@@ -93,7 +97,6 @@
         loop_var: filename
       when:
         - master_node == inventory_hostname
-        - post_provisoning_done.stat.exists == false
 
     - name: Creating sid entry in ORATAB file
       lineinfile:
@@ -103,14 +106,14 @@
 
     - name: place a marker for completion
       file:
-        path: "{{ oracle_base }}/admin/.post_provisoning_done_{{ oracle_db_name }}"
+        path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ oracle_db_name }}"
         state: touch
         mode: 0400
   
 
-- import_role:
-      name: oracle_api_services
-      tasks_from: db_checklist_update.yml
+    - import_role:
+        name: oracle_api_services
+        tasks_from: db_checklist_update.yml
       vars:
         chklst_json_body:
           new_entry: False

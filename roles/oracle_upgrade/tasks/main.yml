@@ -94,7 +94,7 @@
   tags:
   - copy
 
-block:  
+- block:  
   - include: upgrade_oracle.yml
     vars:
       oracle_home: "{{ new_oracle_home }}"
@@ -110,7 +110,7 @@ block:
     tags:
     - postchecks
 
-rescue:
+  rescue:
   - import_role:
       name: oracle_api_services
       tasks_from: db_checklist_update.yml

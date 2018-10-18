@@ -4,34 +4,18 @@ oracle_version: 12.1.0.2
 
 grid_version: 12.1.0.2
 
-oracle_base: /u01/app/oracle
+install_base: /u01/app
 
+oracle_base: "{{ install_base }}/oracle"
 
 # location for temporary files
 oracle_tmp: /u01/tmp/postval/{{ oracle_db_name }}
-
-oracle_user: oracle
-
-oracle_group: oinstall
 
 oracle_db_home: db_1
 
 oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
-
-oracle_grid_home: "{{ oracle_grid_home }}"
-
-# shell environment for the oracle user
-ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_sid | default('') }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
-  ORACLE_HOME: "{{ oracle_home }}"
-  NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
-  TMP: "/u01/app/oracle"
-  TMPDIR: "/u01/app/oracle"  
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 

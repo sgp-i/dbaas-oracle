@@ -3,6 +3,8 @@ crs_type: "{%- if ansible_play_hosts | length > 1 -%}crs
            {%- else -%}has
            {%- endif %}"
            
+patch_num: "{{ ojvm_patch | regex_replace('p([0-9]*)_.*','\\1') }}"
+
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
   ORACLE_SID: "{{ oracle_sid | default('') }}"

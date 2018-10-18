@@ -7,3 +7,6 @@
   tasks:
   - import_role:
       name: oracle_ojvm_patching
+
+# Required Vars
+# ojvm_patch - Patch filename
