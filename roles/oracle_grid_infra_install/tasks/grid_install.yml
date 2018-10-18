@@ -139,7 +139,7 @@
   vars:
     chklst_json_body:
       new_entry: False
-      checklist_type: 'GRID rootupgrade.sh'
+      checklist_type: 'GRID Running configTool'
       category_type: Install
       gi_install_status: IN PROGRESS
   when:

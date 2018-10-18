@@ -47,10 +47,10 @@
       loop_var: node_name
   
   - name: copy 'charter.dbt' template file
-    copy:
+    template:
       owner: "{{ oracle_user }}"
       src: charter.dbt
-      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
+      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt.j2"
     diff: false
 
   - name: create 'create_db' rsp file

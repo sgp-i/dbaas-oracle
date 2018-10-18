@@ -23,3 +23,15 @@ oracle_pdb_name: ""
 db_config_type: "{% if ansible_play_hosts | length == 1 -%}SI
                  {%- else -%}RAC
                  {%- endif %}"
+
+db_block_size: 8192
+
+
+sga_target: 6
+sga_unit: GB
+processes: 300
+pga_aggregate_target: 4
+pga_unit: GB
+
+db_recovery_file_dest_size: 50
+db_recovery_file_dest_unit: GB
