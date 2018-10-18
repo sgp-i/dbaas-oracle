@@ -1,21 +1,21 @@
 <DatabaseTemplate name="charter" description="" version="12.1.0.2.0">
    <CommonAttributes>
-      <option name="OMS" value="false"/>
+      <option name="OMS" value="true"/>
       <option name="JSERVER" value="true"/>
-      <option name="SPATIAL" value="false"/>
-      <option name="IMEDIA" value="false"/>
-      <option name="XDB_PROTOCOLS" value="false"/>
-      <option name="ORACLE_TEXT" value="false">
+      <option name="SPATIAL" value="true"/>
+      <option name="IMEDIA" value="true"/>
+      <option name="XDB_PROTOCOLS" value="true"/>
+      <option name="ORACLE_TEXT" value="true">
          <tablespace id="SYSAUX"/>
       </option>
       <option name="SAMPLE_SCHEMA" value="false"/>
-      <option name="CWMLITE" value="false">
+      <option name="CWMLITE" value="true">
          <tablespace id="SYSAUX"/>
       </option>
-      <option name="APEX" value="false">
+      <option name="APEX" value="true">
          <tablespace id="SYSAUX"/>
       </option>
-      <option name="DV" value="false">
+      <option name="DV" value="true">
          <tablespace id="SYSAUX"/>
       </option>
    </CommonAttributes>
@@ -33,6 +33,10 @@
          <initParam name="db_create_online_log_dest_1" value="+RECO"/>
          <initParam name="sga_max_size" value= {{ sga_max_size }} unit= {{ sga_unit }}/>
          <initParam name="sga_target" value= {{ sga_target }} unit= {{ sga_unit }}/>
+         <initParam name="db_cache_size" value= {{ db_cache_size }} unit= {{ db_cache_unit }}/>
+         <initParam name="shared_pool_size" value= {{ shared_pool_size }} unit= {{ shared_pool_unit }}/>
+         <initParam name="streams_pool_size" value= {{ streams_pool_size }} unit= {{ streams_pool_unit }}/>
+         <initParam name="java_pool_size" value= {{ java_pool_size }} unit= {{ java_pool_unit }}/>
          <initParam name="processes" value="{{ processes }}"/>
          <initParam name="undo_tablespace" value="UNDOTBS1"/>
          <initParam name="diagnostic_dest" value="/u01/app/oracle"/>
