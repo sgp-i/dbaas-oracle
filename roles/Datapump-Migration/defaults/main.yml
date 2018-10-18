@@ -10,41 +10,15 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
 
-#Source DB deatils --> oracle_db_name and oracle_home
-
-oracle_db_name: demo1
-
-oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
-
-# shell environment for the oracle user
-ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home }}"
-  NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+#Source DB deatils
+source_db_name: ''
 
 #Target DB details
-
-dest_db_name: demo2
-
-dest_oracle_home: "/u01/app/oracle/product/12.1.0.2/db_1"
-
-# shell environment for the oracle user
-dest_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ dest_db_name }}"
-  ORACLE_UNQNAME: "{{ dest_db_name }}"
-  ORACLE_HOME: "{{ dest_oracle_home }}"
-  NLS_LANG: "American_America.UTF8"
-  PATH: "{{ dest_oracle_home }}/bin:{{ ansible_env.PATH }}"
+dest_db_name: ''
   
 #######################################
 
 directory_name: datadump
-
-path_to_directory: /u01/tmp/{{ oracle_version }}
 
 export_filename: latest_export_db
 
