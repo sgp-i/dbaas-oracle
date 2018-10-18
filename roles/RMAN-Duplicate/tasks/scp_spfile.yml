@@ -7,8 +7,8 @@
     src: '{{ oracle_home }}/dbs/{{ file }}'
     dest: .
   loop:
-  - 'init{{ Source_DB_NAME }}.ora'
-  - 'orapw{{ Source_DB_NAME }}'
+  - 'init{{ oracle_db_name }}.ora'
+  - 'orapw{{ oracle_db_name }}'
   loop_control:
     loop_var: file
   when: inventory_hostname == master_node
@@ -21,8 +21,8 @@
     src: './{{ ansible_play_hosts[0] }}/{{ oracle_home }}/dbs/{{ file }}'
     dest: '{{ oracle_home }}/dbs'
   loop:
-  - 'init{{ Source_DB_NAME }}.ora'
-  - 'orapw{{ Source_DB_NAME }}'
+  - 'init{{ oracle_db_name }}.ora'
+  - 'orapw{{ oracle_db_name }}'
   loop_control:
     loop_var: file
   when: inventory_hostname != master_node

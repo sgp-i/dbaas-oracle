@@ -15,26 +15,26 @@
   - name: Add target details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ TARGET_DB }} = 
+      line: "{{ target_db }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
-                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = 1521))
+                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = {{ scan_port }}))
                   )
                   (CONNECT_DATA =
-                  (ORACLE_SID = {{ TARGET_DB_NAME }})
+                  (ORACLE_SID = {{ oracle_db_name }})
                   (UR = A)
                   )
                   ) # line added by Ansible"
   - name: Add source details in TNS
     lineinfile:
       path: "{{ oracle_home }}/network/admin/tnsnames.ora"
-      line: "{{ Source_DB }} = 
+      line: "{{ source_db }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
-                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
+                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = {{ scan_port }}))
                   )
                   (CONNECT_DATA =
-                  (ORACLE_SID = {{ Source_DB_NAME }})
+                  (ORACLE_SID = {{ oracle_db_name }})
                   (UR = A)
                   )
                   ) # line added by Ansible"
@@ -51,7 +51,7 @@
                         (SID_LIST =
                           (SID_DESC =
                             (ORACLE_HOME = {{ oracle_home }})
-                            (SID_NAME = {{ TARGET_DB_NAME }})
+                            (SID_NAME = {{ oracle_db_name }})
                           )
                         ) # line added by Ansible"
                         
