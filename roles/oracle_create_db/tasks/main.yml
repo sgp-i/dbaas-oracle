@@ -47,10 +47,10 @@
       loop_var: node_name
   
   - name: copy 'charter.dbt' template file
-    copy:
+    template:
       owner: "{{ oracle_user }}"
       src: charter.dbt
-      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
+      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt.j2"
     diff: false
 
   - name: create 'create_db' rsp file
@@ -66,8 +66,8 @@
     vars:
       chklst_json_body:
         new_entry: True
-        checklist_type: "8"
-        category_type: Install
+        checklist_type: " CREATE DATABASE {{ oracle_db_name }}"
+        category_type: DB Creation
         db_install_status: "IN PROGRESS"
     tags:
     - apex_api

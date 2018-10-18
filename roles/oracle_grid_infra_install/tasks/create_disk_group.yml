@@ -1,39 +1,72 @@
 ---
-- block: 
-  - name: create {{ diskgroup_name }} DG
-    become_user: "{{ oracle_user }}"
-    environment: "{{ ora_user_env }}"
-    no_log: true
-    command: asmca \
-              -silent \
-              -createDiskGroup \
-              -diskGroupName {{ diskgroup_name }} \
-              -diskList '{{ diskgroup_list  | json_query("files[].path") | join("','") }}' \
-              -redundancy {{ diskgroup_redun }} \
-              -au_size 4 \
-              -compatible.asm {{ oracle_compat_version }} \
-              -compatible.rdbms {{ oracle_compat_version }} \
-              -sysAsmPassword {{ oracle_asm_syspass }} \
-    register: "{{ diskgroup_name }}_create"
 
-  always: 
-  - name: Protected Debug Output - create {{ diskgroup_name }} DG
-    debug:                                                                  
-      var: "lookup('vars', diskgroup_name + '_create') | combine({'cmd': lookup('vars', diskgroup_name + '_create').cmd | replace(oracle_asm_syspass, '<PASSWORD HIDDEN>')})"
-    when: lookup('vars', diskgroup_name + '_create').failed
-    
-  - name: save create_{{ diskgroup_name }}.out
-    copy:
-      dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.out"
-      content: "{{ lookup('vars', diskgroup_name + '_create').stdout | default('') }}"
-    when: lookup('vars', diskgroup_name + '_create').changed
-    tags: upgrade_script 
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
+      category_type: Configure
+      gi_install_status: IN PROGRESS
+  when: inventory_hostname == master_node
+  tags:
+  - apex_api
 
-  - name: save create_{{ diskgroup_name }}.err
-    copy:
-      dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.err"
-      content: "{{ lookup('vars', diskgroup_name + '_create').stderr | default('') }}"
-    when: 
-    - lookup('vars', diskgroup_name + '_create').changed
-    - lookup('vars', diskgroup_name + '_create').stderr_lines | length > 0
-    tags: upgrade_script 
+- name: create {{ diskgroup_name }} DG
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  no_log: true
+  ignore_errors: true
+  command: asmca \
+            -silent \
+            -createDiskGroup \
+            -diskGroupName {{ diskgroup_name }} \
+            -diskList '{{ diskgroup_list  | json_query("files[].path") | join("','") }}' \
+            -redundancy {{ diskgroup_redun }} \
+            -au_size 4 \
+            -compatible.asm {{ oracle_compat_version }} \
+            -compatible.rdbms {{ oracle_compat_version }} \
+            -sysAsmPassword {{ oracle_asm_syspass }} \
+  register: "{{ diskgroup_name }}_create"
+
+
+- name: Protected Debug Output - create {{ diskgroup_name }} DG
+  debug:                                                                  
+    var: "lookup('vars', diskgroup_name + '_create') | combine({'cmd': lookup('vars', diskgroup_name + '_create').cmd | replace(oracle_asm_syspass, '<PASSWORD HIDDEN>')})"
+  when: lookup('vars', diskgroup_name + '_create').failed
+  
+- name: save create_{{ diskgroup_name }}.out
+  copy:
+    dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.out"
+    content: "{{ lookup('vars', diskgroup_name + '_create').stdout | default('') }}"
+  when: lookup('vars', diskgroup_name + '_create').changed
+  tags: upgrade_script 
+
+- name: save create_{{ diskgroup_name }}.err
+  copy:
+    dest: "{{ oracle_tmp }}/create_{{ diskgroup_name }}.err"
+    content: "{{ lookup('vars', diskgroup_name + '_create').stderr | default('') }}"
+  when: 
+  - lookup('vars', diskgroup_name + '_create').changed
+  - lookup('vars', diskgroup_name + '_create').stderr_lines | length > 0
+  tags: upgrade_script 
+
+ 
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
+      category_type: Configure
+      gi_install_status: "{% if lookup('vars', diskgroup_name + '_create') is failed -%}FAILED
+                          {%- else -%}SUCCESSFUL
+                          {%- endif %}"
+  when: inventory_hostname == master_node
+  tags:
+  - apex_api
+- set_fact: 
+    diskgroup_failed: "{% if lookup('vars', diskgroup_name + '_create') is failed -%}TRUE
+                          {%- endif %}"

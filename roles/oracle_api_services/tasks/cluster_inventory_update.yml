@@ -10,7 +10,7 @@
   block:
   - name: Update {{ cluster_name }} in Cluster Inventory
     uri:
-      url: "{{ apex_url }}/clustermember/{{ cluster_id }}"
+      url: "{{ apex_url }}/charter_cluster_member/clustermember/{{ cluster_id }}"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: PUT
       body_format: json

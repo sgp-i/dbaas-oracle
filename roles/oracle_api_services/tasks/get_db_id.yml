@@ -2,7 +2,7 @@
 
 - name: GET db_id from APEX
   uri:
-    url: "{{ apex_url }}/get_db_id/{{ oracle_db_name | urlencode }}"
+    url: "{{ apex_url }}/charter_db_id/get_db_id/{{ oracle_db_name | urlencode }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: GET
   ignore_errors: yes

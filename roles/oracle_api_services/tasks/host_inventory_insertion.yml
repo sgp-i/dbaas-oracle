@@ -9,7 +9,7 @@
   block: 
   - name: Insert node into Host Inventory
     uri:
-      url: "{{ apex_url }}/insert_host_inventory"
+      url: "{{ apex_url }}/charter_host_inv/insert_host_inventory"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body_format: json
