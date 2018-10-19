@@ -19,7 +19,7 @@
     path: "{{ oracle_home }}/network/admin/tnsnames.ora"
     line: "{{ oracle_db_name }} =
                 (DESCRIPTION =
-                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = 1521))
+                (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = {{ scan_port }}))
                 (CONNECT_DATA =
                 (SERVER = DEDICATED)
                 (SERVICE_NAME = {{ oracle_db_ServiceName }})

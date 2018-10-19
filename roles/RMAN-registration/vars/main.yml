@@ -2,6 +2,10 @@
 
 master_node: "{{ ansible_play_hosts | first }}"
 
+tns_hosts: "{% if ansible_play_hosts | length == 1 -%}{{ master_node }}
+                {%- else -%}{{ scan_name }}
+                {%- endif -%}"
+
 # shell environment for the oracle user
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"

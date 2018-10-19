@@ -25,3 +25,5 @@ oracle_db_ServiceName: db_test_RMAN
 catalog_RMAN_user: rmanbackup
 
 catalog_RMAN_DB: rman
+
+scan_port: 1521
