@@ -10,7 +10,7 @@
     method: POST
     body_format: json
     body:
-        db_id: "{{ db_id }}"
+        db_name: "{{ db_name }}"
     status_code: 200,201
     headers:
       Content-Type: "application/json"

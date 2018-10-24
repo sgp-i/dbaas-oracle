@@ -21,7 +21,7 @@
     lineinfile:
       path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_chklst_updates.json"
       line: '{
-                "db_id": "{{ db_id }}",
+                "db_name": "{{ oracle_db_name }}",
                 "checklist_id": "{{ checklist_id }}",
                 "update": {{ chklst_json_body | to_json }} 
               }'

@@ -19,9 +19,9 @@
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
     lineinfile:
-      path: "{{ json_backup_dir }}/host_chklst_updates.json"
+      path: "{{ json_backup_dir }}/{{ ansible_hostname }}_chklst_updates.json"
       line: '{
-                "host_id": "{{ host_id }}",
+                "host_name": "{{ ansible_hostname }}",
                 "checklist_id": "{{ checklist_id }}",
                 "update": {{ chklst_json_body | to_json }} 
               }'
