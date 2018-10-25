@@ -18,5 +18,6 @@ master_node: "{{ ansible_play_hosts | first }}"
 
 db_list: []
 
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 # vars to be taken care
 # ojvm_patch - Patch filename   

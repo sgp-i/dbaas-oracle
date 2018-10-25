@@ -9,7 +9,7 @@
 
 - name: unzip ojvm patch
   unarchive: 
-    src: "{{ oracle_installer_path }}/one-offs/{{ ojvm_patch }}" 
+    src: "{{ oracle_installer_path }}/PSU-RU/{{ grid_version }}/{{ patch_quarter }}_{{ patch_year }}/{{ ojvm_patch }}" 
     dest: "{{ oracle_tmp }}" 
     remote_src: yes 
     keep_newer: true
