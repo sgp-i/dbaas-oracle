@@ -18,6 +18,7 @@
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
+    become: no
     lineinfile:
       path: "{{ json_backup_dir }}/{{ oracle_db_name }}_db_chklst_updates.json"
       line: '{
