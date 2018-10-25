@@ -18,6 +18,7 @@
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
+    become: no
     lineinfile:
       path: "{{ json_backup_dir }}/{{ ansible_hostname }}_chklst_updates.json"
       line: '{

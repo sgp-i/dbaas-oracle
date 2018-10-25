@@ -10,7 +10,7 @@
     method: POST
     body_format: json
     body:
-      host_name: "{{ host_name }}"
+      host_name: "{{ ansible_hostname }}"
     status_code: 200,201
     headers:
       Content-Type: "application/json"
