@@ -134,19 +134,19 @@
 
         
   - include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: False
-      checklist_type: 'GRID Running configTool'
-      category_type: Install
-      gi_install_status: IN PROGRESS
-  when:
-    - inventory_hostname == master_node
-    - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
-  tags:
-  - apex_api
+      name: oracle_api_services
+      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    vars:
+      chklst_json_body:
+        new_entry: False
+        checklist_type: 'GRID Running configTool'
+        category_type: Install
+        gi_install_status: IN PROGRESS
+    when:
+      - inventory_hostname == master_node
+      - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
+    tags:
+    - apex_api
 
 
   - name: run grid configTool
