@@ -55,12 +55,21 @@
 - include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
 
+
+- name: check Grid is running
+  shell: ps -ef | grep d.bin | grep -v grep | grep ohas
+  register: ohas_grid_check
+  changed_when: False
+  ignore_errors: True
+
 - include_tasks: grid_install.yml
+  when: ohas_grid_check.stdout_lines | length == 0
 
 - name: check ASM is running
   shell: ps -ef|grep asm_smon|grep -v grep
   register: asm_running_check
   failed_when: asm_running_check.stdout_lines | length == 0
+  changed_when: False
 
 - include_role:
     name: oracle_api_services
