@@ -1,9 +1,16 @@
 ---
 
 - include_vars: secrets.yml
-  no_log: true
+  no_log: true 
+
+- name: check Grid is running
+  shell: ps -ef | grep d.bin | grep -v grep | grep ohas
+  register: ohas_grid_check
+  changed_when: False
+  ignore_errors: True
 
 - include_tasks: copy_archives.yml
+  when: ohas_grid_check.stdout_lines | length == 0
 
 - name: get asm disk paths - {{ asm_data_group }}
   find:
@@ -39,18 +46,15 @@
 - include_tasks: set_net_string.yml
   when: inventory_hostname == master_node and (grid_install_mode == "CRS_CONFIG" or grid_install_mode == "CRS_SWONLY" or grid_install_mode == "UPGRADE")
 
-- name: find number of oracle grid homes
-  find:
-    paths: "{{ oracle_base }}/{{ grid_version }}"
-    file_type: directory
-    patterns: "grid_+"
-    use_regex: yes
-    recurse: no
-  register: number_of_oracle_grid_homes
 
-- name: set oracle grid home
+- name: get oracle grid home
+  shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  changed_when: False
+  register: oracle_ohasd_process
+
+- name: set grid home
   set_fact:
-    oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
+    oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
 
 - include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
@@ -70,6 +74,7 @@
   register: asm_running_check
   failed_when: asm_running_check.stdout_lines | length == 0
   changed_when: False
+  
 
 - include_role:
     name: oracle_api_services
@@ -88,4 +93,5 @@
   when: inventory_hostname == master_node
 - fail:
     msg: 'DiskGroup Creation Failed'
-  when: diskgroup_failed 
+  when:  diskgroup_failed 
+  

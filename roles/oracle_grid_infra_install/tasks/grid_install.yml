@@ -13,6 +13,19 @@
   tags:
   - apex_api
 
+- name: find number of oracle grid homes
+  find:
+    paths: "{{ oracle_base }}/{{ grid_version }}"
+    file_type: directory
+    patterns: "grid_+"
+    use_regex: yes
+    recurse: no
+  register: number_of_oracle_grid_homes
+
+- name: set oracle grid home
+  set_fact:
+    oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
+
 - block:
   - name: install grid
     environment: "{{ ora_user_env }}"
