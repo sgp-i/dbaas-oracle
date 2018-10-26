@@ -4,6 +4,7 @@
 
 - name: get oracle grid home
   shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
+  changed_when: False
   register: oracle_ohasd_process
 
 - name: set grid home

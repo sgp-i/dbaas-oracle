@@ -84,20 +84,20 @@
     when: 
     - 'oracle_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["grid_install"]["stdout"]'
 
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: False
-      checklist_type: 'GRID root.sh'
-      category_type: Install
-      gi_install_status: IN PROGRESS
-  when: 
-    - inventory_hostname == master_node
-    - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
-  tags:
-  - apex_api
+  - include_role:
+      name: oracle_api_services
+      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    vars:
+      chklst_json_body:
+        new_entry: False
+        checklist_type: 'GRID root.sh'
+        category_type: Install
+        gi_install_status: IN PROGRESS
+    when: 
+      - inventory_hostname == master_node
+      - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
+    tags:
+    - apex_api
 
   - include_tasks: execute_root_script.yml
     loop: "{{ cluster_nodes }}"
@@ -107,21 +107,21 @@
     when: 
     - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
     - inventory_hostname == curr_host
-    
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: False
-      checklist_type: 'GRID rootupgrade.sh'
-      category_type: Install
-      gi_install_status: IN PROGRESS
-  when:
-    - inventory_hostname == master_node
-    - 'oracle_grid_home + "/rootupgrade.sh" in hostvars[master_node]["grid_install"]["stdout"]'
-  tags:
-  - apex_api
+      
+  - include_role:
+      name: oracle_api_services
+      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    vars:
+      chklst_json_body:
+        new_entry: False
+        checklist_type: 'GRID rootupgrade.sh'
+        category_type: Install
+        gi_install_status: IN PROGRESS
+    when:
+     -  inventory_hostname == master_node
+     - 'oracle_grid_home + "/rootupgrade.sh" in hostvars[master_node]["grid_install"]["stdout"]'
+    tags:
+    - apex_api
 
   - include_tasks: execute_rootupgrade_script.yml
     loop: "{{ cluster_nodes }}"
@@ -133,20 +133,20 @@
     - inventory_hostname == curr_host
 
         
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: False
-      checklist_type: 'GRID Running configTool'
-      category_type: Install
-      gi_install_status: IN PROGRESS
-  when:
-    - inventory_hostname == master_node
-    - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
-  tags:
-  - apex_api
+  - include_role:
+      name: oracle_api_services
+      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    vars:
+      chklst_json_body:
+        new_entry: False
+        checklist_type: 'GRID Running configTool'
+        category_type: Install
+        gi_install_status: IN PROGRESS
+    when:
+      - inventory_hostname == master_node
+      - 'oracle_grid_home + "/cfgtoollogs/configToolAllCommands RESPONSE_FILE=<response_file>" in hostvars[master_node]["grid_install"]["stdout"]'
+    tags:
+    - apex_api
 
 
   - name: run grid configTool

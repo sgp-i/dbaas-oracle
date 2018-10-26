@@ -20,10 +20,11 @@
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
+    become: no
     lineinfile:
       path: "{{ json_backup_dir }}/{{ cluster_name }}_cluster_chklst_updates.json"
       line: '{
-                "cluster_id": "{{ cluster_id }}",
+                "cluster_name": "{{ cluster_name }}",
                 "checklist_id": "{{ checklist_id }}",
                 "update": {{ chklst_json_body | to_json }} 
               }'
