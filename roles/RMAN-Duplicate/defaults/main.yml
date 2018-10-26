@@ -15,5 +15,3 @@ oracle_base: "{{ install_base }}/oracle"
 oracle_tmp: /u01/tmp/{{ oracle_version }}
 
 oracle_user: oracle
-
-scan_port: 1521

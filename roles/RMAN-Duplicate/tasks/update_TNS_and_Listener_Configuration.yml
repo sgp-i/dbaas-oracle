@@ -1,4 +1,30 @@
 ---
+
+
+- name: get scan_port
+  environment: "{{ ora_user_env }}"
+  command: srvctl config listener -l Listener
+  changed_when: False
+  register: listener_config
+- set_fact:
+    scan_port: "{{ listener_config.stdout | regex_search('TCP:.*') | regex_replace('TCP:(.*)','\\1') }}"
+
+- name: Determine Cluster/SA and set tns_hosts
+  environment: "{{ ora_user_env }}"
+  command: srvctl config scan
+  ignore_errors: yes
+  changed_when: False
+  register: scan_config
+- set_fact:
+    tns_hosts_source: "{{ ansible_play_hosts[0] }}"
+    tns_hosts_target: "{{ ansible_play_hosts[1] }}"
+  when: "'scan object is not supported in Oracle Restart' in scan_config.stdout"
+
+- set_fact:
+    tns_hosts_source: "{{ scan_config.stdout | regex_search('SCAN name:.*') | regex_replace('SCAN name: (.*), Network:.*','\\1') }}"
+    tns_hosts_target: "{{ scan_config.stdout | regex_search('SCAN name:.*') | regex_replace('SCAN name: (.*), Network:.*','\\1') }}"
+  when: scan_config is not failed
+
 - name: Create tnsnames.ora if not exists
   become: yes
   become_user: '{{ oracle_user }}'
@@ -18,7 +44,7 @@
       line: "{{ target_db }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
-                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[1] }})(PORT = {{ scan_port }}))
+                  (ADDRESS = (PROTOCOL = TCP)(HOST = {{ tns_hosts_target }})(PORT = {{ scan_port }}))
                   )
                   (CONNECT_DATA =
                   (ORACLE_SID = {{ oracle_db_name }})
@@ -31,7 +57,7 @@
       line: "{{ source_db }} = 
                   (DESCRIPTION =
                   (ADDRESS_LIST =
-                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_play_hosts[0] }})(PORT = {{ scan_port }}))
+                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ tns_hosts_source }})(PORT = {{ scan_port }}))
                   )
                   (CONNECT_DATA =
                   (ORACLE_SID = {{ oracle_db_name }})
