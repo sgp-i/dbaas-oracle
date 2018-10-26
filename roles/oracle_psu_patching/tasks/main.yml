@@ -51,11 +51,14 @@
     command: grep ":{{ oracle_home }}:" /etc/oratab
     register: db_list
     changed_when: False
+    ignore_errors: True
 
   - include_tasks: datapatch.yml
     vars:
       oracle_db_name: "{{ db_detail | regex_replace('([^:]*).*','\\1') }}"
-    when: db_detail | regex_replace('([^:]*):.*','\\1') != 'no_sid'
+    when: 
+    - db_list | length > 0
+    - db_detail | regex_replace('([^:]*):.*','\\1') != 'no_sid'
     loop: "{{ db_list.stdout_lines }}"
     loop_control:
       loop_var: db_detail
