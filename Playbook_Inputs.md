@@ -39,12 +39,7 @@
 - oracle_pdb_passwd
 #### Apex Inputs (also all optional)
 - application_name
-- business_unit
-- technical_contact
-- tech_contact_email
-- app_desc
-- app_owner
-- app_owner_email
+- app_ref_id
 - environment
 - database_role 
 - pci_required
@@ -64,6 +59,7 @@
 - env_category 
 - storage_type
 - db_home
+
 
 # oracle_db_upgrade_prechecks
 ## Required Inputs
