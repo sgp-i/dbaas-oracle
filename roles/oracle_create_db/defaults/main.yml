@@ -12,7 +12,7 @@ oracle_base: "{{ install_base }}/oracle"
 
 oracle_db_home: db_1 
 
-oracle_db_name: db
+oracle_db_name: ""
 
 asm_data_group: DATA
 

@@ -6,8 +6,8 @@
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "5"
-      category_type: Install
+      checklist_type: "PRE-CHECK Host"
+      category_type: PRE-CHECK
       gi_install_status: IN_PROGRESS
   tags:
   - apex_api

@@ -63,6 +63,7 @@
 - dr_location
 - env_category 
 - storage_type
+- db_home
 
 # oracle_db_upgrade_prechecks
 ## Required Inputs
