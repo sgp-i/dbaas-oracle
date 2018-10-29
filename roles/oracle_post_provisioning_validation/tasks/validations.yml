@@ -191,14 +191,24 @@
 - name: store the result in a json
   copy:
     dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
-              {%- else -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
     content: "{{ checklist }}"
 
-- name: Create json template for verify result
-  template:
-    src: post_validaton_result_list.json.j2
-    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result_list.json"
+#- name: Create json template for verify result
+#  template:
+#    src: post_validaton_result_list.json.j2
+#    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result_list.json"
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: upload_log.yml
+  vars:
+    logfile_path: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- endif %}"
+  tags:
+  - apex_api
 
 - name: Check for Post validation Failures
   fail:
