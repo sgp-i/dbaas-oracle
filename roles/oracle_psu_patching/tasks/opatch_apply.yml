@@ -17,3 +17,32 @@
     content: "{{ opatch_apply.stderr }}"
   changed_when: False
   when: opatch_apply.stderr_lines | length > 0
+
+- name: get opatch logfile
+  find:
+    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
+    file_type: file
+    age: -10m
+    age_stamp: mtime
+    patterns: opatch\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}[AP]M.log
+    use_regex: yes
+  register: opatch_log
+  when: inventory_hostname == master_node
+  tags:
+  - apex_api
+
+
+
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_upload_log.yml
+  vars:
+  #  logfile_path: "{{ oracle_tmp }}/opatch_lsinv.out"
+    logfile_path:   "{{ opatch_log.files[0].path }}"
+  when: 
+  - inventory_hostname == master_node
+  - opatch_log.files[0] is defined
+  tags:
+  - apex_api
+

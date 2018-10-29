@@ -19,3 +19,15 @@
     content: "{{ opatch_lsinv.stderr }}"
   changed_when: False
   when: opatch_lsinv.stderr_lines | length > 0
+
+
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_upload_lsinv.yml
+  vars:
+    logfile_path: "{{ oracle_tmp }}/opatch_lsinv.out"
+  when: 
+  - inventory_hostname == master_node
+  tags:
+  - apex_api
