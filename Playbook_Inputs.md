@@ -92,6 +92,7 @@
 ## Required Inputs    
 - deinstall_product: either GRID or DATABASE
 - oracle_db_home:  Only required for RDBMS deinstall. Home to deinstall (e.g. db_1)
+- host: the host or group to execute the playbook against.  This can also be a Group from the Inventory
 ## Optional Inputs
 - oracle_version (default: 12.1.0.2) 
 
@@ -192,6 +193,8 @@
 - patch_year - The Patch Year to use in full format (e.g. 2018)
 - opatch_version_required - The expected OPatch Version for this PSU (as returned by `opatch version`)
 - opatch_util_installer - The name of the zipfile at '/yum/source/ORACLE_DB/OPATCH/' to install the expected OPatch version
+- db_home - database Home for APEX
+- host_code -  for APEX 
 ## Optional Inputs
 - opatch_flags - Any flags that need to be passed to the "opatchauto apply" command.
 
