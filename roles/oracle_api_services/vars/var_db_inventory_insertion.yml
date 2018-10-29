@@ -28,3 +28,4 @@ db_invntry_insertion_body:
   app_id: "{{ app_id }}"   
   storage_type: "{{ storage_type }}"
   db_home: "{{ oracle_db_home }}"
+  ref_apex_id: "{{ ref_app_id }}"
