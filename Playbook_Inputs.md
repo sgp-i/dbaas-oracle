@@ -37,7 +37,25 @@
 - oracle_version (default: 12.1.0.2) 
 - oracle_pdb_name
 - oracle_pdb_passwd
-#### Apex Inputs (also all optional)
+- db_block_size
+- sga_max_size
+- sga_target
+- sga_unit
+- processes
+- pga_aggregate_target
+- pga_unit
+- db_recovery_file_dest_size
+- db_recovery_file_dest_unit
+- java_pool_size
+- java_pool_unit
+- db_cache_size
+- db_cache_unit
+- shared_pool_size
+- shared_pool_unit
+- streams_pool_size
+- streams_pool_unit
+
+#### Apex Inputs for inventory (also all optional)
 - application_name
 - app_ref_id
 - environment
@@ -59,6 +77,7 @@
 - env_category 
 - storage_type
 - db_home
+
 
 
 # oracle_db_upgrade_prechecks

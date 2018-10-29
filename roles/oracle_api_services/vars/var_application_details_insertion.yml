@@ -2,6 +2,7 @@
 
 application_details:
   - application_name: "{{ application_name }}"
+    app_id: "{{ app_id }}"
     business_unit: "{{ business_unit }}"
     technical_contact: "{{ technical_contact }}" 
     tech_contact_email: "{{ tech_contact_email }}"

@@ -22,6 +22,8 @@ oracle_db_name: ""
 
 gi_sid: +ASM
 
+fresh_install: False
+
 patch_type: ""
 
 opatch_flags: ""

@@ -6,11 +6,15 @@
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "??"
+      checklist_type: "PATCH"
       category_type: Install
       db_install_status: IN PROGRESS
+  when: fresh_install
   tags:
   - apex_api
+
+
+
 
 - name: create tmp dir
   file:
@@ -67,10 +71,20 @@
 
 - import_role:
     name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+  tags:
+  - apex_api
+
+- import_role:
+    name: oracle_api_services
     tasks_from: db_checklist_update.yml
   vars:
     chklst_json_body:
       new_entry: False
       db_install_status: SUCCESSFUL #Need a way to determine Failures
+  when: fresh_install  
   tags:
   - apex_api
