@@ -1,6 +1,6 @@
 ---
 
-apex_url: https://apex-app01.techlab.com:8443/ords/invent
+# https://apex-app01.techlab.com:8443/ords/invent
 
 json_backup_dir: /apex/unsent_json_body
 
