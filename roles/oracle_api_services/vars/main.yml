@@ -2,7 +2,7 @@
 
 # https://apex-app01.techlab.com:8443/ords/invent
 
-json_backup_dir: /apex/unsent_json_body
+#json_backup_dir: /apex/unsent_json_body
 
 cluster_nodes: "{{ ansible_play_hosts }}"
 
