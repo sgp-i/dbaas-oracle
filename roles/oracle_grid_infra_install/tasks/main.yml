@@ -1,7 +1,7 @@
 ---
 
 - include_vars: secrets.yml
-  no_log: true 
+  no_log: false 
 
 - name: check Grid is running
   shell: ps -ef | grep d.bin | grep -v grep | grep ohas
