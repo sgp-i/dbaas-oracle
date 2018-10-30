@@ -6,7 +6,7 @@
   block:
   - name: Insert {{ cluster_name }} into Cluster Inventory
     uri:
-      url: "{{ apex_url }}/charter_cluster_member/insertclustermember"
+      url: "{{ apex_url }}/insertclustermember"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body_format: json

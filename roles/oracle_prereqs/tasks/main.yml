@@ -7,7 +7,7 @@
     chklst_json_body:
       new_entry: True
       checklist_type: "PRE-CHECK Host"
-      category_type: PRE-CHECK
+      category_type: "PRE-CHECK"
       gi_install_status: IN_PROGRESS
   tags:
   - apex_api
