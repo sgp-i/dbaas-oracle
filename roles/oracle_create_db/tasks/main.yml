@@ -49,8 +49,8 @@
   - name: copy 'charter.dbt' template file
     template:
       owner: "{{ oracle_user }}"
-      src: charter.dbt
-      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt.j2"
+      src: charter.dbt.j2
+      dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
     diff: false
 
   - name: create 'create_db' rsp file
