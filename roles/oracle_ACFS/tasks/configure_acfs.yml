@@ -91,22 +91,25 @@
     environment: "{{ ora_user_env }}"
     command: sqlplus / as sysasm @{{ oracle_tmp }}/mount_{{ diskgroup.dir }}_disk.sql
 
-  - name: mount directories...
-    mount:
-      name: "{{ oracle_base }}/{{ diskgroup.dir }}"
-      src: "{{ dev_path }}"
-      fstype: acfs
-      opts: defaults,relatime
-      state: mounted
-      owner: oracle
-      group: oinstall
-    become: yes
-    when:
-    - rac_install
-    - inventory_hostname != master_node
+  ###################################################################
+  ## 'mount' module doesn't currently support ACFS                 ##
+  ## The commented task below will work once that support is added ##
+  ###################################################################
+  # - name: mount directories...
+  #   mount:
+  #     name: "{{ oracle_base }}/{{ diskgroup.dir }}"
+  #     src: "{{ dev_path }}"
+  #     fstype: acfs
+  #     opts: defaults,relatime
+  #     state: mounted
+  #   become: yes
+  #   when:
+  #   - rac_install
+  #   - inventory_hostname != master_node
 
-#  - name: Mount the disk
-#    command: '/bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}'
-#  when:
-#  - rac_install
-#  - inventory_hostname != master_node
+  - name: Mount the disk
+    command: '/bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}'
+
+  when:
+  - rac_install
+  - inventory_hostname != master_node
