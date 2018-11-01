@@ -74,7 +74,10 @@
       state: directory
       mode: 0755
   when: inventory_hostname == master_node
-
+- debug:
+    var: dev_path
+  when: inventory_hostname == master_node
+    
 - name: Mount on additional nodes (if any)
   block:
   - name: set dev_path
@@ -83,7 +86,7 @@
   - debug:
       var: dev_path
     when: inventory_hostname == master_node
-    
+
   - name: add mount_asm_diskgroup.sql script
     template:
       src: mount_asm_diskgroup.sql.j2
