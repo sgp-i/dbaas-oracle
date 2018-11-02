@@ -16,14 +16,25 @@
   changed_when: False
   register: db_status
 
-- name: Start {{ oracle_db_name }} Database
-  environment: "{{ ora_user_env }}"
-  command: srvctl start database -db {{ oracle_db_name }}
+# - name: Start {{ oracle_db_name }} Database
+#   environment: "{{ ora_user_env }}"
+#   command: srvctl start database -db {{ oracle_db_name }}
+#   when: "'Database is running.' not in db_status.stdout"
+
+- include_role:
+    name: oracle_admin
+    task_from: start_db.yml
+  vars:
+    oracle_home: "{{ oracle_grid_home }}"
   when: "'Database is running.' not in db_status.stdout"
+  # when: 
+  # - patch_type == 'RDBMS'
+  # - db_name_list | length > 0
+  # - inventory_hostname == master_node
 
 - name: Wait for DB to start
   pause:
-    seconds: 90
+    seconds: 60
 
 - name: get oracle_sid
   shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
