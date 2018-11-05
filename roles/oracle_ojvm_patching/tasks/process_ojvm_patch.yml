@@ -45,7 +45,7 @@
 #   vars:
 #     oracle_home: "{{ oracle_grid_home }}"
 #     oracle_sid: "{{ oracle_grid_sid }}"
-- name: stopping database
+
 - include_role:
     name: oracle_admin
     tasks_from: stop_db.yml

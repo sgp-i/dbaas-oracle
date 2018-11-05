@@ -1,5 +1,5 @@
 ---
-- name: s starting database
+- name: starting database
   environment: "{{ ora_user_env }}"
   command: srvctl start database -db  {{ oracle_db_name }}
   when: inventory_hostname == master_node
