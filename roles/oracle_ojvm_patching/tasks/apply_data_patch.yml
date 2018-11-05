@@ -23,7 +23,7 @@
 
 - include_role:
     name: oracle_admin
-    task_from: start_db.yml
+    tasks_from: start_db.yml
   vars:
     oracle_home: "{{ oracle_grid_home }}"
   when: "'Database is running.' not in db_status.stdout"
