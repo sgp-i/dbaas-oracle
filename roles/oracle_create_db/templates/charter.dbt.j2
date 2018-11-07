@@ -27,7 +27,7 @@
          <initParam name="db_name" value=""/>
          <initParam name="db_domain" value=""/>
          <initParam name="dispatchers" value="(PROTOCOL=TCP) (SERVICE={SID}XDB)"/>
-         <initParam name="audit_file_dest" value="/u01/app/oracle/admin/orcl07/adump"/>
+         <initParam name="audit_file_dest" value="/u01/app/oracle/admin/{{ oracle_db_name }}/adump"/>
          <initParam name="compatible" value="12.1.0.2.0"/>
          <initParam name="remote_login_passwordfile" value="EXCLUSIVE"/>
          <initParam name="db_create_online_log_dest_1" value="+RECO"/>
@@ -38,7 +38,7 @@
          <initParam name="db_recovery_file_dest" value="+RECO"/>
          <initParam name="audit_trail" value="DB"/>
          <initParam name="db_files" value="1000"/>
-         <initParam name="log_archive_format" value="%t_%s_%r.dbf"/>
+         <initParam name="log_archive_format" value="%t_%s_%r.arc"/>
          <initParam name="db_block_size" value="{{ db_block_size }}"/>
          <initParam name="parallel_force_local" value="TRUE"/>
          <initParam name="open_cursors" value="300"/>

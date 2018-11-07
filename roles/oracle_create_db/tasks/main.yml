@@ -102,42 +102,16 @@
                     "DBCA Operation failed." in create_db.stdout or
                     create_db.rc != 0'
       when: inventory_hostname == master_node
-
+      rescue:
     - import_role:
         name: oracle_api_services
-        tasks_from: upload_log.yml
+        tasks_from: db_checklist_update.yml
       vars:
-        logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
+        chklst_json_body:
+          new_entry: False
+          db_install_status: "FAILED"
       tags:
       - apex_api
-
-- name: "run alter_db_params script"
-  become: yes
-  become_user: '{{ oracle_user }}'
-  environment: "{{ ora_user_env }}"
-  command: "sqlplus / as sysdba @{{ oracle_tmp }}/{{ oracle_db_name }}_alter_db_params.sql"
-  register: alter_db_params
-  when: db_params_changes
-
-- include_role:
-    name: oracle_admin
-    tasks_from: stop_db.yml
-  vars:
-    oracle_home: "{{ oracle_grid_home }}"
-    oracle_db_name: "{{ oracle_db_name }}"
-  when: 
-  - inventory_hostname == master_node
-  - db_params_changes
-  rescue:
-  - import_role:
-      name: oracle_api_services
-      tasks_from: db_checklist_update.yml
-    vars:
-      chklst_json_body:
-        new_entry: False
-        db_install_status: "FAILED"
-    tags:
-    - apex_api
   
   - name: Instance Creation Failed
     fail:
@@ -154,5 +128,33 @@
   - apex_api
 
   when: not db_exists
+  
+- import_role:
+    name: oracle_api_services
+    tasks_from: upload_log.yml
+  vars:
+    logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
+  tags:
+  - apex_api
+
+  - name: "run alter_db_params script"
+    become: yes
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: "sqlplus / as sysdba @{{ oracle_tmp }}/{{ oracle_db_name }}_alter_db_params.sql"
+    register: alter_db_params
+    when: db_params_changes
+
+  - include_role:
+      name: oracle_admin
+      tasks_from: stop_db.yml
+    vars:
+      oracle_home: "{{ oracle_grid_home }}"
+      oracle_db_name: "{{ oracle_db_name }}"
+    when: 
+    - inventory_hostname == master_node
+    - db_params_changes
+ 
+
 
 
