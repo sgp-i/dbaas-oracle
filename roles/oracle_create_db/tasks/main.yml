@@ -53,6 +53,14 @@
       dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
     diff: false
 
+  - name: copy 'alter_db_params.sql' sql file
+    template:
+      owner: "{{ oracle_user }}"
+      src: alter_db_params.sql
+      dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_alter_db_params.sql"
+    diff: false
+    when: db_params_changes
+
   - name: create 'create_db' rsp file
     template:
       owner: "{{ oracle_user }}"
@@ -102,7 +110,24 @@
         logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
       tags:
       - apex_api
+      
+  - name: "run alter_db_params script"
+    become: yes
+    become_user: '{{ oracle_user }}'
+    environment: "{{ ora_user_env }}"
+    command: "sqlplus / as sysdba @{{ oracle_tmp }}/{{ oracle_db_name }}_alter_db_params.sql"
+    register: alter_db_params
+    when: db_params_changes
 
+  - include_role:
+      name: oracle_admin
+      tasks_from: stop_db.yml
+    vars:
+      oracle_home: "{{ oracle_grid_home }}"
+      oracle_db_name: "{{ oracle_db_name }}"
+    when: 
+    - inventory_hostname == master_node
+    - db_params_changes
     rescue:
     - import_role:
         name: oracle_api_services
@@ -127,4 +152,7 @@
         db_install_status: "SUCCESSFUL" 
     tags:
     - apex_api
+
   when: not db_exists
+
+
