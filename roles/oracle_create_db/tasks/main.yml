@@ -47,9 +47,9 @@
       loop_var: node_name
   
   - name: copy 'charter.dbt' template file
-    template:
+    copy:
       owner: "{{ oracle_user }}"
-      src: charter.dbt.j2
+      src: charter.dbt
       dest: "{{ oracle_home }}/assistants/dbca/templates/charter.dbt"
     diff: false
 
