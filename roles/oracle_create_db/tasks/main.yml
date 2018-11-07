@@ -102,7 +102,7 @@
                     "DBCA Operation failed." in create_db.stdout or
                     create_db.rc != 0'
       when: inventory_hostname == master_node
-      rescue:
+  rescue:
     - import_role:
         name: oracle_api_services
         tasks_from: db_checklist_update.yml
@@ -113,8 +113,8 @@
       tags:
       - apex_api
   
-  - name: Instance Creation Failed
-    fail:
+    - name: Instance Creation Failed
+      fail:
       msg: Creation of {{ oracle_db_name }} failed
 
 - import_role:
@@ -128,7 +128,7 @@
   - apex_api
 
   when: not db_exists
-  
+
 - import_role:
     name: oracle_api_services
     tasks_from: upload_log.yml
