@@ -39,7 +39,7 @@
          <initParam name="db_recovery_file_dest" value="+DATA"/>
          <initParam name="audit_trail" value="DB"/>
          <initParam name="db_files" value="1000"/>
-         <initParam name="log_archive_format" value="%t_%s_%r.dbf"/>
+         <initParam name="log_archive_format" value="%t_%s_%r.arc"/>
          <initParam name="db_block_size" value="8192"/>
          <initParam name="parallel_force_local" value="TRUE"/>
          <initParam name="open_cursors" value="300"/>
