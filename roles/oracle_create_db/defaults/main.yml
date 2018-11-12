@@ -24,23 +24,3 @@ db_config_type: "{% if ansible_play_hosts | length == 1 -%}SI
                  {%- else -%}RAC
                  {%- endif %}"
 
-db_block_size: 8192
-
-sga_max_size: 6
-sga_target: 6
-sga_unit: G
-processes: 300
-pga_aggregate_target: 1
-pga_unit: G
-
-db_recovery_file_dest_size: 10
-db_recovery_file_dest_unit: G
-java_pool_size: 100
-java_pool_unit: M
-db_cache_size: 1
-db_cache_unit: G
-shared_pool_size: 500
-shared_pool_unit: M
-streams_pool_size: 100
-streams_pool_unit: M
-
