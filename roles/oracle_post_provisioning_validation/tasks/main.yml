@@ -1,7 +1,7 @@
 ---
 - name: check oracle_db_name is defined or not
-  fail:
-    msg: "Failing out. The below tasks requires 'oracle_db_name' variable, Please define"
+  debug:
+    msg: The Variable oracle_db_name is not defined
   when: oracle_db_name is undefined
 
 - name: set orace_home
