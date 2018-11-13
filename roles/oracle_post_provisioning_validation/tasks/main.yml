@@ -14,7 +14,7 @@
     - name: set oracle_sid
       set_fact:
         oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
-      when: oracle_db_name > length=0
+#      when: oracle_db_name > length=0
 
     - name: get db details
       shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
@@ -30,6 +30,7 @@
         msg: Database named {{ oracle_db_name }} doesn't exists'
       when: oracle_home == ""
   when: oracle_context != 'grid'
+  ignore_errors: yes
 
 - name: create tmp dir
   file:
@@ -59,5 +60,6 @@
       loop_control:
         loop_var: sql_file
   when: oracle_home != "" and oracle_context != 'grid'
+  ignore_errors: yes
 
 - include_tasks: validations.yml
