@@ -22,7 +22,7 @@ oracle_db_name: +ASM
 grid_storage_type: LOCAL_ASM_STORAGE
 
 public_net: 
-- bond0.
+- bond0
 - eth0
 
 private_net: 192.168.

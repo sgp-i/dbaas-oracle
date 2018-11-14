@@ -19,13 +19,13 @@
     path: "{{ oracle_tmp }}/cluster_verify"
     state: directory
     recurse: yes
-    register: cluster_verify_dir
+  register: cluster_verify_dir
 
 - name: unzip cluvfy
-  unarchive: 
-    src: "{{ oracle_installer_path }}/GRID/cluvfy/cvupack_Linux_x86_64.zip" 
-    dest: "{{ oracle_tmp }}/cluster_verify" 
-    remote_src: yes 
+  unarchive:
+    src: "{{ oracle_installer_path }}/GRID/cluvfy/cvupack_Linux_x86_64.zip"
+    dest: "{{ oracle_tmp }}/cluster_verify"
+    remote_src: yes
     keep_newer: true
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
@@ -34,7 +34,7 @@
   when: cluster_verify_dir.changed
 
 - name: set cvu_config settings
-  lineinfile: 
+  lineinfile:
     path: "{{ oracle_tmp }}/cluster_verify/cv/admin/cvu_config"
     regexp: "^{{ item.regex }}"
     line: "{{ item.regex }}={{ item.value }}"
@@ -63,7 +63,7 @@
   when: cluvfy_results.stderr_lines | length > 0
 
 - name: check known failures
-  block: 
+  block:
   - name: cleanup cluvfy stdout
     replace:
       path: "{{ oracle_tmp }}/cluvfy_stdout.out"
