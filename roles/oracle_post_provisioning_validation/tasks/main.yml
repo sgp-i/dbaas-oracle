@@ -1,5 +1,8 @@
 ---
-
+- name: check oracle_db_name is defined or not
+  debug:
+    msg: The Variable oracle_db_name is not defined
+  when: oracle_db_name is undefined
 
 - name: set orace_home
   block:
@@ -11,8 +14,8 @@
     - name: set oracle_sid
       set_fact:
         oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
-      when: oracle_db_name > length=0
-        
+#      when: oracle_db_name > length=0
+
     - name: get db details
       shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
       ignore_errors: yes
@@ -25,10 +28,11 @@
 
     - fail:
         msg: Database named {{ oracle_db_name }} doesn't exists'
-      when: oracle_home == ""  
+      when: oracle_home == ""
   when: oracle_context != 'grid'
+  ignore_errors: yes
 
-- name: create tmp dir 
+- name: create tmp dir
   file:
     group: "{{ oracle_group }}"
     owner: "{{ oracle_user }}"
@@ -56,6 +60,6 @@
       loop_control:
         loop_var: sql_file
   when: oracle_home != "" and oracle_context != 'grid'
+  ignore_errors: yes
 
 - include_tasks: validations.yml
-
