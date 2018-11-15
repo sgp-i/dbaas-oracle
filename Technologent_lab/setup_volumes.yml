@@ -1,0 +1,76 @@
+---
+
+- name: setup volumes
+  hosts: "{{ host }}"
+  become: yes
+
+  vars:
+    disks:
+      - { raw: /dev/sdc, part: "1", vg: ora-dg-ocr01 }
+      - { raw: /dev/sdd, part: "1", vg: ora-dg-ocr02 }
+      - { raw: /dev/sde, part: "1", vg: ora-dg-ocr03 }
+      - { raw: /dev/sdf, part: "1", vg: ora-dg-data01 }
+
+  tasks:
+    - name: install the needed packages
+      yum: 
+        name: parted,lvm2,nfs-utils,nfs-utils-lib
+        state: present
+      tags:
+        - mount_nfs
+        - create_lvms
+
+    - name: mount Ansible share
+      mount:
+        path: /ansible
+        src: 10.10.98.164:/export/techlab/ovm
+        fstype: nfs
+        opts: nofail
+        state: mounted
+      tags: 
+        - mount_nfs
+
+    - name: create the partition tables
+      command: parted -s "{{ item.raw }}" mklabel gpt mkpart oravg 1G 100% set "{{ item.part }}" lvm on quit 
+      args:
+        creates: "{{ item.raw }}{{ item.part }}"
+      with_items: "{{ disks }}"
+      tags:
+        - create_lvms
+
+    - name: create the volume groups
+      lvg:
+        vg: "{{ item.vg}}"
+        pvs: "{{ item.raw }}{{ item.part }}"
+        state: present
+      with_items: "{{ disks }}"
+      tags:
+        - create_lvms
+      
+    - name: create the oracle data fs lv
+      lvol: 
+        vg: "{{ item.vg}}"
+        lv: lvol0
+        size: 100%FREE
+        state: present
+      with_items: "{{ disks }}"
+      tags:
+        - create_lvms
+
+    - name: ensure LVMs are owned by Oracle
+      block:
+        - name: get logical volumes
+          find:
+            paths: "/dev/mapper"
+            file_type: any
+            patterns: ora--dg--*
+            use_regex: no
+          register: lvm_disks
+
+        - name: chown lvm disks
+          command: chown oracle:oinstall {{ item.path }}
+          loop: "{{ lvm_disks.files }}"
+
+      when: ansible_distribution == "RedHat"
+      tags:
+      - chown_lvm_disks
