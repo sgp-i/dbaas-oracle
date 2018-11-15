@@ -8,7 +8,7 @@
 - block:
   - name: execute 'upload DB patch log' API call
     uri:
-      url: "{{ apex_url }}/patchlog/"
+      url: "{{ apex_url }}/charter/patchlog/"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body: "{{ logfile_text.content | b64decode | string }}"

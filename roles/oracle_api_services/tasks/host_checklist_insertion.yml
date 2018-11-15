@@ -5,7 +5,7 @@
 
 - name: POST To Insert new Checklist entry
   uri:
-    url: "{{ apex_url }}/insert_db_check_list"
+    url: "{{ apex_url }}/charter/charter_check_list/insert_db_check_list"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: POST
     body_format: json
