@@ -2,7 +2,7 @@
 
 - name: GET cluster_id from APEX
   uri:
-    url: "{{ apex_url }}/get_cluster_id/{{ cluster_name | urlencode }}"
+    url: "{{ apex_url }}/charter/get_cluster_id/{{ cluster_name | urlencode }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: GET
   ignore_errors: yes

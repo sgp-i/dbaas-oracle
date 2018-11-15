@@ -8,7 +8,7 @@
   #  "app_id" is a fk and needs to discussed and is not in body of post call
   - name: POST In V_DB_INVENTORY
     uri:
-      url: "{{ apex_url }}/insert_db_inventory"
+      url: "{{ apex_url }}/charter/insert_db_inventory"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body_format: json
