@@ -1,5 +1,5 @@
 ---
-
+json_backup_dir: /mnt/apex
 ## Host Defaults
 network_type: ""
 dc_location: ""
