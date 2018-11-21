@@ -54,4 +54,4 @@ grid_images:
 - linuxamd64_12102_grid_2of2.zip
 
 
-oracle_grid_home: {{ oracle_base }}/{{ grid_version }}/grid_1
+oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_1"
