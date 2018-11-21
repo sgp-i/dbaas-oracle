@@ -20,6 +20,6 @@
     var: checklist_insrt_response
 - name: set checklist_id
   set_fact:
-    checklist_id: "{{ checklist_insrt_response | from_json | json_query('checklist_insrt_response.json.ID') }}"
+    checklist_id: "{{ checklist_insrt_response | from_json | json_query('json.ID') }}"
 - debug:
    var: checklist_id  
