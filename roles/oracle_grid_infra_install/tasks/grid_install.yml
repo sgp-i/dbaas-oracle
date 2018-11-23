@@ -1,14 +1,5 @@
 ---
 
-- name: testing oracle_grid_home
-  debug: msg="Host is {{ oracle_grid_home }}"
-
-- name: test  hostvars
-  debug: msg="Host is {{ hostvars }}"
-
-#- name: all list
-#  debug: msg="Host list is {{ hostvars[master_node]["grid_install"]["stdout"] }}"
-
 - include_role:
     name: oracle_api_services
     tasks_from: "{{ checklist_task }}_checklist_update.yml"
