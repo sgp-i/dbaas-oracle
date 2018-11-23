@@ -120,7 +120,7 @@
     when: 
     - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
     - inventory_hostname == curr_host
- 
+      
   - include_role:
       name: oracle_api_services
       tasks_from: "{{ checklist_task }}_checklist_update.yml"
