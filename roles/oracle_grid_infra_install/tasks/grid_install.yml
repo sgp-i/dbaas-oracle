@@ -1,5 +1,14 @@
 ---
 
+- name: testing oracle_grid_home
+  debug: msg="Host is {{ oracle_grid_home }}"
+
+- name: test  hostvars
+  debug: msg="Host is {{ hostvars }}"
+
+- name: all list
+  debug: msg="Host list is {{ hostvars[master_node]["grid_install"]["stdout"] }}"
+
 - include_role:
     name: oracle_api_services
     tasks_from: "{{ checklist_task }}_checklist_update.yml"
@@ -25,13 +34,6 @@
 - name: set oracle grid home
   set_fact:
     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
-
-- name: testing oracle_grid_home
-  debug: msg="Host is {{ oracle_grid_home }}"
-
-- name: test  hostvars
-  debug: msg="Host is {{ hostvars }}"
-
 
 - block:
   - name: install grid
@@ -127,8 +129,7 @@
     when: 
     - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
     - inventory_hostname == curr_host
-
-
+      
   - include_role:
       name: oracle_api_services
       tasks_from: "{{ checklist_task }}_checklist_update.yml"
