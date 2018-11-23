@@ -26,15 +26,13 @@
   set_fact:
     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
 
-<<<<<<< HEAD
 
 - name: testing oracle_grid_home
   debug: msg="Host is {{ oracle_grid_home }}"
 
 - name: test  hostvars
   debug: msg="Host is {{ hostvars }}"
-=======
->>>>>>> d52c9057b27efc5f79886765696c88182fde1ec8
+  
 - block:
   - name: install grid
     environment: "{{ ora_user_env }}"
