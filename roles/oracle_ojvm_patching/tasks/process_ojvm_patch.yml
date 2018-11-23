@@ -39,12 +39,31 @@
 
 - include_tasks: unzip_ojvm.yml
 
+# - include_role:
+#     name: oracle_admin
+#     tasks_from: stop_crs.yml
+#   vars:
+#     oracle_home: "{{ oracle_grid_home }}"
+#     oracle_sid: "{{ oracle_grid_sid }}"
+
 - include_role:
     name: oracle_admin
-    tasks_from: stop_crs.yml
+    tasks_from: stop_db.yml
   vars:
     oracle_home: "{{ oracle_grid_home }}"
-    oracle_sid: "{{ oracle_grid_sid }}"
+    loop: "{{ db_name_list }}"
+  loop_control:
+    loop_var: oracle_db_name
+  when: 
+  - patch_type == 'RDBMS'
+  - db_name_list | length > 0
+  - inventory_hostname == master_node
+
+- name : get db_status_check
+  shell: ps -ef | grep pmon | grep -v +ASM | grep -v MGMTDB| grep -v grep 
+  changed_when: false
+  failed_when: db_status_check.stdout_lines | length > 0 
+  register: db_status_check
 
 - name: copy the response file
   copy:
@@ -59,12 +78,12 @@
   loop_control:
     loop_var: oracle_home
 
-- include_role:
-    name: oracle_admin
-    tasks_from: start_crs.yml
-  vars:
-    oracle_home: "{{ oracle_grid_home }}"
-    oracle_sid: "{{ oracle_grid_sid }}"
+# - include_role:
+#     name: oracle_admin
+#     tasks_from: start_crs.yml
+#   vars:
+#     oracle_home: "{{ oracle_grid_home }}"
+#     oracle_sid: "{{ oracle_grid_sid }}"
 
 - name: check for failures
   fail:

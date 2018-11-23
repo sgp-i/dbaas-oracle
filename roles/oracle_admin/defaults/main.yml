@@ -15,7 +15,7 @@ oracle_base: "{% if oracle_context == 'GRID' -%}{{ install_base }}
              {%- else -%}{{ install_base }}/oracle
              {%- endif %}"
 
-oracle_db_name: db
+oracle_db_name: ''
 
 grid_db_name: +ASM
 
