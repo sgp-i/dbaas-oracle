@@ -26,6 +26,13 @@
   set_fact:
     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
 
+- name: testing oracle_grid_home
+  debug: msg="Host is {{ oracle_grid_home }}"
+
+- name: test  hostvars
+  debug: msg="Host is {{ hostvars }}"
+
+
 - block:
   - name: install grid
     environment: "{{ ora_user_env }}"
@@ -121,11 +128,6 @@
     - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'
     - inventory_hostname == curr_host
 
-  - name: testing oracle_grid_home
-    debug: msg="Host is {{ oracle_grid_home }}"
-
-  - name: test  hostvars
-    debug: msg="Host is {{ hostvars }}"
 
   - include_role:
       name: oracle_api_services
