@@ -8,7 +8,7 @@
   block:
   - name: update the json data using PUT call
     uri:
-      url:  "{{ apex_url }}/charter_patch_history/dbpatchhistory/{{ checklist_id }}"
+      url:  "{{ apex_url }}/charter/charter_patch_history/dbpatchhistory/{{ checklist_id }}"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: PUT
       body_format: json

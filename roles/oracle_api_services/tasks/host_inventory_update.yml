@@ -8,7 +8,7 @@
   block:
   - name: Update node in Host Inventory
     uri:
-      url: "{{ apex_url }}/host_inventory/{{ host_id }}"
+      url: "{{ apex_url }}/charter/host_inventory/{{ host_id }}"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: PUT
       body_format: json

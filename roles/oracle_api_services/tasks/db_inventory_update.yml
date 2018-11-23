@@ -14,7 +14,7 @@
   block:
   - name: PUT into V_DB_INVENTORY
     uri:
-      url: "{{ apex_url }}/db_inventory/{{ db_id }}"
+      url: "{{ apex_url }}/charter/db_inventory/{{ db_id }}"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: PUT
       body_format: json
