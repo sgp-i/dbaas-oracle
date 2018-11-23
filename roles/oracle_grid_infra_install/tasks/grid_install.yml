@@ -6,8 +6,8 @@
 - name: test  hostvars
   debug: msg="Host is {{ hostvars }}"
 
-- name: all list
-  debug: msg="Host list is {{ hostvars[master_node]["grid_install"]["stdout"] }}"
+#- name: all list
+#  debug: msg="Host list is {{ hostvars[master_node]["grid_install"]["stdout"] }}"
 
 - include_role:
     name: oracle_api_services
