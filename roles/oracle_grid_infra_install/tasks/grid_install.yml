@@ -26,13 +26,6 @@
   set_fact:
     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
 
-
-- name: testing oracle_grid_home
-  debug: msg="Host is {{ oracle_grid_home }}"
-
-- name: test  hostvars
-  debug: msg="Host is {{ hostvars }}"
-  
 - block:
   - name: install grid
     environment: "{{ ora_user_env }}"
@@ -134,8 +127,9 @@
     vars:
       chklst_json_body:
         new_entry: False
+        task_desc: 'EXECUTING root Upgrade for Grid'
         checklist_type: 'GRID rootupgrade.sh'
-        category_type: Install
+        category_type: 'Install'
         gi_install_status: IN PROGRESS
     when:
      -  inventory_hostname == master_node
@@ -159,6 +153,7 @@
     vars:
       chklst_json_body:
         new_entry: False
+        task_desc: 'Running Configtool'
         checklist_type: 'GRID Running configTool'
         category_type: Install
         gi_install_status: IN PROGRESS
