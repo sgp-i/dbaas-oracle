@@ -1,5 +1,13 @@
 ---
 
+
+
+- name: test  oracle_home
+  debug: msg="oracle home value  is {{ oracle_home }}"
+
+- name: test  install_base
+  debug: msg="install base value  is {{ install_base }}"
+
 - import_role:
     name: oracle_api_services
     tasks_from: db_checklist_update.yml
