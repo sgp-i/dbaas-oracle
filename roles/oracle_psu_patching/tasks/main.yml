@@ -33,7 +33,14 @@
   set_fact:
     oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
+
+- name: test  opatch version required
+  debug: msg="opatch reqired is {{ opatch_version_required }}"
+
 - import_tasks: check_opatch.yml
+
+- name: test  opatch version 
+  debug: msg="opatch version is {{ opatch_version }}"
 
 - include_tasks: install_opatch.yml
   when: opatch_version != opatch_version_required
