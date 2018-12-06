@@ -95,3 +95,18 @@
     msg: 'DiskGroup Creation Failed'
   when:  diskgroup_failed 
   
+
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: 'Configuring Disk Groups'
+      category_type: Install
+      gi_install_status: FAILED
+  when: 
+    - inventory_hostname == master_node
+    - diskgroup_failed 
+  tags:
+  - apex_api

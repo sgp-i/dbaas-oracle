@@ -12,6 +12,8 @@ patch_quarter: ""
 
 patch_year: ""
 
+psu_version: ""
+
 install_base: /u01/app
 
 oracle_base: "{{ install_base }}/oracle"

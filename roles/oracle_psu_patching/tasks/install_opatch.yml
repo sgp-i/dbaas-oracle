@@ -4,7 +4,15 @@
   command: mv {{ oracle_home }}/OPatch {{ oracle_home }}/OPatch.old
   args:
     removes: "{{ oracle_home }}/OPatch"
-
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+  vars:
+    chklst_json_body:
+      patch_status: Installing OPatch
+      new_entry: False
+  tags:
+  - apex_api
 - name: install updated opatch ({{ opatch_version_required }})
   ignore_errors: yes
   unarchive:
@@ -18,11 +26,43 @@
 
 - import_tasks: check_opatch.yml
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+  vars:
+    chklst_json_body:
+      patch_status: Installed OPatch
+      new_entry: False
+  when: opatch_version == opatch_version_required
+  tags:
+  - apex_api
+
 - name: Failure Block
   block:
   - name: restore opatch from backup
     command: mv {{ oracle_home }}/OPatch.old {{ oracle_home }}/OPatch
+  - import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+    vars:
+        chklst_json_body:
+        new_entry: True
+        checklist_type: PATCH
+        category_type: Install
+        db_install_status: OPATCH Install FAILED
+    when: fresh_install
+    tags:
+    - apex_api
 
+  - import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+    vars:
+        chklst_json_body:
+        patch_status: OPATCH install FAILED
+        new_entry: False
+    tags:
+    - apex_api
   - fail:
       msg: opatch not installed
   when: opatch_version != opatch_version_required

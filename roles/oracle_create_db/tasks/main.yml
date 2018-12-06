@@ -66,7 +66,7 @@
     vars:
       chklst_json_body:
         new_entry: True
-        checklist_type: " CREATE DATABASE {{ oracle_db_name }}"
+        checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
         category_type: DB Creation
         db_install_status: "IN PROGRESS"
     tags:

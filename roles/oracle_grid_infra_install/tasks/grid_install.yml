@@ -6,7 +6,7 @@
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: 'GRID INSTALL'
+      checklist_type: Start silent Install
       category_type: Install
       gi_install_status: IN PROGRESS
   when: inventory_hostname == master_node
@@ -26,11 +26,11 @@
   set_fact:
     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1  }}"
 
-- name: testing oracle_grid_home
-  debug: msg="Host is {{ oracle_grid_home }}"
+# - name: testing oracle_grid_home
+#   debug: msg="Host is {{ oracle_grid_home }}"
 
-- name: test  hostvars
-  debug: msg="Host is {{ hostvars }}"
+# - name: test  hostvars
+#   debug: msg="Host is {{ hostvars }}"
 
 - block:
   - name: install grid
@@ -109,7 +109,7 @@
     vars:
       chklst_json_body:
         new_entry: False
-        checklist_type: 'GRID root.sh'
+        checklist_type: 'running GI root.sh'
         category_type: Install
         gi_install_status: IN PROGRESS
     when: 
