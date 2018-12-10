@@ -13,3 +13,15 @@
   environment: "{{ ora_user_env }}"
   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ oracle_base }}/admin/scripts/{{ oracle_sid }}_alter_db_params.sql"
   register: {{ oracle_sid }}_alter_db_params_result
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "post_provision_db steps"
+      category_type: db install
+      post_build_status: "SUCCESS"
+  tags:
+  - apex_api  

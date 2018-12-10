@@ -1,4 +1,15 @@
 ---
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "Post Provisioning Validations Done on DB"
+      category_type: DB Install
+      db_install_status: "IN_PROGRESS"
+  tags:
+  - apex_api
 - name: check oracle_db_name is defined or not
   debug:
     msg: The Variable oracle_db_name is not defined
