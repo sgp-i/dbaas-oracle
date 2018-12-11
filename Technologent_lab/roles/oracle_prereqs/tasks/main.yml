@@ -47,4 +47,9 @@
     path: /etc/sysconfig/network
     line: 'NOZEROCONF=yes'
 
+- name: make /u01 owned by oracle
+  file: 
+    path: /u01
+    owner: "{{ oracle_user.name }}"
+    
 - import_tasks: Charter_checks.yml
