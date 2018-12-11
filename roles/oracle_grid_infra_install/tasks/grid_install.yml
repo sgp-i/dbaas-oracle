@@ -112,6 +112,7 @@
         checklist_type: 'running GI root.sh'
         category_type: Install
         gi_install_status: IN PROGRESS
+        task_desc: 'EXECUTING root Upgrade for Grid'
     when: 
       - inventory_hostname == master_node
       - 'oracle_grid_home + "/root.sh" in hostvars[master_node]["grid_install"]["stdout"]'

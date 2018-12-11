@@ -5,7 +5,7 @@ network_type: ""
 dc_location: ""
 global_zone_solaris: "N/A"
 server_monitoring_tool: ""
-clustered: "Y"
+clustered: "N"
 
 ## Cluster Defaults
 cluster_type: RAC
