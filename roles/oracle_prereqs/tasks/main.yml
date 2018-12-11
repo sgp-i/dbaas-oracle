@@ -453,24 +453,7 @@
       status: "{% if oracle_group_check.split(' ') | difference(oracle_groups) | length > 0 -%}FAILED
               {%- else -%}PASSED
               {%- endif %}"
-    - check_name: Ignored PBIS users
-      expected_value: "{{ pbis.ignored_users | join(',') }}"
-      actual_value: "{{ pbis_ignored_users_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
-      status: "{% if missing_pbis_ignored_users is defined and
-                     missing_pbis_ignored_users | length > 0 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
-      tags:
-        - charteronly         
-    - check_name: Ignored PBIS groups
-      expected_value: "{{ pbis.ignored_groups | join(',') }}"
-      actual_value: "{{ pbis_ignored_groups_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
-      status: "{% if missing_pbis_ignored_groups is defined and
-                     missing_pbis_ignored_groups | length > 0 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
-      tags:
-        - charteronly         
+        
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
       actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
