@@ -28,7 +28,6 @@
       patch_type: "{{ patch_type }}"
       patch_status: PATCHING STARTED
       new_entry: True
-
   tags:
   - apex_api
 
