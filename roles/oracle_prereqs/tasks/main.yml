@@ -89,6 +89,10 @@
     path: /u01
   register: ora_base
 
+- debug:
+    var: ora_base
+    verbosity: 1
+    
 - name: umask value checker
   become: yes
   become_user: "{{ oracle_user }}"
