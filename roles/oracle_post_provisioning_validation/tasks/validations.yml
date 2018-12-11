@@ -1,5 +1,15 @@
 ---
-
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "Post Provisioning Validations Done on DB"
+      category_type: DB Install
+      db_install_status: "IN_PROGRESS"
+  tags:
+  - apex_api
 - name: check oracle user
   user:
     name: oracle
@@ -113,6 +123,18 @@
       changed_when: false
   when: oracle_home != "" and oracle_context != 'grid'
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "Post Provisioning Validations Done on DB"
+      category_type: DB Install
+      db_install_status: "SUCCESS"
+  tags:
+  - apex_api
+
 - set_fact:
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
@@ -207,6 +229,19 @@
     logfile_path: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
+  tags:
+  - apex_api
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "Post Provisioning Validations Done on DB"
+      category_type: DB Install
+      db_install_status: "FAILED"
+  when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags:
   - apex_api
 

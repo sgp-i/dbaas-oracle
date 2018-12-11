@@ -1,5 +1,17 @@
 ---
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "post_provision_db steps"
+      category_type: db install
+      post_build_status: IN_PROGRESS
+  tags:
+  - apex_api
+
 - name: create tmp dir
   file:
     group: "{{ oracle_group }}"
@@ -16,18 +28,6 @@
 - name: set asm_sid
   set_fact:
     asm_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
-
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_update.yml
-  vars:
-    chklst_json_body:
-      new_entry: True
-      checklist_type: "10"
-      category_type: Install
-      db_install_status: IN PROGRESS
-  tags:
-  - apex_api
 
 - name: get oracle grid home
   shell: "ps -ef | grep ohasd | grep /u01/app/12.1.0.2/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
@@ -69,11 +69,38 @@
         rac_oracle_db_name: "{{ rac_database_name.stdout | trim }}"
   when: '(ansible_play_hosts | length) > 1'
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "post_provision_db steps"
+      category_type: db install
+      post_build_status: "FAILED"
+  when:
+    - oracle_home == ""
+    - oracle_sid == ""
+  tags:
+  - apex_api
+
 - fail:
     msg: Database named {{ oracle_db_name }} doesn't exists since oracle_home and oracle_sid is not set properly'
   when:
     - oracle_home == ""
     - oracle_sid == ""
+
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "post_provision_db steps"
+      category_type: db install
+      post_build_status: "IN_PROGRESS"
+  tags:
+  - apex_api
 
 - name: complete block of post Provisioning validation
   block:
@@ -109,14 +136,15 @@
         state: touch
         mode: 0400
 
-
     - import_role:
         name: oracle_api_services
         tasks_from: db_checklist_update.yml
       vars:
         chklst_json_body:
           new_entry: False
-          db_install_status: SUCCESSFUL
+          checklist_type: "post_provision_db steps"
+          category_type: db install
+          post_build_status: "IN_PROGRESS"          
       tags:
       - apex_api
   rescue:
@@ -126,6 +154,29 @@
       vars:
         chklst_json_body:
           new_entry: False
+          checklist_type: "post_provision_db steps"
+          category_type: db install
+          post_build_status: Failed
+      tags:
+      - apex_api  
+
+    - import_role:
+        name: oracle_api_services
+        tasks_from: db_checklist_update.yml
+      vars:
+        chklst_json_body:
+          new_entry: False
           db_install_status: Failed
       tags:
       - apex_api
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_checklist_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: "post_provision_db steps"
+      category_type: db install
+      post_build_status: "SUCCESS"
+  tags:
+  - apex_api      
