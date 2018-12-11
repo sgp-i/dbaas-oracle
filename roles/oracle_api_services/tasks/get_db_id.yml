@@ -10,4 +10,5 @@
 
 - name: set db_id
   set_fact:
-    db_id: "{{ db_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('items[0].id') }}"
+    #db_id: "{{ db_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('items[0].id') }}"
+    db_id: "{{ cluster_id_get_response.json.ID }}"

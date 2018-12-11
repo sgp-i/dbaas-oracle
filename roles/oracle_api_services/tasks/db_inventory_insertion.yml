@@ -20,8 +20,8 @@
   
   - name: set db_id
     set_fact:
-      db_id: "{{ v_db_inventory_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
-
+      #db_id: "{{ v_db_inventory_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+      db_id: "{{ v_db_inventory_insertion_response.json.ID }}"
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost

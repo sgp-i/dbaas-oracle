@@ -22,7 +22,8 @@
   
   - name: set cluster_id
     set_fact:
-      cluster_id: "{{ v_cluster_membr_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+      cluster_id: "{{ v_cluster_membr_detail_insertion_response.json.ID }}"
+      #cluster_id: "{{ v_cluster_membr_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
     when: inventory_hostname == master_node
       
   rescue:
