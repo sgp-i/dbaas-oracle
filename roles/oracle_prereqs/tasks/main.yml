@@ -209,6 +209,7 @@
   register: pbis_ignored_users_in_srvr
   tags:
     - redhat
+    - charteronly
 
 - name: Check The Ignored Users List In pbis
   set_fact:
@@ -236,7 +237,7 @@
     loop_var: ignored_group
   tags:
     - charteronly
-    
+
 - name: Get The config of network
   slurp:
     src: /etc/sysconfig/network
