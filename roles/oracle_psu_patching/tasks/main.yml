@@ -15,6 +15,21 @@
   tags:
   - apex_api
 
+- import_role:
+    name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+  vars:
+    chklst_json_body:
+      db_home: "{{ oracle_db_home }}"
+      host_name: "{{ ansible_hostname }}"
+      PSU_NUMBER: "{{ patch_num }}"
+      PSU_QUARTER: "{{ patch_quarter }}"
+      PSU_YEAR: "{{ patch_year }}"
+      patch_type: "{{ patch_type }}"
+      patch_status: PATCHING STARTED
+      new_entry: True
+  tags:
+  - apex_api
 
 - name: create tmp dir
   file:
