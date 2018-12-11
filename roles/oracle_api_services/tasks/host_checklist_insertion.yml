@@ -21,6 +21,7 @@
 - name: set checklist_id
   set_fact:
     #checklist_id: "{{ checklist_insrt_response.id }}"
-   checklist_id: "{{ checklist_insrt_response| default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+   #checklist_id: "{{ checklist_insrt_response| default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+    checklist_id: "{{ checklist_insrt_response.json.ID }}"
 - debug:
    var: checklist_id  
