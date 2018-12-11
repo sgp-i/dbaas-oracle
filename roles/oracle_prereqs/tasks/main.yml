@@ -92,7 +92,7 @@
 - debug:
     var: ora_base
     verbosity: 1
-    
+
 - name: umask value checker
   become: yes
   become_user: "{{ oracle_user }}"
@@ -460,6 +460,8 @@
                      missing_pbis_ignored_users | length > 0 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
+      tags:
+        - charteronly         
     - check_name: Ignored PBIS groups
       expected_value: "{{ pbis.ignored_groups | join(',') }}"
       actual_value: "{{ pbis_ignored_groups_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
@@ -467,6 +469,8 @@
                      missing_pbis_ignored_groups | length > 0 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
+      tags:
+        - charteronly         
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
       actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
