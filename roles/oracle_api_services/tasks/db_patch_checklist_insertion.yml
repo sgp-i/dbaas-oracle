@@ -1,7 +1,7 @@
 ---
 - debug:
     var: chklst_json_body
-      
+
 - name: POST To Insert new Checklist entry
   block:
     - name: call api to insert db patch history
@@ -13,7 +13,7 @@
         body: "{{ chklst_json_body }}"
         status_code: 200,201
         headers:
-        Content-Type: "application/json"
+          Content-Type: "application/json"
       ignore_errors: yes
       register: checklist_insrt_response
   rescue:
