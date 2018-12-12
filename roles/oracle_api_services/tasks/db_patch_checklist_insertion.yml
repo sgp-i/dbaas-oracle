@@ -2,17 +2,18 @@
   
 - name: POST To Insert new Checklist entry
   block:
-    uri:
-      url: "{{ apex_url }}/charter_patch_history/insertdbpatchhistory"
-      validate_certs: no  # should be removed after https certs becomes renewed
-      method: POST
-      body_format: json
-      body: "{{ chklst_json_body }}"
-      status_code: 200,201
-      headers:
-      Content-Type: "application/json"
-    ignore_errors: yes
-    register: checklist_insrt_response
+    - name: call api to insert db patch history
+      uri:
+        url: "{{ apex_url }}/charter_patch_history/insertdbpatchhistory"
+        validate_certs: no  # should be removed after https certs becomes renewed
+        method: POST
+        body_format: json
+        body: "{{ chklst_json_body }}"
+        status_code: 200,201
+        headers:
+        Content-Type: "application/json"
+      ignore_errors: yes
+      register: checklist_insrt_response
   rescue:
     - name: Store the Json If APEX Server Is Down
       delegate_to: localhost
