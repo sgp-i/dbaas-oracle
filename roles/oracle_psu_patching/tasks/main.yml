@@ -13,7 +13,7 @@
       db_install_status: IN PROGRESS
   when: fresh_install
   tags:
-   - apex_api
+  - apex_api
 
 - import_role:
     name: oracle_api_services
@@ -106,7 +106,7 @@
   - fresh_install  
   - opatch_lsinv_success.stdout_lines |  length > 0 
   tags:
-    - apex_api
+  - apex_api
 
 - import_role:
     name: oracle_api_services
@@ -119,7 +119,7 @@
   - fresh_install  
   - opatch_lsinv_success.stdout_lines |  length == 0 
   tags:
-    - apex_api
+  - apex_api
 
 - import_role:
     name: oracle_api_services
@@ -130,15 +130,15 @@
       new_entry: False
   when: opatch_lsinv_success.stdout_lines |  length > 0 
   tags:
-   - apex_api
+  - apex_api
 
 - import_role:
-  name: oracle_api_services
-  tasks_from: db_patch_checklist_update.yml
+   name: oracle_api_services
+   tasks_from: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
       patch_status: PSU FAILED
       new_entry: False
   when: opatch_lsinv_success.stdout_lines |  length == 0 
   tags:
-   - apex_api
+  - apex_api
