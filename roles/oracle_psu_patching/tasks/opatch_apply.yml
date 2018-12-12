@@ -40,6 +40,9 @@
   tags:
   - apex_api
 
+- debug:
+    var: opatch_log
+    
 - name: Get latest log file
   set_fact:
     latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
