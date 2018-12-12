@@ -40,6 +40,10 @@
   tags:
   - apex_api
 
+- name: Get latest log file
+  set_fact:
+    latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
+    
 - import_role:
     name: oracle_api_services
     tasks_from: db_patch_upload_log.yml
