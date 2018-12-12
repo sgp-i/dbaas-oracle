@@ -6,7 +6,7 @@
   block:
     - name: call api to insert db patch history
       uri:
-        url: "{{ apex_url }}/charter_patch_history/insertdbpatchhistory"
+        url: "{{ apex_url }}/charter/insertdbpatchhistory"
         validate_certs: no  # should be removed after https certs becomes renewed
         method: POST
         body_format: json
