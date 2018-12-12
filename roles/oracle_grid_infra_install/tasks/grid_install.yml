@@ -87,7 +87,6 @@
       command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
       register: orainstroot_script
 
-    always:
     - name: save orainstroot script stdout
       copy:
         dest: "{{ oracle_tmp }}/orainstroot_script_stdout.out"

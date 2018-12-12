@@ -5,7 +5,7 @@
     command: "{{ oracle_grid_home }}/root.sh"
     register: root_script
 
-- always:
+  always:
   - name: save root script stdout
     copy:
       dest: "{{ oracle_tmp }}/root_script_grid.out"

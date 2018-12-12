@@ -89,6 +89,10 @@
     path: /u01
   register: ora_base
 
+- debug:
+    var: ora_base
+    verbosity: 1
+
 - name: umask value checker
   become: yes
   become_user: "{{ oracle_user }}"
@@ -207,6 +211,9 @@
   slurp:
     src: /etc/pbis/user-ignore
   register: pbis_ignored_users_in_srvr
+  tags:
+    - redhat
+    - charteronly
 
 - name: Check The Ignored Users List In pbis
   set_fact:
@@ -215,11 +222,15 @@
   loop: "{{ pbis.ignored_users }}"
   loop_control:
     loop_var: ignored_user
+  tags:
+    - charteronly
 
 - name: Get The Ignored Groups In pbis
   slurp:
     src: /etc/pbis/group-ignore
   register: pbis_ignored_groups_in_srvr
+  tags:
+    - charteronly
 
 - name: Check The Ignored Groups List In pbis
   set_fact:
@@ -228,6 +239,8 @@
   loop: "{{ pbis.ignored_groups }}"
   loop_control:
     loop_var: ignored_group
+  tags:
+    - charteronly
 
 - name: Get The config of network
   slurp:
@@ -440,20 +453,7 @@
       status: "{% if oracle_group_check.split(' ') | difference(oracle_groups) | length > 0 -%}FAILED
               {%- else -%}PASSED
               {%- endif %}"
-    - check_name: Ignored PBIS users
-      expected_value: "{{ pbis.ignored_users | join(',') }}"
-      actual_value: "{{ pbis_ignored_users_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
-      status: "{% if missing_pbis_ignored_users is defined and
-                     missing_pbis_ignored_users | length > 0 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
-    - check_name: Ignored PBIS groups
-      expected_value: "{{ pbis.ignored_groups | join(',') }}"
-      actual_value: "{{ pbis_ignored_groups_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
-      status: "{% if missing_pbis_ignored_groups is defined and
-                     missing_pbis_ignored_groups | length > 0 -%}FAILED
-               {%- else -%}PASSED
-               {%- endif %}"
+        
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
       actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted

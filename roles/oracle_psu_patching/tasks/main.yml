@@ -122,6 +122,8 @@
   - apex_api
 
 - import_role:
+<<<<<<< HEAD
+=======
     name: oracle_api_services
     tasks_from: db_patch_checklist_update.yml
   vars:
@@ -133,12 +135,31 @@
   - apex_api
 
 - import_role:
+>>>>>>> apex_dev
+    name: oracle_api_services
+    tasks_from: db_patch_checklist_update.yml
+  vars:
+      chklst_json_body:
+<<<<<<< HEAD
+      patch_status: PSU APPLIED SUCCESSFULLY
+      new_entry: False
+  when: opatch_lsinv_success.stdout_lines |  length > 0 
+  tags:
+  - apex_api
+
+- import_role:
    name: oracle_api_services
    tasks_from: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
+=======
+>>>>>>> apex_dev
       patch_status: PSU FAILED
       new_entry: False
   when: opatch_lsinv_success.stdout_lines |  length == 0 
   tags:
+<<<<<<< HEAD
   - apex_api
+=======
+  - apex_api
+>>>>>>> apex_dev
