@@ -3,6 +3,17 @@
 - include_vars: secrets.yml
   no_log: false 
 
+- include_role:
+    name: oracle_api_services
+    tasks_from: "host_inventory_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      host: hostvars['inventory_hostname']
+      cluster: True
+  tags:
+  - apex_api
+
 - name: check Grid is running
   shell: ps -ef | grep d.bin | grep -v grep | grep ohas
   register: ohas_grid_check
@@ -51,10 +62,10 @@
   shell: "ps -ef | grep ohasd | grep {{ oracle_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
   changed_when: False
   register: oracle_ohasd_process
-
-# - name: set grid home
-#   set_fact:
-#     oracle_grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_{{ number_of_oracle_grid_homes.matched | int + 1 }}"
+  
+- name: set grid home
+  set_fact:
+       oracle_grid_home: "{{ oracle_ohasd_process.stdout | regex_replace('/bin/ohasd.bin', '') }}"
 
 - include_tasks: prep_rsp_file.yml
   when: inventory_hostname == master_node
@@ -84,7 +95,7 @@
       new_entry: True
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
-      gi_install_status: IN PROGRESS
+      gi_install_status: IN_PROGRESS
   when: inventory_hostname == master_node
   tags:
   - apex_api
@@ -95,3 +106,18 @@
     msg: 'DiskGroup Creation Failed'
   when:  diskgroup_failed 
   
+
+- include_role:
+    name: oracle_api_services
+    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+  vars:
+    chklst_json_body:
+      new_entry: True
+      checklist_type: 'Configuring Disk Groups'
+      category_type: Install
+      gi_install_status: FAILED
+  when: 
+    - inventory_hostname == master_node
+    - diskgroup_failed 
+  tags:
+  - apex_api

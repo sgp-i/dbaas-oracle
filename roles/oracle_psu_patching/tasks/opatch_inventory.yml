@@ -20,7 +20,12 @@
   changed_when: False
   when: opatch_lsinv.stderr_lines | length > 0
 
-
+- name: detemine success of opatch apply
+  become_user: "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  command: opatch lsinventory | grep {{ psu_version }}
+  register: opatch_lsinv_success
+  changed_when: False
 
 - import_role:
     name: oracle_api_services

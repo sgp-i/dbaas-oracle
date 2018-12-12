@@ -6,7 +6,7 @@
     register: rootupgrade_script
     tags: upgrade_script 
 
-- always:
+  always:
   - name: save rootupgrade script stdout
     copy:
       dest: "{{ oracle_tmp }}/rootupgrade_script_grid.out"

@@ -1,5 +1,6 @@
 ---
 
+  
 - name: check OPatch version
   environment: "{{ ora_user_env }}"
   command: opatch version

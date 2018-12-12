@@ -5,7 +5,7 @@
     command: "{{ oracle_grid_home }}/root.sh"
     register: root_script
 
-- always:
+  always:
   - name: save root script stdout
     copy:
       dest: "{{ oracle_tmp }}/root_script_grid.out"
@@ -32,5 +32,6 @@
       tasks_from: upload_log.yml
     vars:
       logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+      log_file_desc: "root.sh"
     tags:
     - apex_api
