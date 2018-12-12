@@ -7,6 +7,9 @@
 - debug:
     var: chklst_json_body
     
+- debug:
+    msg: "{{ apex_url }}/charter/dbpatchhistory/{{ checklist_id }}"  
+    
 - name: Checklist Update
   block:
     - name: update the json data using PUT call
