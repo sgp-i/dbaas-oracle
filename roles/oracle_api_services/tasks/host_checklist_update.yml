@@ -2,6 +2,9 @@
   include_tasks: host_checklist_insertion.yml
   when: chklst_json_body.new_entry
 
+- debug:
+    var: chklst_json_body
+    
 - name: Checklist Update
   block:
   - name:  update the json data using PUT call
