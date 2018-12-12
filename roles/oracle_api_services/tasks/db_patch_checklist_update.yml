@@ -5,7 +5,7 @@
   when: chklst_json_body.new_entry
 
 - debug:
-    var:chklst_json_body
+    var: chklst_json_body
     
 - name: Checklist Update
   block:
