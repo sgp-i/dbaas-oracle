@@ -1,5 +1,11 @@
 ---
 
+- debug:
+    var: oracle_user
+
+- debug: 
+    var: ora_user_env
+    
 - name: check currently mounted disks
   become: yes
   become_user: "{{ oracle_user }}"
@@ -7,6 +13,7 @@
   command: asmcmd lsdg --suppressheader
   register: asm_disks_list
   changed_when: False
+
 - set_fact:
     asm_disks: "{{ asm_disks | default('') + '\n' + asm_line | regex_search('MOUNTED.*') }}'"
   loop: "{{ asm_disks_list.stdout_lines }}"
