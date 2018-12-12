@@ -20,7 +20,7 @@
     tasks_from: db_patch_checklist_update.yml
   vars:
     chklst_json_body:
-      db_home: "{{ oracle_db_home }}"
+      db_home: "{{ oracle_home }}"
       host_name: "{{ ansible_hostname }}"
       PSU_NUMBER: "{{ patch_num }}"
       PSU_QUARTER: "{{ patch_quarter }}"
