@@ -30,7 +30,7 @@
         create: yes
 - name: set checklist_id
   set_fact:
-    checklist_id: "{{ checklist_insrt_response.id }}"
+    checklist_id: "{{ checklist_insrt_response.json.ID }}"
 
 - debug:
     var: checklist_insrt_response
