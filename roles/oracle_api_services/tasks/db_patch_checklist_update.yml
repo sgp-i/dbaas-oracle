@@ -28,4 +28,4 @@
                   "id": "{{ checklist_id }}",
                   "update": {{ chklst_json_body | to_json }} 
                 }'
-      create: yes
+        create: yes
