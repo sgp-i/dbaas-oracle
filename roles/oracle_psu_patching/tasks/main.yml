@@ -93,7 +93,8 @@
   shell: opatch lsinventory | grep {{ psu_version }}
   register: opatch_lsinv_success
   changed_when: False
-
+- debug:
+  vars: opatch_lsinv_success
 
 - import_role:
     name: oracle_api_services
