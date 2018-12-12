@@ -41,6 +41,9 @@
   - apex_api
 
 - debug:
+    var: oracle_home
+    
+- debug:
     var: opatch_log
     
 - name: Get latest log file
