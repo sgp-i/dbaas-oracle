@@ -96,8 +96,8 @@
 
 
 - import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+  name: oracle_api_services
+  tasks_from: db_checklist_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -106,11 +106,11 @@
   - fresh_install  
   - opatch_lsinv_success.stdout_lines |  length > 0 
   tags:
-  - apex_api
+    - apex_api
 
 - import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+  name: oracle_api_services
+  tasks_from: db_checklist_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -119,7 +119,7 @@
   - fresh_install  
   - opatch_lsinv_success.stdout_lines |  length == 0 
   tags:
-  - apex_api
+    - apex_api
 
 - import_role:
   name: oracle_api_services
@@ -130,7 +130,7 @@
       new_entry: False
   when: opatch_lsinv_success.stdout_lines |  length > 0 
   tags:
-  - apex_api
+    - apex_api
 
 - import_role:
   name: oracle_api_services
@@ -141,4 +141,4 @@
       new_entry: False
   when: opatch_lsinv_success.stdout_lines |  length == 0 
   tags:
-  - apex_api
+    - apex_api
