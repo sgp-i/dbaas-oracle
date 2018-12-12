@@ -95,7 +95,7 @@
   changed_when: False
 
 - debug:
-    vars: opatch_lsinv_success.stdout_lines
+    var: opatch_lsinv_success.stdout_lines
 
 - import_role:
     name: oracle_api_services
