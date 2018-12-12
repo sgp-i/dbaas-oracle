@@ -1,6 +1,9 @@
 ---
 - debug:
     var: chklst_json_body
+    
+- debug:
+    msg: "{{ apex_url }}/charter/insertdbpatchhistory"  
 
 - name: POST To Insert new Checklist entry
   block:
