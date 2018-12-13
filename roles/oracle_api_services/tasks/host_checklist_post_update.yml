@@ -8,9 +8,9 @@
    var: checklist_id    
 - name: Checklist Update
   block:
-  - name:  update the json data using PUT call
+  - name:  update the json data using POST UPDATE call
     uri:
-      url:  "{{ apex_url }}/charter/db_check_list/update_db_check_list"
+      url:  "{{ apex_url }}/charter/update_db_check_list"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body_format: json
