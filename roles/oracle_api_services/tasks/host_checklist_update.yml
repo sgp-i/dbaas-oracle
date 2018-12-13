@@ -4,7 +4,7 @@
 
 - debug:
     var: chklst_json_body
-    
+      
 - name: Checklist Update
   block:
   - name:  update the json data using PUT call
@@ -17,7 +17,8 @@
       register: checklist_update_response
       headers:
           Content-Type: "application/json"
-  
+- debug: 
+    var: checklist_update_response
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost

@@ -9,8 +9,7 @@
     validate_certs: no  # should be removed after https certs becomes renewed
     method: POST
     body_format: json
-    body:
-      host_name: "{{ ansible_hostname }}"
+    body: {{ chklst_json_body }}
     status_code: 200,201
     headers:
       Content-Type: "application/json"

@@ -6,6 +6,7 @@
   vars:
     chklst_json_body:
       new_entry: True
+      host_name: "{{ ansible_hostname }}"
       checklist_type: PRE-CHECK Host
       category_type: PRE-CHECK
       gi_install_status: IN_PROGRESS
