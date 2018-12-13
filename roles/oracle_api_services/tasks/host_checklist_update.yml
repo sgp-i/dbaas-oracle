@@ -2,8 +2,8 @@
   include_tasks: host_checklist_insertion.yml
   when: chklst_json_body.new_entry
 
-- debug:
-    var: chklst_json_body
+#- debug:
+   # var: chklst_json_body
       
 - name: Checklist Update
   block:
@@ -17,8 +17,8 @@
       register: checklist_update_response
       headers:
           Content-Type: "application/json"
-- debug: 
-    var: checklist_update_response
+#- debug: 
+ #   var: checklist_update_response
   rescue:
   - name: Store the Json If APEX Server Is Down
     delegate_to: localhost
