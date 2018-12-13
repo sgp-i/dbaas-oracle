@@ -2,8 +2,8 @@
   include_tasks: host_checklist_insertion.yml
   when: chklst_json_body.new_entry
 
-#- debug:
-   # var: chklst_json_body
+- debug:
+   var: chklst_json_body
       
 - name: Checklist Update
   block:
@@ -31,3 +31,6 @@
                 "update": {{ chklst_json_body | to_json }} 
               }'
       create: yes
+
+- debug: 
+   var: checklist_update_response
