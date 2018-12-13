@@ -17,7 +17,7 @@
       body: "{{ chklst_json_body }}"
       register: checklist_update_response
       headers:
-          Content-Type: "application/json"
+        Content-Type: "application/json"
     when: chklst_json_body.new_entry == False          
 #- debug: 
  #   var: checklist_update_response
