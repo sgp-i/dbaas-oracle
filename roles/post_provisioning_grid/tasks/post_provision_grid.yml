@@ -22,7 +22,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: Fasle
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "POST_PROVISION"
       category_type: POST
       db_install_status: IN PROGRESS
