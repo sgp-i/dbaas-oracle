@@ -31,5 +31,6 @@
       tasks_from: upload_log.yml
     vars:
       logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+      log_file_desc:
     tags:
     - apex_api

@@ -6,9 +6,10 @@
     removes: "{{ oracle_home }}/OPatch"
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
+      ID: "{{ checklist_id }}"
       patch_status: Installing OPatch
       new_entry: False
   tags:
@@ -28,7 +29,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
       patch_status: Installed OPatch
@@ -43,10 +44,11 @@
     command: mv {{ oracle_home }}/OPatch.old {{ oracle_home }}/OPatch
   - import_role:
       name: oracle_api_services
-      tasks_from: db_checklist_update.yml
+      tasks_from: db_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: True
+        new_entry: False
+        ID: "{{ checklist_id }}"
         checklist_type: PATCH
         category_type: Install
         db_install_status: OPATCH Install FAILED
@@ -56,7 +58,7 @@
 
   - import_role:
       name: oracle_api_services
-      tasks_from: db_patch_checklist_update.yml
+      tasks_from: db_patch_checklist_post_update.yml
     vars:
       chklst_json_body:
         patch_status: OPATCH install FAILED

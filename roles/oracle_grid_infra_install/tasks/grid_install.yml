@@ -2,7 +2,7 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
       new_entry: True
@@ -72,6 +72,7 @@
       tasks_from: upload_log.yml
     vars:
       logfile_path: "{{ gi_install_log.files[0].path }}"
+      log_file_desc: grid install log
     when: 
     - inventory_hostname == master_node
     - gi_install_log.files[0] is defined
@@ -104,7 +105,7 @@
 
   - include_role:
       name: oracle_api_services
-      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+      tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
     vars:
       chklst_json_body:
         new_entry: False
@@ -129,7 +130,7 @@
       
   - include_role:
       name: oracle_api_services
-      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+      tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
     vars:
       chklst_json_body:
         new_entry: False
@@ -155,7 +156,7 @@
         
   - include_role:
       name: oracle_api_services
-      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+      tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
     vars:
       chklst_json_body:
         new_entry: False
@@ -194,7 +195,7 @@
   rescue:
   - include_role:
       name: oracle_api_services
-      tasks_from: "{{ checklist_task }}_checklist_update.yml"
+      tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
     vars:
       chklst_json_body:
         new_entry: False
@@ -209,7 +210,7 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
       checklist_type: 'GRID Install'

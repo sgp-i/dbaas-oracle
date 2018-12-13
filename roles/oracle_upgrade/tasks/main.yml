@@ -41,11 +41,11 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "??"
+      checklist_type: "DB Upgrade"
       category_type: Upgrade
       db_install_status: IN PROGRESS
   tags:
@@ -113,10 +113,11 @@
   rescue:
   - import_role:
       name: oracle_api_services
-      tasks_from: db_checklist_update.yml
+      tasks_from: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False
+        ID: "{{ checklist_id }}"
         db_install_status: FAILED
     tags:
     - apex_api
@@ -126,9 +127,10 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
+      ID: "{{ checklist_id }}"
       new_entry: False
       db_install_status: SUCCESSFUL
   tags:

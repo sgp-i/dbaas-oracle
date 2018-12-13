@@ -5,7 +5,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: host_checklist_update.yml
+    tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True

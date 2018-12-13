@@ -33,16 +33,18 @@
     tasks_from: upload_log.yml
   vars:
     logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+    log_file_desc: InstallAction
   tags:
   - apex_api
 
 
 - import_role:
     name: oracle_api_services
-    tasks_from: host_checklist_update.yml
+    tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "Root.sh execution RDBMS"
       category_type: Install
       db_install_status: IN PROGRESS
@@ -69,9 +71,10 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: host_checklist_update.yml
+    tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
+       ID: "{{ checklist_id }}"
        new_entry: False
        db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
                                  hostvars[master_node]['db_install']['failed'] -%}FAILED

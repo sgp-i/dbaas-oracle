@@ -89,10 +89,11 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: IN_PROGRESS
@@ -109,10 +110,11 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: FAILED

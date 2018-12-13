@@ -2,7 +2,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
       patch_status: 'RUNNING OPATCH APPLY'

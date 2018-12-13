@@ -4,7 +4,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -17,7 +17,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
       db_home: "{{ oracle_db_home }}"
@@ -99,9 +99,10 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
+      ID: "{{ checklist_id }}"
       new_entry: False
       db_install_status: SUCCESSFUL #Need a way to determine Failures
   when: 
@@ -112,10 +113,11 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
+      ID: "{{ checklist_id }}"
       db_install_status: Failed #Need a way to determine Failures
   when: 
   - fresh_install  
@@ -125,7 +127,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU APPLIED SUCCESSFULLY
@@ -136,7 +138,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_patch_checklist_update.yml
+    tasks_from: db_patch_checklist_post_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU FAILED

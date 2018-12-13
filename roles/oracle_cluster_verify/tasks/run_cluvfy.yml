@@ -2,13 +2,13 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "CLUVFY"
+      checklist_type: CLUVFY
       category_type: PRE-CHECK
-      gi_install_status: "IN PROGRESS"
+      gi_install_status: IN PROGRESS
   tags:
   - apex_api
 
@@ -91,6 +91,7 @@
     tasks_from: upload_log.yml
   vars:
     logfile_path: "{{ oracle_tmp }}/cluvfy_stdout.out"
+    log_file_desc: cluvfy
   tags:
   - apex_api
 
@@ -103,7 +104,7 @@
 
 - include_role:
     name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_update.yml"
+    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
   vars:
     chklst_json_body:
       new_entry: False

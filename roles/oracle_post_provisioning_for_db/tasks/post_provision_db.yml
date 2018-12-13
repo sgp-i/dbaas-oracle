@@ -2,7 +2,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -71,7 +71,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -92,7 +92,7 @@
 
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -138,10 +138,11 @@
 
     - import_role:
         name: oracle_api_services
-        tasks_from: db_checklist_update.yml
+        tasks_from: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
+          ID: "{{ checklist_id }}"
           checklist_type: "post_provision_db steps"
           category_type: db install
           post_build_status: "IN_PROGRESS"          
@@ -150,10 +151,11 @@
   rescue:
     - import_role:
         name: oracle_api_services
-        tasks_from: db_checklist_update.yml
+        tasks_from: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
+          ID: "{{ checklist_id }}"
           checklist_type: "post_provision_db steps"
           category_type: db install
           post_build_status: Failed
@@ -162,7 +164,7 @@
 
     - import_role:
         name: oracle_api_services
-        tasks_from: db_checklist_update.yml
+        tasks_from: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
@@ -171,7 +173,7 @@
       - apex_api
 - import_role:
     name: oracle_api_services
-    tasks_from: db_checklist_update.yml
+    tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
