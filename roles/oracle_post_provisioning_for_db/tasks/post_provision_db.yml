@@ -74,7 +74,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: db install
       post_build_status: "FAILED"
@@ -95,7 +96,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: db install
       post_build_status: "IN_PROGRESS"
@@ -168,6 +170,7 @@
       vars:
         chklst_json_body:
           new_entry: False
+          ID: "{{ checklist_id }}"
           db_install_status: Failed
       tags:
       - apex_api
@@ -176,7 +179,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: db install
       post_build_status: "SUCCESS"

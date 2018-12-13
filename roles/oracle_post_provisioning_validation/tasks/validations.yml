@@ -4,7 +4,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
       category_type: DB Install
       db_install_status: "IN_PROGRESS"
@@ -128,7 +129,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
       category_type: DB Install
       db_install_status: "SUCCESS"
@@ -237,7 +239,8 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
+      ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
       category_type: DB Install
       db_install_status: "FAILED"
