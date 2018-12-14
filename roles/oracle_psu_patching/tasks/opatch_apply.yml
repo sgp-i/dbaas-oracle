@@ -1,7 +1,7 @@
 ---
 
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_update_update.yml
+  include_tasks: db_patch_checklist_update.yml
   vars:
     chklst_json_body:
       patch_status: 'RUNNING OPATCH APPLY'

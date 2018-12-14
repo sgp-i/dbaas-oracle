@@ -12,7 +12,7 @@
   - apex_api
 
 - name: host patch checklist post 
-  include_tasks: db_patch_checklist_update_update.yml
+  include_tasks: db_patch_checklist_update.yml
   vars:
     chklst_json_body:
       db_home: "{{ oracle_db_home }}"
@@ -119,7 +119,7 @@
   - apex_api
 
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_update_update.yml
+  include_tasks: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU APPLIED SUCCESSFULLY
@@ -129,7 +129,7 @@
   - apex_api
 
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_update_update.yml
+  include_tasks: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU FAILED
