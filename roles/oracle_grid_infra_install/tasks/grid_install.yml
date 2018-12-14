@@ -6,12 +6,12 @@
     tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: False
       host_name: "{{ ansible_hostname }}"
       checklist_type: GI Host Test
-      category_type: PRE-CHECK
+      category_type: Install
       gi_install_status: IN_PROGRESS
-      task_desc: Check List
+      task_desc: Install Grid
   tags:
   - apex_api
 
