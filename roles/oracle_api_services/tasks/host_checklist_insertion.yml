@@ -3,6 +3,9 @@
 #- include_tasks: get_host_id.yml
 #  when: host_id is not defined
 
+- debug:
+   var: chklst_json_body
+   
 - name: POST To Insert new Checklist entry
   uri:
     url: "{{ apex_url }}/charter/insert_db_check_list"
