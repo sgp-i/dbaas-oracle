@@ -18,16 +18,16 @@
 # - name: test  hostvars
 #   debug: msg="Host is {{ hostvars }}"
 
-- name: host checklist post for Grid Install
+- name: host checklist Start  for Grid Install
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: true
       host_name: "{{ ansible_hostname }}"
-      checklist_type: GI Host Test
-      category_type: Install
-      gi_install_status: STARTED
-      task_desc: Install Grid
+      checklist_type: 'GI Host Test'
+      category_type: 'Install'
+      gi_install_status: 'STARTED'
+      task_desc: 'Install Grid'
   tags:
   - apex_api
 
