@@ -5,7 +5,8 @@
     tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: True
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
       checklist_type: Start silent Install
       category_type: Install
       gi_install_status: IN PROGRESS
