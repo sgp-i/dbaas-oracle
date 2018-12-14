@@ -1,16 +1,17 @@
 ---
 
-- include_role:
+
+- import_role:
     name: oracle_api_services
     tasks_from: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: true
+      new_entry: True
       host_name: "{{ ansible_hostname }}"
-      checklist_type: Start GI
-      category_type: Install
-      gi_install_status: IN PROGRESS
-  when: inventory_hostname == master_node
+      checklist_type: GI Host Test
+      category_type: PRE-CHECK
+      gi_install_status: IN_PROGRESS
+      task_desc: Check List
   tags:
   - apex_api
 
