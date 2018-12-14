@@ -18,7 +18,7 @@
 # - name: test  hostvars
 #   debug: msg="Host is {{ hostvars }}"
 
-- name: host checklist post for precheck
+- name: host checklist post for Grid Install
   import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:

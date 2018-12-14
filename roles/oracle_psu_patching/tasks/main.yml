@@ -1,20 +1,18 @@
 ---
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: host checklist post for Patching
+  include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
       checklist_type: "PATCH"
       category_type: Install
-      db_install_status: IN PROGRESS
+      db_install_status: Started 
   when: fresh_install
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_patch_checklist_post_update.yml
+- name: host patch checklist post 
+  include_tasks: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
       db_home: "{{ oracle_db_home }}"
@@ -23,7 +21,7 @@
       PSU_QUARTER: "{{ patch_quarter }}"
       PSU_YEAR: "{{ patch_year }}"
       patch_type: "{{ patch_type }}"
-      patch_status: PATCHING STARTED
+      patch_status:  STARTED
       new_entry: True
   tags:
   - apex_api
@@ -94,9 +92,8 @@
 - debug:
     var: opatch_lsinv_success.stdout_lines
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: host checklist post for Patching 
+  include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"
@@ -108,9 +105,8 @@
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: host checklist post for Patching
+  include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -122,9 +118,8 @@
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_patch_checklist_post_update.yml
+- name: host checklist post for Patching
+  include_tasks: db_patch_checklist_post_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU APPLIED SUCCESSFULLY
@@ -133,9 +128,8 @@
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_patch_checklist_post_update.yml
+- name: host checklist post for Patching
+  include_tasks: db_patch_checklist_post_update.yml
   vars:
       chklst_json_body:
         patch_status: PSU FAILED

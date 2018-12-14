@@ -1,8 +1,7 @@
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_patch_checklist_post_update.yml
+- name: host checklist post for Patching
+  include_tasks: db_patch_checklist_post_update.yml
   vars:
     chklst_json_body:
       patch_status: 'RUNNING OPATCH APPLY'
@@ -51,9 +50,8 @@
   set_fact:
     latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
     
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_patch_upload_log.yml
+- name: host checklist post for Patching
+  include_tasks: db_patch_upload_log.yml
   vars:
     logfile_path:   "{{ opatch_log.files[0].path }}"
   when: 
