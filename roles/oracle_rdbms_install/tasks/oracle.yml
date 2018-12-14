@@ -8,7 +8,7 @@
     nohup {{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp 2>&1 | tee {{ oracle_tmp }}/db_stdout.out &
     sleep 30
     while true
-    do 
+    do
       c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
       [ $c -eq 0 ] && break
       sleep 10
@@ -28,9 +28,8 @@
     patterns: "installActions*.log"
   register: log_files
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: upload_log.yml
+- name: Upload logs for RDBMS Installation
+  import_tasks: upload_log.yml
   vars:
     logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
     log_file_desc: InstallAction
@@ -38,9 +37,8 @@
   - apex_api
 
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_post_update.yml
+- name: host checklist post update for RDBMS
+  import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -61,17 +59,16 @@
     loop: "{{ cluster_nodes }}"
     loop_control:
       loop_var: curr_host
-    tags: root_script    
-    when: 
+    tags: root_script
+    when:
     - 'oracle_home + "/root.sh" in hostvars[master_node]["db_install"]["stdout"]'
     - inventory_hostname == curr_host
-  when: 
+  when:
   - hostvars[master_node]["db_install"]["changed"]
   - hostvars[master_node]['db_install']['failed'] is not defined or not hostvars[master_node]['db_install']['failed']
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_post_update.yml
+- name: host checklist post update for RDBMS Install
+  import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
        ID: "{{ checklist_id }}"
@@ -81,11 +78,11 @@
                           {%- else -%}SUCCESSFUL
                           {%- endif -%}"
   tags:
-  - apex_api 
+  - apex_api
 
 - name: Install Failed
   fail:
     msg: RDBMS Install Failed
-  when: 
+  when:
   - hostvars[master_node]['db_install']['failed'] is defined
   - hostvars[master_node]['db_install']['failed']

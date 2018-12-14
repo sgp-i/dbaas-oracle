@@ -3,9 +3,8 @@
 - include_vars: secrets.yml
   no_log: true
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_post_update.yml
+- name: host checklist post for RDBMS install
+  import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -16,7 +15,7 @@
   - apex_api
 
 - include: determine_db_home.yml
-  when: 
+  when:
   - oracle_db_home is not defined
   - inventory_hostname == master_node
 

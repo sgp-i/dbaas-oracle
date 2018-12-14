@@ -26,9 +26,8 @@
       patterns: "root_{{ ansible_hostname }}*.log"
     register: log_files
 
-  - import_role:
-      name: oracle_api_services
-      tasks_from: upload_log.yml
+  - name: Upload Logs for RDBMS Installation
+    import_tasks: upload_log.yml
     vars:
       logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
       log_file_desc:

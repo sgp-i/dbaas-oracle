@@ -1,5 +1,5 @@
 ---
-  
+
 - name: get oracle grid home
   shell: "ps -ef | grep ohasd | grep /u01/app/12.1.0.2/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
   register: oracle_ohasd_process
@@ -17,9 +17,8 @@
   set_fact:
     asm_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: host checklist post update for Post Grid
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -78,16 +77,15 @@
       owner: "{{ oracle_user }}"
       path: ‘{{ oracle_base }}/admin/chgctl’
       state: directory
-  
+
   - name: place a marker for completion
     file:
       path: "{{ oracle_base }}/admin/.post_provisioning_done_{{ ansible_hostname }}"
       state: touch
       mode: 0400
-      
-  - import_role:
-      name: oracle_api_services
-      tasks_from: db_checklist_post_update.yml
+
+  - name: host checklist post update for Post Grid
+    import_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         ID: "{{ checklist_id }}"
@@ -97,9 +95,8 @@
       - apex_api
 
   rescue:
-    - import_role:
-        name: oracle_api_services
-        tasks_from: db_checklist_post_update.yml
+    - name: host checklist post update for Post Grid
+      import_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           ID: "{{ checklist_id }}"
