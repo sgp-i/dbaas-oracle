@@ -55,8 +55,7 @@
     diff: false
 
   - name: db checklist post for Create DB
-    import_tasks: oracle_api_services
-      tasks_from: db_checklist_post_update.yml
+    includ_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: True
