@@ -100,7 +100,7 @@
     - 'oracle_base + "/oraInventory/orainstRoot.sh" in hostvars[master_node]["grid_install"]["stdout"]'
 
   - name: host checklist post update for grid install
-    include_task: host_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False
@@ -125,7 +125,7 @@
     - inventory_hostname == curr_host
 
   - name: host checklist post update for grid install
-    include_task: host_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False
@@ -151,7 +151,7 @@
 
 
   - name: host checklist post update for grid install
-    include_task: host_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False
@@ -190,7 +190,7 @@
 
   rescue:
   - name: host checklist post update for grid install
-    include_task: host_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False

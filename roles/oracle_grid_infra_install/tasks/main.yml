@@ -112,7 +112,7 @@
   - apex_api
 
 - name: host checklist post update for grid install
-  include_task: host_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"

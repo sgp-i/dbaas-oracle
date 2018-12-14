@@ -42,7 +42,7 @@
   - name: restore opatch from backup
     command: mv {{ oracle_home }}/OPatch.old {{ oracle_home }}/OPatch
   - name: host checklist post for Grid Install
-    include_task: db_checklist_post_update.yml
+    include_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: False
