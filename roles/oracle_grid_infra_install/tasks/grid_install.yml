@@ -19,7 +19,7 @@
 #   debug: msg="Host is {{ hostvars }}"
 
 - name: host checklist post for Grid Install
-  import_tasks: host_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
