@@ -6,7 +6,7 @@
     removes: "{{ oracle_home }}/OPatch"
     
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_post_update.yml
+  include_tasks: db_patch_checklist_update_update.yml
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"
@@ -28,7 +28,7 @@
 - import_tasks: check_opatch.yml
 
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_post_update.yml
+  include_tasks: db_patch_checklist_update_update.yml
   vars:
     chklst_json_body:
       patch_status: Installed OPatch
@@ -55,7 +55,7 @@
     - apex_api
 
 - name: host checklist post for Patching
-  include_tasks: db_patch_checklist_post_update.yml
+  include_tasks: db_patch_checklist_update_update.yml
   vars:
       chklst_json_body:
         patch_status: OPATCH install FAILED
