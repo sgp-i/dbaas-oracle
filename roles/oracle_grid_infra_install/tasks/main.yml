@@ -3,16 +3,7 @@
 - include_vars: secrets.yml
   no_log: false 
 
-- include_role:
-    name: oracle_api_services
-    tasks_from: "host_inventory_update.yml"
-  vars:
-    chklst_json_body:
-      new_entry: True
-      host: hostvars['inventory_hostname']
-      cluster: True
-  tags:
-  - apex_api
+
 
 - name: check Grid is running
   shell: ps -ef | grep d.bin | grep -v grep | grep ohas
