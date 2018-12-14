@@ -161,7 +161,7 @@
     vars:
       chklst_json_body:
         new_entry: False
-  ch      task_desc: 'Running Configtool'
+        task_desc: 'Running Configtool'
         checklist_type: 'GRID Running configTool'
         category_type: Install
         gi_install_status: IN PROGRESS
