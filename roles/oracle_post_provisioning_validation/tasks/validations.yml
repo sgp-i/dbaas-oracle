@@ -1,7 +1,6 @@
 ---
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning validation
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -124,9 +123,8 @@
       changed_when: false
   when: oracle_home != "" and oracle_context != 'grid'
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning validation
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -158,7 +156,7 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: oracle groups
-      expected_value: 900, 901 
+      expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
                       {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
       status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 900 or
@@ -186,7 +184,7 @@
                {%- endif -%}"
     - name: results of validation done using sql queries
       expected_value: ""
-      actual_value: 
+      actual_value:
           - check_type: "tablespace name and size"
             value: "{{ tablespace_names_result.stdout_lines | default('')}}"
           - check_type: "alter profile"
@@ -196,17 +194,17 @@
           - check_type: "snapshot interval"
             value: "{{ verify_snapshot_interval_result.stdout_lines | default('')}}"
           - check_type: "verify parallel force"
-            value: "{{ verify_parallel_force_result.stdout_lines | default('')}}" 
+            value: "{{ verify_parallel_force_result.stdout_lines | default('')}}"
           - check_type: "verify recycle bin status"
-            value: "{{ verify_recyclebin_status_result.stdout_lines | default('')}}" 
+            value: "{{ verify_recyclebin_status_result.stdout_lines | default('')}}"
           - check_type: "verify block tracking"
-            value: "{{ verify_block_tracking_result.stdout_lines | default('')}}"          
+            value: "{{ verify_block_tracking_result.stdout_lines | default('')}}"
           - check_type: "verify db files"
-            value: "{{ verify_db_files_result.stdout_lines | default('')}}"     
+            value: "{{ verify_db_files_result.stdout_lines | default('')}}"
           - check_type: "verify redo logs"
-            value: "{{ verify_redo_logs_result.stdout_lines | default('') }}"  
+            value: "{{ verify_redo_logs_result.stdout_lines | default('') }}"
           - check_type: "verify dba directories"
-            value: "{{ verify_dba_directories_result.stdout_lines | default('') }}"     
+            value: "{{ verify_dba_directories_result.stdout_lines | default('') }}"
       status: ""
 
 -  debug:
@@ -224,9 +222,8 @@
 #    src: post_validaton_result_list.json.j2
 #    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result_list.json"
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: upload_log.yml
+- name: upload log for post provisioning validation
+  import_tasks: upload_log.yml
   vars:
     logfile_path: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
@@ -234,9 +231,8 @@
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning validation
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -255,4 +251,3 @@
           {%- endif %}"
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags: postval_fail
-    

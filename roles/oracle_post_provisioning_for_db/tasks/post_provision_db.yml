@@ -1,8 +1,7 @@
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning for db
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
@@ -69,9 +68,8 @@
         rac_oracle_db_name: "{{ rac_database_name.stdout | trim }}"
   when: '(ansible_play_hosts | length) > 1'
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning for db
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -91,9 +89,8 @@
     - oracle_home == ""
     - oracle_sid == ""
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning for db
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -138,22 +135,20 @@
         state: touch
         mode: 0400
 
-    - import_role:
-        name: oracle_api_services
-        tasks_from: db_checklist_post_update.yml
+    - name: db checklist post update for post provisioning for db
+      import_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
           ID: "{{ checklist_id }}"
           checklist_type: "post_provision_db steps"
           category_type: db install
-          post_build_status: "IN_PROGRESS"          
+          post_build_status: "IN_PROGRESS"
       tags:
       - apex_api
   rescue:
-    - import_role:
-        name: oracle_api_services
-        tasks_from: db_checklist_post_update.yml
+    - name: db checklist post update for post provisioning for db
+      import_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
@@ -162,11 +157,10 @@
           category_type: db install
           post_build_status: Failed
       tags:
-      - apex_api  
+      - apex_api
 
-    - import_role:
-        name: oracle_api_services
-        tasks_from: db_checklist_post_update.yml
+    - name: db checklist post update for post provisioning for db
+      import_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           new_entry: False
@@ -174,9 +168,8 @@
           db_install_status: Failed
       tags:
       - apex_api
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning for db
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -185,4 +178,4 @@
       category_type: db install
       post_build_status: "SUCCESS"
   tags:
-  - apex_api      
+  - apex_api

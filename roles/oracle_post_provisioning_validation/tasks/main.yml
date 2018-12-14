@@ -1,7 +1,6 @@
 ---
-- import_role:
-    name: oracle_api_services
-    tasks_from: db_checklist_post_update.yml
+- name: db checklist post update for post provisioning validation
+  import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
