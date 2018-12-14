@@ -29,7 +29,7 @@
   register: log_files
 
 - name: Upload logs for RDBMS Installation
-  import_tasks: upload_log.yml
+  include_tasks: upload_log.yml
   vars:
     logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
     log_file_desc: InstallAction
@@ -38,7 +38,7 @@
 
 
 - name: host checklist post update for RDBMS
-  import_tasks: host_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False
@@ -68,7 +68,7 @@
   - hostvars[master_node]['db_install']['failed'] is not defined or not hostvars[master_node]['db_install']['failed']
 
 - name: host checklist post update for RDBMS Install
-  import_tasks: host_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
        ID: "{{ checklist_id }}"

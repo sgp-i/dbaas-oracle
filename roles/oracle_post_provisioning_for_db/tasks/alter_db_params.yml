@@ -15,7 +15,7 @@
   register: "{{ oracle_sid }}_alter_db_params_result"
 
 - name: db checklist post update for post provision for db
-  import_tasks: db_checklist_post_update.yml
+  include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: False

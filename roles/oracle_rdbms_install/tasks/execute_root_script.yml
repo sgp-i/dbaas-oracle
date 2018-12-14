@@ -27,7 +27,7 @@
     register: log_files
 
   - name: Upload Logs for RDBMS Installation
-    import_tasks: upload_log.yml
+    include_tasks: upload_log.yml
     vars:
       logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
       log_file_desc:

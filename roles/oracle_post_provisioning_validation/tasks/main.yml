@@ -1,6 +1,6 @@
 ---
 - name: db checklist post update for post provisioning validation
-  import_tasks: db_checklist_post_update.yml
+  include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True

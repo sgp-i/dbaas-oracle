@@ -55,7 +55,7 @@
     diff: false
 
   - name: db checklist post for Create DB
-    includ_tasks: db_checklist_post_update.yml
+    include_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         new_entry: True
@@ -89,7 +89,7 @@
       when: inventory_hostname == master_node
 
     - name: db log upload for create db
-      import_tasks: upload_log.yml
+      include_tasks: upload_log.yml
       vars:
         logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
         log_file_desc: dbca log
@@ -98,8 +98,7 @@
 
     rescue:
     - name: db checklist post update for create db
-      import_tasks: oracle_api_services
-        tasks_from: db_checklist_post_update.yml
+      include_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
           ID: "{{ checklist_id }}"
@@ -113,7 +112,7 @@
         msg: Creation of {{ oracle_db_name }} failed
 
   - name: db checklist post update for create db
-    import_tasks: db_checklist_post_update.yml
+    include_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
         ID: "{{ checklist_id }}"

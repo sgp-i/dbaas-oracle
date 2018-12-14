@@ -4,7 +4,7 @@
   no_log: true
 
 - name: host checklist post for RDBMS install
-  import_tasks: host_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
