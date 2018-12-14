@@ -1,14 +1,13 @@
 ---
 
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
+- name: include host checklist post update for run cluvfy
+  include_tasks: "host_checklist_post_update.yml"
   vars:
     chklst_json_body:
       new_entry: True
       checklist_type: CLUVFY
       category_type: PRE-CHECK
-      gi_install_status: IN PROGRESS
+      gi_install_status: STARTED
   tags:
   - apex_api
 
@@ -102,13 +101,13 @@
                    {%- else -%}SUCCESSFUL
                    {%- endif %}"
 
-- include_role:
-    name: oracle_api_services
-    tasks_from: "{{ checklist_task }}_checklist_post_update.yml"
+- name: include host checklist post update for run cluvfy
+  include_tasks: "host_checklist_post_update.yml"
   vars:
     chklst_json_body:
       new_entry: False
       gi_install_status: "{{ final_result }}"
+      ID: "{{ checklist_id }}"
   tags:
   - apex_api
 

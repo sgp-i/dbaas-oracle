@@ -1,7 +1,4 @@
 ---
-
-
-
 - import_role:
     name: oracle_api_services
     tasks_from: db_checklist_post_update.yml
@@ -78,7 +75,7 @@
   - include_tasks: datapatch.yml
     vars:
       oracle_db_name: "{{ db_detail | regex_replace('([^:]*).*','\\1') }}"
-    when: 
+    when:
     - db_list | length > 0
     - db_detail | regex_replace('([^:]*):.*','\\1') != 'no_sid'
     loop: "{{ db_list.stdout_lines }}"
@@ -105,9 +102,9 @@
       ID: "{{ checklist_id }}"
       new_entry: False
       db_install_status: SUCCESSFUL #Need a way to determine Failures
-  when: 
-  - fresh_install  
-  - opatch_lsinv_success.stdout_lines |  length > 0 
+  when:
+  - fresh_install
+  - opatch_lsinv_success.stdout_lines |  length > 0
   tags:
   - apex_api
 
@@ -119,9 +116,9 @@
       new_entry: False
       ID: "{{ checklist_id }}"
       db_install_status: Failed #Need a way to determine Failures
-  when: 
-  - fresh_install  
-  - opatch_lsinv_success.stdout_lines |  length == 0 
+  when:
+  - fresh_install
+  - opatch_lsinv_success.stdout_lines |  length == 0
   tags:
   - apex_api
 
@@ -132,7 +129,7 @@
       chklst_json_body:
         patch_status: PSU APPLIED SUCCESSFULLY
         new_entry: False
-  when: opatch_lsinv_success.stdout_lines |  length > 0 
+  when: opatch_lsinv_success.stdout_lines |  length > 0
   tags:
   - apex_api
 
@@ -143,6 +140,6 @@
       chklst_json_body:
         patch_status: PSU FAILED
         new_entry: False
-  when: opatch_lsinv_success.stdout_lines |  length == 0 
+  when: opatch_lsinv_success.stdout_lines |  length == 0
   tags:
   - apex_api

@@ -1,5 +1,4 @@
 ---
-
 - block:
   - name: execute root.sh post-installation script
     command: "{{ oracle_grid_home }}/root.sh"
@@ -27,9 +26,8 @@
     tags:
     - apex_api
 
-  - import_role:
-      name: oracle_api_services
-      tasks_from: upload_log.yml
+- name: upload logs for execute root script
+  include_tasks: upload_log.yml
     vars:
       logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
       log_file_desc: "grid root.sh"

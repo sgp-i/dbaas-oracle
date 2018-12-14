@@ -1,21 +1,21 @@
 ---
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_post_update.yml
+### works
+- name: include host checklist post update for precheck
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
       checklist_type: PRE-CHECK Host
       category_type: PRE-CHECK
-      gi_install_status: IN_PROGRESS
+      gi_install_status: STARTED
       task_desc: Check List
   tags:
   - apex_api
 
 - name: check required RPMs
-  yum: 
+  yum:
    list: installed
   register: yum_updates
 - set_fact:
@@ -297,10 +297,10 @@
   register: shm_size
 - set_fact:
     shm_size: "{{ shm_size.stdout_lines[1] | trim | regex_replace('G', '') | int }}"
-  
+
 - name: generate checklist output
   set_fact:
-    checklist: 
+    checklist:
     - check_name: Kernel Version
       expected_value: 3 or higher
       actual_value: "{{ ansible_kernel.split('.')[0] }}"
@@ -309,15 +309,15 @@
                {%- endif %}"
     - check_name: Swap Size
       expected_value: "{% if ansible_memtotal_mb | int < 64000 -%}8192 or higher
-                       {%- elif ansible_memtotal_mb | int >= 64000 and 
+                       {%- elif ansible_memtotal_mb | int >= 64000 and
                               ansible_memtotal_mb | int < 262144 -%}16300 or higher
                        {%- elif ansible_memtotal_mb | int >= 262144 -%}32000 or higher
                       {%- else -%}0
                       {%- endif %}"
       actual_value: "{{ ansible_swaptotal_mb }}"
-      status: "{% if (ansible_memtotal_mb | int < 64000 and 
+      status: "{% if (ansible_memtotal_mb | int < 64000 and
                       ansible_swaptotal_mb < 8192) or
-                     (ansible_memtotal_mb | int >= 64000 and 
+                     (ansible_memtotal_mb | int >= 64000 and
                       ansible_memtotal_mb | int < 262144 and
                       ansible_swaptotal_mb < 16300) or
                      (ansible_memtotal_mb | int >= 262144 and
@@ -343,14 +343,14 @@
                {%- else -%}PASSED
                {%- endif -%}"
     - check_name: verifying ntpd config file
-      expected_value: 
+      expected_value:
            options: '-u ntp:ntp -p /var/run/ntpd.pid -g -x'
            hwclock_sync: "no"
            date_options: ""
-      actual_value: 
+      actual_value:
            options: "{{ ntpd_config.options | default('') }}"
-           hwclock_sync: "{{ ntpd_config.sync | default('') }}" 
-           date_options: "{{ ntpd_config.date_options | default('') }}"         
+           hwclock_sync: "{{ ntpd_config.sync | default('') }}"
+           date_options: "{{ ntpd_config.date_options | default('') }}"
       status: "{% if ntpd_config.options | default('') != '-u ntp:ntp -p /var/run/ntpd.pid -g -x' or
                      ntpd_config.sync | default('') != 'no' or
                      ntpd_config.date_options | default('') != '' -%}FAILED
@@ -463,7 +463,7 @@
                {%- else -%}PASSED
                {%- endif %}"
       tags:
-        - charteronly         
+        - charteronly
     - check_name: Ignored PBIS groups
       expected_value: "{{ pbis.ignored_groups | join(',') }}"
       actual_value: "{{ pbis_ignored_groups_in_srvr.content | b64decode | trim | regex_replace('\n',',') }}"
@@ -472,7 +472,7 @@
                {%- else -%}PASSED
                {%- endif %}"
       tags:
-        - charteronly         
+        - charteronly
     - check_name: Check /u01 Filesystem Size
       expected_value: 300 GiB
       actual_value: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] -%}unmounted
@@ -487,7 +487,7 @@
       actual_value: "{{ network_config.content | b64decode | trim | regex_replace('\n',',') | regex_replace('#*','')}}"
       status: "{% if 'NOZEROCONF=yes' not in network_config.content | b64decode -%}FAILED
                {%- else -%}PASSED
-               {%- endif %}" 
+               {%- endif %}"
     - check_name: DATA Disks
       expected_value: "1 or more DATA disks"
       actual_value: "{{ asm_data_disks.matched }} DATA disks"
@@ -535,7 +535,7 @@
       actual_value: "{{ shm_size | int }}"
       status: "{% if shm_size | int < (ansible_memtotal_mb * 0.8) | int -%}FAILED
                 {%- else -%}PASSED
-               {%- endif %}"         
+               {%- endif %}"
     - check_name: check kernel parameters
       expected_value: "{{ kernel_parameters }}"
       actual_value: "{{ kernel_params }}"
@@ -551,11 +551,11 @@
                      kernel_params.kernel_shmall != kernel_parameters.kernel_shmall or
                      kernel_params.kernel_shmmni != kernel_parameters.kernel_shmmni -%}FAILED
                 {%- else -%}PASSED
-               {%- endif %}"   
+               {%- endif %}"
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
     verbosity: 1
-  
+
 - name: create tmp dir
   file:
     path: "{{ oracle_tmp }}"
@@ -567,18 +567,16 @@
     dest: "{{ oracle_tmp }}/prereq_checklist.json"
     content: "{{ checklist }}"
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: upload_log.yml
+- name: include upload log for precheck
+  include_tasks: upload_log.yml
   vars:
     logfile_path: "{{ oracle_tmp }}/prereq_checklist.json"
     log_file_desc: pre-check list
   tags:
   - apex_api
 
-- import_role:
-    name: oracle_api_services
-    tasks_from: host_checklist_post_update.yml
+- name: include host checklist post update for precheck
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"
