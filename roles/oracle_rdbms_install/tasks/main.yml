@@ -10,7 +10,8 @@
       new_entry: True
       checklist_type: "RDBMS Software Install"
       category_type: Install
-      db_install_status: IN PROGRESS
+      db_install_status: STARTED
+      task_desc: RDBMS INSTALL
   tags:
   - apex_api
 
