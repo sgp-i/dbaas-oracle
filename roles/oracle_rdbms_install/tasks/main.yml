@@ -8,6 +8,7 @@
   vars:
     chklst_json_body:
       new_entry: True
+      host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
       category_type: Install
       db_install_status: STARTED

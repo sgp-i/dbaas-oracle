@@ -18,11 +18,12 @@
     asm_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
 - name: host checklist post update for Post Grid
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: true
       ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: "POST_PROVISION"
       category_type: POST
       db_install_status: IN PROGRESS
@@ -85,7 +86,7 @@
       mode: 0400
 
   - name: host checklist post update for Post Grid
-    include_tasks: db_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
         ID: "{{ checklist_id }}"
