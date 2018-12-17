@@ -1,5 +1,9 @@
 ---
 
+
+- debug:
+   var: ora_user_env
+
 - name: Check ACFS Driver State
   environment: "{{ ora_user_env }}"
   command: acfsdriverstate installed
