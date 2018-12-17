@@ -9,8 +9,34 @@
   set_fact:
     oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: 'ACFS Config'
+      category_type: 'Install'
+      gi_install_status: 'STARTED'
+      task_desc: 'acfs check'
+  tags:
+  - apex_api
+
 - import_tasks: acfs_driver_check.yml
   tags: acfs_install
+
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: false
+      checklist_type: 'CFS Config'
+      category_type: 'Install'
+      gi_install_status: 'IN_PROGRESS'
+      task_desc: 'acfs install'
+  tags:
+  - apex_api
+
 
 - include_tasks: acfs_driver_install.yml
   when: not acfsdriver_installed
@@ -24,6 +50,18 @@
     state: directory
     recurse: yes
 
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: false
+      checklist_type: 'CFS Config'
+      category_type: 'Install'
+      gi_install_status: 'IN_PROGRESS'
+      task_desc: 'check currently mounted ASM DGs'
+  tags:
+  - apex_api
+
 - name: check currently mounted ASM DGs
   become: yes
   become_user: "{{ oracle_user }}"
@@ -36,7 +74,19 @@
   loop: "{{ asm_disks_list.stdout_lines }}"
   loop_control:
     loop_var: asm_line
-    
+
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: false
+      checklist_type: 'CFS Config'
+      category_type: 'Install'
+      gi_install_status: 'IN_PROGRESS'
+      task_desc: 'Configuring ACFS'
+  tags:
+  - apex_api
+
 - include_tasks: configure_acfs.yml
   vars:
     diskgroup: "{{ exp_dg }}"
