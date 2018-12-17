@@ -183,7 +183,7 @@
       chklst_json_body:
         new_entry: False
         ID: "{{ checklist_id }}"
-        task_desc: 'GI INSTALL '
+        task_desc: GI INSTALL
         checklist_type: 'GRID Install Failed'
         gi_install_status: "FAILED"
     when: inventory_hostname == master_node
