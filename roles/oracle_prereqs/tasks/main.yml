@@ -553,7 +553,8 @@
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
     verbosity: 1
-
+  tags:
+    - charteronly  
 - name: create tmp dir
   file:
     path: "{{ oracle_tmp }}"
