@@ -565,14 +565,16 @@
   copy:
     dest: "{{ oracle_tmp }}/prereq_checklist.json"
     content: "{{ checklist }}"
-
+  tags:
+    - charteronly  
 - name: include upload log for precheck
   include_tasks: upload_log.yml
   vars:
     logfile_path: "{{ oracle_tmp }}/prereq_checklist.json"
     log_file_desc: pre-check list
   tags:
-  - apex_api
+    - charteronly
+    - apex_api
 
 - name: include host checklist post update for precheck
   include_tasks: host_checklist_post_update.yml
@@ -584,7 +586,8 @@
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"
   tags:
-  - apex_api
+    - charteronly
+    - apex_api
 
 - name: Check for Precheck Failures
   fail:
@@ -592,4 +595,6 @@
           {%- else -%}You have {{ checklist | json_query('[?status == `FAILED`]') | length }} failed checks
           {%- endif %}"
   when: checklist | json_query('[?status == `FAILED`]') | length > 0
-  tags: precheck_fail
+  tags:
+    - charteronly 
+    - precheck_fail
