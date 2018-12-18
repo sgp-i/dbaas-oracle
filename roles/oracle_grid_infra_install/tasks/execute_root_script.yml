@@ -28,8 +28,8 @@
 
 - name: upload logs for execute root script
   include_tasks: upload_log.yml
-    vars:
-      logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
-      log_file_desc: "grid root.sh"
-    tags:
+  vars:
+    logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+    log_file_desc: "grid root.sh"
+  tags:
     - apex_api
