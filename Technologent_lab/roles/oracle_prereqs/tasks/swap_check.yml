@@ -1,7 +1,7 @@
 ---
 
 - name: add a swap file
-  command: dd if=/dev/zero of={{ oracle_swap_file }} count={{ oracle_swap_size }} bs=1M 
+  command: dd if=/dev/zero of={{ oracle_swap_file }} count={{ oracle_swap_size }} bs=1024 
   args:
     creates: "{{ oracle_swap_file }}" 
 
