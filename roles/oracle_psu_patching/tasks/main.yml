@@ -98,7 +98,7 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       host_name: "{{ ansible_hostname }}"
       db_name: "{{ oracle_db_name }}"
       checklist_type: PATCHING
@@ -120,7 +120,7 @@
       host_name: "{{ ansible_hostname }}"
       checklist_type: PATCHING
       category_type: Install
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       db_install_status: Failed #Need a way to determine Failures
   when:
   - fresh_install

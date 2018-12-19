@@ -117,7 +117,7 @@
     vars:
       chklst_json_body:
         new_entry: False
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
         db_install_status: FAILED
     tags:
     - apex_api
@@ -130,7 +130,7 @@
     tasks_from: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       new_entry: False
       db_install_status: SUCCESSFUL
   tags:

@@ -2,14 +2,14 @@
 
 oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
-oracle_user: { name: oracle, id: 5001 }
+oracle_user: { name: oracle, #ID: 5001 }
 
 oracle_groups:   
-    - { name: oinstall, id: 54321 }
-    - { name: dba, id: 54322 } 
-    - { name: asmoper, id: 54328 } 
-    - { name: asmadmin, id: 54329 }
-    - { name: asmdba, id: 54327 }
+    - { name: oinstall, #ID: 54321 }
+    - { name: dba, #ID: 54322 } 
+    - { name: asmoper, #ID: 54328 } 
+    - { name: asmadmin, #ID: 54329 }
+    - { name: asmdba, #ID: 54327 }
 
 # shell environment for the oracle user
 ora_user_env:

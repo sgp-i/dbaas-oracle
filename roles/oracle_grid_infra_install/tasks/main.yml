@@ -95,7 +95,7 @@
   vars:
     chklst_json_body:
       new_entry: True
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
@@ -116,7 +116,7 @@
   vars:
     chklst_json_body:
       new_entry: True
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
@@ -131,7 +131,7 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'GRID Install'
       new_entry: True

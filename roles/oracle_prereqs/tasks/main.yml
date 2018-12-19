@@ -579,7 +579,7 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       new_entry: False
       gi_install_status: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
                           {%- else -%}SUCCESSFUL

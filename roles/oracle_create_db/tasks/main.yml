@@ -65,7 +65,7 @@
         ticket_ref: "{{ ticket_ref }}"
         db_install_status: "STARTED"
         db_name: "{{ oracle_db_name }}"
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
     tags:
     - apex_api
 
@@ -110,7 +110,7 @@
         category_type: DB Creation
         ticket_ref: "{{ ticket_ref }}"
         db_name: "{{ oracle_db_name }}"
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
         new_entry: True
         db_install_status: "FAILED"
       tags:
@@ -129,7 +129,7 @@
         category_type: DB Creation
         ticket_ref: "{{ ticket_ref }}"
         db_name: "{{ oracle_db_name }}"
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
         new_entry: True
         db_install_status: "SUCCESS"
     tags:

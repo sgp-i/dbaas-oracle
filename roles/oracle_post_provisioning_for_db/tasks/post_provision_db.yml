@@ -79,7 +79,7 @@
       host_name: "{{ ansible_hostname }}"
       db_name: "{{ oracle_db_name }}" 
       ticket_ref: "{{ ticket_ref }}"
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: POST PROVISION
       post_build_status: "FAILED"
@@ -100,7 +100,7 @@
   vars:
     chklst_json_body:
       new_entry: True
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: POST PROVISION
       post_build_status: "IN_PROGRESS"
@@ -151,7 +151,7 @@
           checklist_type: "post_provision_db steps"
           category_type: POST PROVISION
           new_entry: True
-          ID: "{{ checklist_id }}"
+          #ID: "{{ checklist_id }}"
           post_build_status: "IN_PROGRESS"
       tags:
       - apex_api
@@ -166,7 +166,7 @@
           checklist_type: "post_provision_db steps"
           category_type: POST PROVISION
           new_entry: True
-          ID: "{{ checklist_id }}"
+          #ID: "{{ checklist_id }}"
           post_build_status: FAILED
       tags:
       - apex_api
@@ -181,7 +181,7 @@
           icket_ref: "{{ ticket_ref }}"
           checklist_type: "post_provision_db steps"
           category_type: POST PROVISION
-          ID: "{{ checklist_id }}"
+          #ID: "{{ checklist_id }}"
           post_install_status: FAILED
       tags:
       - apex_api
@@ -195,7 +195,7 @@
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: "post_provision_db steps"
       category_type: POST PROVISION
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       post_build_status: "SUCCESSFUL"
   tags:
   - apex_api

@@ -42,7 +42,7 @@
   vars:
     chklst_json_body:
       new_entry: true
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       db_name:  "{{ oracle_db_name }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
@@ -75,7 +75,7 @@
   vars:
     chklst_json_body:
       new_entry: True
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       db_name:  "{{ oracle_db_name }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"

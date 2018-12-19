@@ -22,7 +22,7 @@
   vars:
     chklst_json_body:
       new_entry: true
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "POST_PROVISION"
       category_type: POST
@@ -89,7 +89,7 @@
     include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
         new_entry: False
         db_install_status: SUCCESSFUL
     tags:
@@ -100,7 +100,7 @@
       include_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
-          ID: "{{ checklist_id }}"
+          #ID: "{{ checklist_id }}"
           new_entry: False
           db_install_status: Failed
       tags:

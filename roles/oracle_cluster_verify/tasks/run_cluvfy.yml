@@ -110,7 +110,7 @@
       ticket_ref: "{{ ticket_ref }}"
       host_name: "{{ ansible_hostname }}"
       gi_install_status: "{{ final_result }}"
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
   tags:
   - apex_api
 
