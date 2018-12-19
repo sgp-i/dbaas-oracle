@@ -8,5 +8,54 @@
 #   ignore_errors: True
 - include_tasks: get_db_home.yml
 
+
+
+- name: host checklist Running OJVM
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: 'OJVM Patch'
+      category_type: 'Patching'
+      gi_install_status: 'STARTED'
+      task_desc: 'Applying OJVM'
+  tags:
+  - apex_api
+
 - include_tasks: process_ojvm_patch.yml
   when: ora_home_list | length > 0
+
+
+- name: host checklist Completing OJVM
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: 'OJVM Patch'
+      category_type: 'Patching'
+      gi_install_status: 'SUCCESSFUL'
+      task_desc: 'Applying OJVM'
+  when: 
+    - ojvm_failures | length == 0
+  tags:
+  - apex_api
+
+
+- name: host checklist Completing OJVM
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: 'OJVM Patch'
+      category_type: 'Patching'
+      gi_install_status: 'Failed'
+      task_desc: 'Applying OJVM'
+  when: 
+    - ojvm_failures | length > 0
+  tags:
+  - apex_api
+
+

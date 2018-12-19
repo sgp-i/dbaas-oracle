@@ -5,7 +5,7 @@
   vars:
     chklst_json_body:
       patch_status: 'RUNNING OPATCH APPLY'
-      new_entry: False
+      new_entry: True
   tags:
   - apex_api
 - name: Run Opatch

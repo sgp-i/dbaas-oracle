@@ -72,7 +72,7 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      checklist_type: 'GI Host Test'
+      checklist_type: 'GI Install'
       category_type: 'Install'
       gi_install_status: 'STARTED'
       task_desc: 'Install Grid'
@@ -94,8 +94,9 @@
   include_tasks: "host_checklist_post_update.yml"
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: True
       ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: IN_PROGRESS
@@ -114,8 +115,9 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: True
       ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: "FAILED"
@@ -130,8 +132,9 @@
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'GRID Install'
-      new_entry: False
+      new_entry: True
       gi_install_status: "SUCCESSFUL"
   when:
     - inventory_hostname == master_node

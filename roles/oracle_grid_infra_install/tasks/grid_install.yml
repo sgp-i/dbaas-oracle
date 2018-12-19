@@ -91,8 +91,9 @@
     include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: False
+        new_entry: True
         ID: "{{ checklist_id }}"
+        host_name: "{{ ansible_hostname }}"
         checklist_type: 'running GI root.sh'
         category_type: Install
         gi_install_status: IN PROGRESS
@@ -116,9 +117,10 @@
     include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: False
+        new_entry: True
         task_desc: 'EXECUTING root Upgrade for Grid'
         checklist_type: 'GRID rootupgrade.sh'
+        host_name: "{{ ansible_hostname }}"
         category_type: 'Install'
         ID: "{{ checklist_id }}"
         gi_install_status: IN PROGRESS
@@ -142,8 +144,9 @@
     include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: False
+        new_entry: True
         ID: "{{ checklist_id }}"
+        host_name: "{{ ansible_hostname }}"
         task_desc: 'Running Configtool'
         checklist_type: 'GRID Running configTool'
         category_type: Install
@@ -181,11 +184,12 @@
     include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: False
+        new_entry: True
         ID: "{{ checklist_id }}"
         task_desc: GI INSTALL
         checklist_type: 'GRID Install Failed'
         gi_install_status: "FAILED"
+        host_name: "{{ ansible_hostname }}"
     when: inventory_hostname == master_node
     tags:
     - apex_api

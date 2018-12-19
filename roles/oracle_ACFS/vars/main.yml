@@ -13,6 +13,7 @@ oracle_tmp: /u01/tmp/{{ oracle_version }}/ACFS
 
 oracle_user: oracle
 
+
 oracle_group: oinstall
 
 oracle_home: "{{ install_base }}/{{ oracle_version }}/grid_1"

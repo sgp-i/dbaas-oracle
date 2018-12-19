@@ -1,17 +1,19 @@
 ---
 - name: host checklist post for Patching
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
-      checklist_type: "PATCH"
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}"
+      checklist_type: PATCHING
       category_type: Install
-      db_install_status: Started 
+      db_install_status: STARTED 
   when: fresh_install
   tags:
   - apex_api
 
-- name: host patch checklist post 
+- name:  patch checklist post 
   include_tasks: db_patch_checklist_update.yml
   vars:
     chklst_json_body:
@@ -93,11 +95,15 @@
     var: opatch_lsinv_success.stdout_lines
 
 - name: host checklist post for Patching 
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       ID: "{{ checklist_id }}"
-      new_entry: False
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}"
+      checklist_type: PATCHING
+      category_type: Install
+      new_entry: True
       db_install_status: SUCCESSFUL #Need a way to determine Failures
   when:
   - fresh_install
@@ -106,10 +112,14 @@
   - apex_api
 
 - name: host checklist post for Patching
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: True
+      db_name: "{{ oracle_db_name }}"
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: PATCHING
+      category_type: Install
       ID: "{{ checklist_id }}"
       db_install_status: Failed #Need a way to determine Failures
   when:
@@ -118,22 +128,34 @@
   tags:
   - apex_api
 
-- name: host checklist post for Patching
+- name: Patch checklist post for Patching
   include_tasks: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
+        db_home: "{{ oracle_db_home }}"
+        host_name: "{{ ansible_hostname }}"
+        PSU_NUMBER: "{{ patch_num }}"
+        PSU_QUARTER: "{{ patch_quarter }}"
+        PSU_YEAR: "{{ patch_year }}"
+        patch_type: "{{ patch_type }}"
         patch_status: PSU APPLIED SUCCESSFULLY
-        new_entry: False
+        new_entry: True
   when: opatch_lsinv_success.stdout_lines |  length > 0
   tags:
   - apex_api
 
-- name: host checklist post for Patching
+- name: Patch checklist post for Patching
   include_tasks: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
+        db_home: "{{ oracle_db_home }}"
+        host_name: "{{ ansible_hostname }}"
+        PSU_NUMBER: "{{ patch_num }}"
+        PSU_QUARTER: "{{ patch_quarter }}"
+        PSU_YEAR: "{{ patch_year }}"
+        patch_type: "{{ patch_type }}"
         patch_status: PSU FAILED
-        new_entry: False
+        new_entry: True
   when: opatch_lsinv_success.stdout_lines |  length == 0
   tags:
   - apex_api

@@ -5,6 +5,8 @@
   vars:
     chklst_json_body:
       new_entry: True
+      ticket_ref: "{{ ticket_ref }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: CLUVFY
       category_type: PRE-CHECK
       gi_install_status: STARTED
@@ -104,7 +106,9 @@
   include_tasks: "host_checklist_post_update.yml"
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: true
+      ticket_ref: "{{ ticket_ref }}"
+      host_name: "{{ ansible_hostname }}"
       gi_install_status: "{{ final_result }}"
       ID: "{{ checklist_id }}"
   tags:
