@@ -18,7 +18,8 @@
   tasks:
     - name: install the needed packages
       yum: 
-        name: parted,lvm2,nfs-utils,nfs-utils-lib
+#        name: parted,lvm2,nfs-utils,nfs-utils-lib
+        name: parted,lvm2,nfs-utils
         state: present
       tags:
         - mount_nfs
