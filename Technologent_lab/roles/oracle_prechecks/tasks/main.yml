@@ -548,7 +548,7 @@
                      kernel_params.kernel_shmmni != kernel_parameters.kernel_shmmni -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
-            
+               
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
     verbosity: 1
@@ -588,6 +588,10 @@
     - charteronly
     - apex_api
 
+- name: view checklist
+  debug:
+    var: checklist
+    
 - name: Check for Precheck Failures
   fail:
     msg: "{% if checklist | json_query('[?status == `FAILED`]') | length == 1 -%}You have 1 failed check
