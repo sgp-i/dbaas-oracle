@@ -2,7 +2,7 @@
 
 - name: add a swap file
   command: dd if=/dev/zero of={{ oracle_swap_file }} count={{ oracle_swap_size }} bs=1M 
-    creates="{{ oracle_swap_file }}" 
+  creates: "{{ oracle_swap_file }}" 
 
 - name: check the swap file
   shell: file {{ oracle_swap_file }} | grep "swap file"
