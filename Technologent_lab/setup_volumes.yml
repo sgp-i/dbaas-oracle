@@ -6,10 +6,14 @@
 
   vars:
     disks:
-      - { raw: /dev/sdc, part: "1", vg: ora-dg-ocr01 }
-      - { raw: /dev/sdd, part: "1", vg: ora-dg-ocr02 }
-      - { raw: /dev/sde, part: "1", vg: ora-dg-ocr03 }
-      - { raw: /dev/sdf, part: "1", vg: ora-dg-data01 }
+      - { raw: /dev/sdc, part: "1", vg: ora-dg-data01 }
+      - { raw: /dev/sdd, part: "1", vg: ora-dg-reco01 }
+      - { raw: /dev/sde, part: "1", vg: ora-dg-exp01 }
+      - { raw: /dev/sdf, part: "1", vg: ora-dg-exp02 }
+      - { raw: /dev/sdg, part: "1", vg: ora-dg-exp03 }
+      - { raw: /dev/sdh, part: "1", vg: ora-dg-gg01 }
+      - { raw: /dev/sdi, part: "1", vg: ora-dg-gg02 }
+      - { raw: /dev/sdj, part: "1", vg: ora-dg-gg02 }
 
   tasks:
     - name: install the needed packages
