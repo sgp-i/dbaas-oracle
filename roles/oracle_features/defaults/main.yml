@@ -1,0 +1,8 @@
+---
+
+oracle_features_tmp: /u01/tmp/
+
+feature_files:
+  - product_stats.sql
+  - feature_stats.sql
+
