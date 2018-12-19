@@ -2,14 +2,13 @@
 
 - include_vars: secrets.yml
   no_log: true
-
+- debug: msg="API call out"
 - name: host checklist post for RDBMS install
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: True
       ID: "{{ checklist_id }}"
-      db_name:  "{{ oracle_db_name }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
       category_type: Install
