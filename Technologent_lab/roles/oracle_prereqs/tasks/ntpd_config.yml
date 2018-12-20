@@ -1,6 +1,7 @@
 - name: stop ntpd
   shell: systemctl stop ntpd
-
+  ignore_errors: True
+  
 - name: disable ntpd
   shell: systemctl disable ntpd
 
