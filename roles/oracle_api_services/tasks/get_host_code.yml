@@ -10,6 +10,6 @@
 
 - name: set host_code
   set_fact:
-    host_code: "{{ host_code_get_response.json.items.id }}"
+    host_code: "{{ host_code_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('id') }}"
     #host_code: "{{ host_code_get_response.json | default('{`items`:[{`host_code`:``}]}') | json_query('items[0].host_code') }}"
-  when: host_code_get_response.json  | default('{`items`:[{`host_code`:``}]}') | json_query('items[0].host_code') != ""
+  when: host_code_get_response.json  | default('{`items`:[{`id`:``}]}') | json_query('items[0].id') != ""
