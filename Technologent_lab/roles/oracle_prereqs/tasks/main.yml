@@ -51,5 +51,6 @@
   file: 
     path: /u01
     owner: "{{ oracle_user.name }}"
+    group: "{{ oracle_user.group }}"
 
 - import_tasks: Charter_checks.yml
