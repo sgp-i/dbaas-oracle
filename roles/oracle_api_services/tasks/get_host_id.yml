@@ -10,7 +10,7 @@
 
 - name: name debug host_id
   debug:
-    var: {{ host_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('id') }}
+    var: "{{ host_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('id') }}"
 
 - name: set host_id
   set_fact:
