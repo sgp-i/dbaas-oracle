@@ -2,7 +2,7 @@
 
 - name: GET host_code from APEX
   uri:
-    url: "{{ apex_url }}/charter/get_host_code/{{ ansible_hostname }}"
+    url: "{{ apex_url }}/get_host_code/{{ ansible_hostname }}"
     validate_certs: no  # should be removed after https certs becomes renewed
     method: GET
   ignore_errors: yes
