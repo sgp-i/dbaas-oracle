@@ -16,7 +16,7 @@
   lineinfile:
     path: /etc/sysconfig/ntpd
     regexp: "OPTIONS.*"
-    line: "OPTIONS=\" -x -u ntp:ntp -p /var/run/ntpd.pid\""
+    line: "OPTIONS=\" -u ntp:ntp -p /var/run/ntpd.pid -g -x\""
   when: ntpd_file.stat.exists
 
 - name: enable ntpd
