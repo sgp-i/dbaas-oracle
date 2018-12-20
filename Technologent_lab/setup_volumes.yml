@@ -4,7 +4,7 @@
   hosts: "{{ host }}"
   become: yes
 
-  vars:
+  set_fact:
     disks:
       - { raw: /dev/sdc, part: "1", vg: ora-dg-data01 }
       - { raw: /dev/sdd, part: "1", vg: ora-dg-reco01 }
@@ -14,6 +14,21 @@
       - { raw: /dev/sdh, part: "1", vg: ora-dg-gg01 }
       - { raw: /dev/sdi, part: "1", vg: ora-dg-gg02 }
       - { raw: /dev/sdj, part: "1", vg: ora-dg-gg03 }
+    when: install_type == "standalone"
+
+    disks:
+      - { raw: /dev/sdc, part: "1", vg: ora-dg-ocr01 }
+      - { raw: /dev/sdd, part: "1", vg: ora-dg-ocr02 }
+      - { raw: /dev/sde, part: "1", vg: ora-dg-ocr03 }
+      - { raw: /dev/sdf, part: "1", vg: ora-dg-data01 }
+      - { raw: /dev/sdg, part: "1", vg: ora-dg-reco01 }
+      - { raw: /dev/sdh, part: "1", vg: ora-dg-exp01 }
+      - { raw: /dev/sdi, part: "1", vg: ora-dg-exp02 }
+      - { raw: /dev/sdj, part: "1", vg: ora-dg-exp03 }
+      - { raw: /dev/sdk, part: "1", vg: ora-dg-gg01 }
+      - { raw: /dev/sdl, part: "1", vg: ora-dg-gg02 }
+      - { raw: /dev/sdm, part: "1", vg: ora-dg-gg03 }
+    WHEN: install_type == "rac_install"
 
   tasks:
     - name: install the needed packages
