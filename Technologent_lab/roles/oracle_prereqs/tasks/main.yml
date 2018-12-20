@@ -28,7 +28,7 @@
 # THE BELOW TO BE UNCOMMENTED WHEN WE GET THE LAB ENVIRONMENT WITH ALL THE IP'S REQUIRED
 #*******************************************
 
-#- include: ntpd_config.yml
+- include: ntpd_config.yml
 
 #--------------------------------------------
 
