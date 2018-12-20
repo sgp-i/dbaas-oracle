@@ -3,7 +3,7 @@
 - name: host inventory
   hosts: '{{ host }}'
   become: yes
-  gather_stats: yes
+  gather_facts: yes
   tasks:
   - import_role:
       name: oracle_api_services
