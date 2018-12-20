@@ -75,6 +75,7 @@
       checklist_type: 'GI Install'
       category_type: 'Install'
       gi_install_status: 'STARTED'
+      ticket_ref: "{{ ticket_ref }}"
       task_desc: 'Install Grid'
   tags:
   - apex_api
@@ -100,6 +101,7 @@
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: IN_PROGRESS
+      ticket_ref: "{{ ticket_ref }}"
   when: inventory_hostname == master_node
   tags:
   - apex_api
@@ -121,6 +123,8 @@
       checklist_type: 'Configuring Disk Groups'
       category_type: Install
       gi_install_status: "FAILED"
+      ticket_ref: "{{ ticket_ref }}"
+      task_desc: 'Install Grid'
   when:
     - inventory_hostname == master_node
     - diskgroup_failed
@@ -135,7 +139,9 @@
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'GRID Install'
       new_entry: True
+      ticket_ref: "{{ ticket_ref }}"
       gi_install_status: "SUCCESSFUL"
+      task_desc: 'Install Grid'
   when:
     - inventory_hostname == master_node
     - diskgroup_failed == False

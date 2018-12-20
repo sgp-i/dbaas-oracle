@@ -100,10 +100,14 @@
   vars:
     chklst_json_body:
       new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
       #ID: "{{ checklist_id }}"
       checklist_type: "post_provision_db steps"
       category_type: POST PROVISION
       post_build_status: "IN_PROGRESS"
+      ticket_ref: "{{ ticket_ref }}"
+      task_desc: setting up cleanup_files.ctl
   tags:
   - apex_api
 
@@ -141,20 +145,7 @@
         state: touch
         mode: 0400
 
-    - name: db checklist post update for post provisioning for db
-      import_tasks: db_checklist_post_update.yml
-      vars:
-        chklst_json_body:
-          host_name: "{{ ansible_hostname }}"
-          db_name: "{{ oracle_db_name }}" 
-          icket_ref: "{{ ticket_ref }}"
-          checklist_type: "post_provision_db steps"
-          category_type: POST PROVISION
-          new_entry: True
-          #ID: "{{ checklist_id }}"
-          post_build_status: "IN_PROGRESS"
-      tags:
-      - apex_api
+
   rescue:
     - name: db checklist post update for post provisioning for db
       include_tasks: db_checklist_post_update.yml
@@ -162,7 +153,7 @@
         chklst_json_body:
           host_name: "{{ ansible_hostname }}"
           db_name: "{{ oracle_db_name }}" 
-          icket_ref: "{{ ticket_ref }}"
+          ticket_ref: "{{ ticket_ref }}"
           checklist_type: "post_provision_db steps"
           category_type: POST PROVISION
           new_entry: True
@@ -178,11 +169,11 @@
           new_entry: True
           host_name: "{{ ansible_hostname }}"
           db_name: "{{ oracle_db_name }}" 
-          icket_ref: "{{ ticket_ref }}"
+          ticket_ref: "{{ ticket_ref }}"
           checklist_type: "post_provision_db steps"
           category_type: POST PROVISION
           #ID: "{{ checklist_id }}"
-          post_install_status: FAILED
+          post_build_status: FAILED
       tags:
       - apex_api
 - name: db checklist post update for post provisioning for db

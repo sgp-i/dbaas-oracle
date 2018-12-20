@@ -26,7 +26,7 @@
       host_name: "{{ ansible_hostname }}"
       checklist_type: "POST_PROVISION"
       category_type: POST
-      db_install_status: IN PROGRESS
+      gi_install_status: STARTED
   tags:
   - apex_api
 

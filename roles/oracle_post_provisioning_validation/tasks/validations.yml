@@ -1,13 +1,17 @@
 ---
-- name: db checklist post update for post provisioning validation
-  include_tasks: db_checklist_post_update.yml
+- name: host checklist post update for post provisioning validation
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "IN_PROGRESS"
+      category_type: POST PROVISION
+      post_build_status: "STARTED"
+      task_desc: Post validation
   tags:
   - apex_api
 - name: check oracle user
@@ -228,19 +232,41 @@
     logfile_path: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
+    log_file_desc: post validation
   tags:
   - apex_api
 
 - name: db checklist post update for post provisioning validation
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "FAILED"
+      checklist_type: "Post Provisioning Validations"
+      category_type: POST PROVISION
+      post_build_status: "FAILED"
+      task_desc: post validation
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
+  tags:
+  - apex_api
+
+- name: db checklist post update for post provisioning validation
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "Post Provisioning Validations"
+      category_type: POST PROVISION
+      post_build_status: "SUCCESSFUL"
+      task_desc: post validation
+  when: checklist | json_query('[?status == `FAILED`]') | length == 0
   tags:
   - apex_api
 

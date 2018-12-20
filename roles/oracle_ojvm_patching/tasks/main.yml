@@ -20,6 +20,7 @@
       category_type: 'Patching'
       gi_install_status: 'STARTED'
       task_desc: 'Applying OJVM'
+      ticket_ref: "{{ ticket_ref }}"
   tags:
   - apex_api
 
@@ -37,6 +38,7 @@
       category_type: 'Patching'
       gi_install_status: 'SUCCESSFUL'
       task_desc: 'Applying OJVM'
+      ticket_ref: "{{ ticket_ref }}"
   when: 
     - ojvm_failures | length == 0
   tags:
@@ -53,6 +55,7 @@
       category_type: 'Patching'
       gi_install_status: 'Failed'
       task_desc: 'Applying OJVM'
+      ticket_ref: "{{ ticket_ref }}"
   when: 
     - ojvm_failures | length > 0
   tags:
