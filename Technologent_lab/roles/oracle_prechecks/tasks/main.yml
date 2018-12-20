@@ -181,11 +181,11 @@
 ##    is all that's needed.  So there may be more work    ##
 ##    needed here even if Charter does want to use this   ##
 ############################################################
-# - name: ensure hugepages is set to half the size of memory
-#   sysctl:
-#     name: vm.nr_hugepages
-#     value: "{{ ansible_memtotal_mb * 1024 // 2 }}"
-#     state: present
+- name: ensure hugepages is set to half the size of memory
+   sysctl:
+     name: vm.nr_hugepages
+     value: "2560"
+     state: present
 - name: Get The Huge Page Total Size
   shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
   changed_when: False
