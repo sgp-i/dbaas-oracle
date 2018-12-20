@@ -528,7 +528,7 @@
                {%- endif %}"
     - check_name: /dev/shm Size
       expected_value: "{{ (ansible_memtotal_mb * 0.8) | int }}"
-      actual_value: "{{ shm_size | in }}"
+      actual_value: "{{ shm_size | int }}"
       status: "{% if shm_size | int > (ansible_memtotal_mb * 0.8) | int -%}FAILED
                 {%- else -%}PASSED
                {%- endif %}"
