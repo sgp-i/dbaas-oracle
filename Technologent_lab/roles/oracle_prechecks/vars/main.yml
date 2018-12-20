@@ -68,4 +68,3 @@ required_rpms:
   - sysstat 
   - compat-libstdc++-33
   - kmod 
-  - cvuqdisk
