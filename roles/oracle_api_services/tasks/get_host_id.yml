@@ -10,7 +10,7 @@
 
 - name: name debug host_id
   debug:
-    var: host_id_get_response.json.items.id
+    var: host_id_get_response.json.items
 
 - name: set host_id
   set_fact:
