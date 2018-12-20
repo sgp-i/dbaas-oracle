@@ -475,7 +475,7 @@
                      {%- else -%}{{ (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int }} GiB
                      {%- endif -%}"
       status: "{% if ansible_mounts | json_query('[?mount == `/u01`]') == [] or
-                     (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
+                     (ansible_mounts | json_query('[?mount == `/u01`].size_total|[0]') | int / 1024 | pow(3)) | round | int < 59 -%}FAILED
                {%- else -%}PASSED
                {%- endif %}"
     - check_name: check nozeroconf in config of network
