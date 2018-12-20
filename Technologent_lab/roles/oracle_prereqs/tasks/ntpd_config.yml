@@ -16,5 +16,8 @@
     line: "OPTIONS=\" -x -u ntp:ntp -p /var/run/ntpd.pid\""
   when: ntpd_file.stat.exists
 
+- name: enable ntpd
+  shell: systemctl enable ntpd
+
 - name: restart ntpd
   shell: systemctl restart ntpd

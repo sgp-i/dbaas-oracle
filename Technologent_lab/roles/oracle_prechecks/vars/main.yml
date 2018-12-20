@@ -5,6 +5,9 @@ oracle_user: oracle
 oracle_groups: 
 - oinstall
 - dba
+- asmoper
+- asmadmin
+- asmdba
 
 installation_type: "{% if ansible_play_hosts | length > 1 -%}rac
                     {%- else -%}standalone
