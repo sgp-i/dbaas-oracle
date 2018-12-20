@@ -1,8 +1,8 @@
 - name: install ntpd
   yum:
-    name: ntpd
+    name: ntp
     state: present
-    
+
 - name: stop ntpd
   shell: systemctl stop ntpd
   ignore_errors: True
