@@ -10,8 +10,5 @@
 
 - name: set host_id
   set_fact:
-    host_id: "{{ host_id_get_response.json.items.ID }}"
-
-- name: debug host_id
-  debug: 
-    var: host_id
+    host_id: "{{ host_id_get_response.json.ID }}"
+    #host_id: "{{ host_id_get_response.json | default('{`items`:[{`id`:``}]}') | json_query('items[0].id') }}"
