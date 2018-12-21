@@ -7,4 +7,4 @@
   tasks:
   - import_role:
       name: oracle_api_services
-      tasks_from: host_inventory_update
+      tasks_from: host_inventory_insertion
