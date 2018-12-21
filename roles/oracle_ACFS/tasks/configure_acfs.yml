@@ -70,7 +70,7 @@
   - name: set ownership/perms on {{ oracle_base }}/{{ diskgroup.dir }}
     file:
       #path: "{{ dev_path }}"
-      psth: "{{ oracle_base }}/{{ diskgroup.dir }}"
+      path: "{{ oracle_base }}/{{ diskgroup.dir }}"
       owner: "{{ oracle_user }}"
       group: "{{ oracle_group }}"
       state: directory
@@ -127,7 +127,7 @@
   - name: set ownership/perms on {{ oracle_base }}/{{ diskgroup.dir }}
     file:
       #path: "{{ dev_path }}"
-      psth: "{{ oracle_base }}/{{ diskgroup.dir }}"
+      path: "{{ oracle_base }}/{{ diskgroup.dir }}"
       owner: "{{ oracle_user }}"
       group: "{{ oracle_group }}"
       state: directory

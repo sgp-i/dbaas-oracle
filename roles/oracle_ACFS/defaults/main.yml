@@ -27,3 +27,4 @@ create_gg_diskgroup: False
 oracle_version: 12.1.0.2
 
 oracle_db_name: +ASM
+oracle_sid: +ASM
