@@ -12,7 +12,7 @@ install_base: /u01/app
 
 oracle_base: "{{ install_base }}/oracle"
 
-oracle_db_name: db
+oracle_db_name: ''
 
 
 oracle_db_mem: "2048"

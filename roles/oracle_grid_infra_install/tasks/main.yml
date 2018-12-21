@@ -102,6 +102,7 @@
       category_type: Install
       gi_install_status: IN_PROGRESS
       ticket_ref: "{{ ticket_ref }}"
+      task_desc: configuring Disk Groups
   when: inventory_hostname == master_node
   tags:
   - apex_api

@@ -6,6 +6,8 @@
   vars:
     chklst_json_body:
       new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      task_desc: creating disk groups
       checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
       category_type: Configure
       gi_install_status: IN PROGRESS
@@ -59,6 +61,8 @@
   vars:
     chklst_json_body:
       new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      task_desc: creating disk groups
       checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
       category_type: Configure
       gi_install_status: "{% if lookup('vars', diskgroup_name + '_create') is failed -%}FAILED
