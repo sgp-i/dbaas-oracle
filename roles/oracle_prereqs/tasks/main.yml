@@ -580,7 +580,10 @@
   vars:
     chklst_json_body:
       #ID: "{{ checklist_id }}"
-      new_entry: False
+      new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: PRE-CHECK Host
+      category_type: PRE-CHECK
       gi_install_status: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"
