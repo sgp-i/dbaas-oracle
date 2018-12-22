@@ -25,7 +25,7 @@
     msg: The Variable oracle_db_name is not defined
   when: oracle_db_name is undefined
 
-- name: set orace_home
+- name: set oracle_home
   block:
     - name: get oracle_sid
       shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
