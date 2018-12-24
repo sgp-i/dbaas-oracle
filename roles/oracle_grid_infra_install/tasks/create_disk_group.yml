@@ -9,7 +9,7 @@
       host_name: "{{ ansible_hostname }}"
       task_desc: creating disk groups
       checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
-      category_type: Configure
+      checklist_category: Configure
       gi_install_status: IN PROGRESS
   when: inventory_hostname == master_node
   tags:
@@ -64,7 +64,7 @@
       host_name: "{{ ansible_hostname }}"
       task_desc: creating disk groups
       checklist_type: 'Configuring Disk Groups {{ diskgroup_name }} '
-      category_type: Configure
+      checklist_category: Configure
       gi_install_status: "{% if lookup('vars', diskgroup_name + '_create') is failed -%}FAILED
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"

@@ -46,7 +46,7 @@
     chklst_json_body:
       new_entry: True
       checklist_type: "DB Upgrade"
-      category_type: Upgrade
+      checklist_category: Upgrade
       db_install_status: IN PROGRESS
   tags:
   - apex_api

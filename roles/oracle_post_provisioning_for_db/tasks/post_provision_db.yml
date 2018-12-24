@@ -7,10 +7,11 @@
       new_entry: True
       host_name: "{{ ansible_hostname }}"
       db_name: "{{ oracle_db_name }}" 
-      checklist_type: "post_provision_db steps"
+      checklist_type: "POST PROVISIONING for DB"
       ticket_ref: "{{ ticket_ref }}"
-      category_type: POST INSTALL
+      checklist_category: POST PROVISION
       post_build_status: STARTED
+      task_desc: post provisioning
   tags:
   - apex_api
 
@@ -80,8 +81,8 @@
       db_name: "{{ oracle_db_name }}" 
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
-      checklist_type: "post_provision_db steps"
-      category_type: POST PROVISION
+      checklist_type: POST PROVISIONING for DB
+      checklist_category: POST PROVISION
       post_build_status: "FAILED"
   when:
     - oracle_home == ""
@@ -103,9 +104,9 @@
       host_name: "{{ ansible_hostname }}"
       db_name: "{{ oracle_db_name }}" 
       #ID: "{{ checklist_id }}"
-      checklist_type: "post_provision_db steps"
-      category_type: POST PROVISION
-      post_build_status: "IN_PROGRESS"
+      checklist_type: POST PROVISIONING for DB
+      checklist_category: POST PROVISION
+      post_build_status: "IN PROGRESS"
       ticket_ref: "{{ ticket_ref }}"
       task_desc: setting up cleanup_files.ctl
   tags:
@@ -154,28 +155,16 @@
           host_name: "{{ ansible_hostname }}"
           db_name: "{{ oracle_db_name }}" 
           ticket_ref: "{{ ticket_ref }}"
-          checklist_type: "post_provision_db steps"
-          category_type: POST PROVISION
+          checklist_type: "POST PROVISIONING for DB"
+          checklist_category: POST PROVISION
           new_entry: True
           #ID: "{{ checklist_id }}"
           post_build_status: FAILED
+          task_desc: post provisioning
       tags:
       - apex_api
 
-    - name: db checklist post update for post provisioning for db
-      include_tasks: db_checklist_post_update.yml
-      vars:
-        chklst_json_body:
-          new_entry: True
-          host_name: "{{ ansible_hostname }}"
-          db_name: "{{ oracle_db_name }}" 
-          ticket_ref: "{{ ticket_ref }}"
-          checklist_type: "post_provision_db steps"
-          category_type: POST PROVISION
-          #ID: "{{ checklist_id }}"
-          post_build_status: FAILED
-      tags:
-      - apex_api
+
 - name: db checklist post update for post provisioning for db
   include_tasks: db_checklist_post_update.yml
   vars:
@@ -184,9 +173,10 @@
       host_name: "{{ ansible_hostname }}"
       db_name: "{{ oracle_db_name }}" 
       ticket_ref: "{{ ticket_ref }}"
-      checklist_type: "post_provision_db steps"
-      category_type: POST PROVISION
+      checklist_type: "POST PROVISIONING for DB"
+      checklist_category: POST PROVISION
       #ID: "{{ checklist_id }}"
       post_build_status: "SUCCESSFUL"
+      task_desc: post provisioning
   tags:
   - apex_api

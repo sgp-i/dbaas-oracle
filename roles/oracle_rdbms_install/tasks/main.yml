@@ -12,7 +12,7 @@
       new_entry: True
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
-      category_type: Install
+      checklist_category: Install
       db_install_status: STARTED
       task_desc: RDBMS INSTALL
   tags:

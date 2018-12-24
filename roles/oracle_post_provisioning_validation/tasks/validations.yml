@@ -9,7 +9,7 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: POST PROVISION
+      checklist_category: POST VALIDATION
       post_build_status: "STARTED"
       task_desc: Post validation
   tags:
@@ -131,10 +131,10 @@
   import_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
+      new_entry: true
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
+      checklist_category: DB Install
       db_install_status: "SUCCESS"
   tags:
   - apex_api
@@ -168,10 +168,10 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: EXP Mount (in GiB)
-      expected_value: 299
+      expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
       status: "{% if exp_disk_size == 'unmounted' or
-                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 299 -%}FAILED
+                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 295 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - name: GG Mount (in GiB)
@@ -236,7 +236,7 @@
   tags:
   - apex_api
 
-- name: db checklist post update for post provisioning validation
+- name: host checklist post update for post provisioning validation
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
@@ -246,7 +246,7 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      category_type: POST PROVISION
+      checklist_category: POST PROVISION
       post_build_status: "FAILED"
       task_desc: post validation
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
@@ -263,7 +263,7 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      category_type: POST PROVISION
+      checklist_category: POST PROVISION
       post_build_status: "SUCCESSFUL"
       task_desc: post validation
   when: checklist | json_query('[?status == `FAILED`]') | length == 0

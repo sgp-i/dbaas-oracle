@@ -17,7 +17,7 @@
       host_name: "{{ ansible_hostname }}"
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: 'ACFS Config'
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'STARTED'
       task_desc: 'acfs check'
   tags:
@@ -34,7 +34,7 @@
       host_name: "{{ ansible_hostname }}"
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: 'ACFS Config'
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'acfs install'
   tags:
@@ -61,7 +61,7 @@
       host_name: "{{ ansible_hostname }}"
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: 'ACFS Config'
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'check currently mounted ASM DGs'
   tags:
@@ -88,7 +88,7 @@
       host_name: "{{ ansible_hostname }}"
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: 'ACFS Config'
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'Configuring ACFS for EXP'
   tags:
@@ -109,7 +109,7 @@
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'ACFS Config'
       ticket_ref: "{{ ticket_ref }}"
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'Configuring ACFS for GG'
   tags:
@@ -130,7 +130,7 @@
       checklist_type: 'ACFS Config'
       host_name: "{{ ansible_hostname }}"
       ticket_ref: "{{ ticket_ref }}"
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'COMPLETED'
       task_desc: 'Configuring ACFS for GG'
   tags:

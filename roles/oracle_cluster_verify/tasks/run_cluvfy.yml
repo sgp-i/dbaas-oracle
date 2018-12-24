@@ -8,7 +8,7 @@
       ticket_ref: "{{ ticket_ref }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: CLUVFY
-      category_type: PRE-CHECK
+      checklist_category: PRE-CHECK
       gi_install_status: STARTED
   tags:
   - apex_api

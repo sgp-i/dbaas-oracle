@@ -61,7 +61,7 @@
         new_entry: True
         host_name: "{{ ansible_hostname }}"
         checklist_type: "CREATE DATABASE"
-        category_type: DB Creation
+        checklist_category: DB Creation
         ticket_ref: "{{ ticket_ref }}"
         db_install_status: "STARTED"
         db_name: "{{ oracle_db_name }}"
@@ -107,7 +107,7 @@
         chklst_json_body:
         host_name: "{{ ansible_hostname }}"
         checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
-        category_type: DB Creation
+        checklist_category: DB Creation
         ticket_ref: "{{ ticket_ref }}"
         db_name: "{{ oracle_db_name }}"
         #ID: "{{ checklist_id }}"
@@ -126,7 +126,7 @@
       chklst_json_body:
         host_name: "{{ ansible_hostname }}"
         checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
-        category_type: DB Creation
+        checklist_category: DB Creation
         ticket_ref: "{{ ticket_ref }}"
         db_name: "{{ oracle_db_name }}"
         #ID: "{{ checklist_id }}"
@@ -216,7 +216,7 @@
 #       chklst_json_body:
 #         new_entry: True
 #         checklist_type: " CREATE DATABASE {{ oracle_db_name }}"
-#         category_type: DB Creation
+#         checklist_category: DB Creation
 #         db_install_status: "IN PROGRESS"
 #     tags:
 #     - apex_api

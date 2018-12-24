@@ -17,7 +17,7 @@
       new_entry: true
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'OJVM Patch'
-      category_type: 'Patching'
+      checklist_category: 'Patching'
       gi_install_status: 'STARTED'
       task_desc: 'Applying OJVM'
       ticket_ref: "{{ ticket_ref }}"
@@ -35,7 +35,7 @@
       new_entry: true
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'OJVM Patch'
-      category_type: 'Patching'
+      checklist_category: 'Patching'
       gi_install_status: 'SUCCESSFUL'
       task_desc: 'Applying OJVM'
       ticket_ref: "{{ ticket_ref }}"
@@ -52,7 +52,7 @@
       new_entry: true
       host_name: "{{ ansible_hostname }}"
       checklist_type: 'OJVM Patch'
-      category_type: 'Patching'
+      checklist_category: 'Patching'
       gi_install_status: 'Failed'
       task_desc: 'Applying OJVM'
       ticket_ref: "{{ ticket_ref }}"

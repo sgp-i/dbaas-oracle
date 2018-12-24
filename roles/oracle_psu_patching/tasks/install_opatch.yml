@@ -50,7 +50,7 @@
         db_name: "{{ oracle_db_name }}"
         host_name: "{{ ansible_hostname }}"
         checklist_type: PATCHING
-        category_type: Install
+        checklist_category: Install
         db_install_status: OPATCH Install FAILED
     when: fresh_install
     tags:

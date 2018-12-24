@@ -46,7 +46,7 @@
       db_name:  "{{ oracle_db_name }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
-      category_type: Install
+      checklist_category: Install
       task_desc: Root.sh execution RDBMS
       db_install_status: IN PROGRESS
   tags:
@@ -79,7 +79,7 @@
       db_name:  "{{ oracle_db_name }}"
       host_name: "{{ ansible_hostname }}"
       checklist_type: "RDBMS Software Install"
-      category_type: Install
+      checklist_category: Install
       task_desc: RDBMS INSTALL        
       db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
                                  hostvars[master_node]['db_install']['failed'] -%}FAILED
