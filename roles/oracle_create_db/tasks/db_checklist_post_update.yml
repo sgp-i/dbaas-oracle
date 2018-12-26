@@ -1,5 +1,5 @@
 - name: insert new checklist entry
-  include_tasks: host_checklist_insertion.yml
+  include_tasks: db_checklist_insertion.yml
   when: chklst_json_body.new_entry
 
 - debug:
