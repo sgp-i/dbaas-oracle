@@ -8,12 +8,13 @@
       db_name: "{{ oracle_db_name }}" 
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations For DV"
+      checklist_type: "Post Provisioning Validations For DB"
       checklist_category: POST VALIDATION
       post_build_status: "STARTED"
       task_desc: Post validation
   tags:
   - apex_api
+  
 - name: check oracle user
   user:
     name: oracle
