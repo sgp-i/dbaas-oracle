@@ -1,11 +1,11 @@
 ---
-host_code_check: "{% if clustered == 'Y' -%}{{ host_code | mandatory }}
-              {%- else -%}
-              {%- endif %}"
+#host_code_check: "{% if clustered == 'Y' -%}{{ host_code | mandatory }}
+#              {%- else -%}
+#             {%- endif %}"
 
-env_source_check: "{% if clustered == 'N' -%}{{ env_source | mandatory }}
-             {%- else -%}{{ env_source | default('') }}
-             {%- endif %}"
+#env_source_check: "{% if clustered == 'N' -%}{{ env_source | mandatory }}
+#             {%- else -%}{{ env_source | default('') }}
+#             {%- endif %}"
 
 host_inventory_insrt_body:
   host_name: "{{ ansible_hostname }}"
