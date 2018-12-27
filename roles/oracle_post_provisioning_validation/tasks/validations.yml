@@ -8,7 +8,7 @@
       db_name: "{{ oracle_db_name }}" 
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
+      checklist_type: "Post Provisioning Validations For DV"
       checklist_category: POST VALIDATION
       post_build_status: "STARTED"
       task_desc: Post validation
@@ -128,14 +128,18 @@
   when: oracle_home != "" and oracle_context != 'grid'
 
 - name: db checklist post update for post provisioning validation
-  import_tasks: db_checklist_post_update.yml
+  import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
       new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
-      checklist_category: DB Install
-      db_install_status: "SUCCESS"
+      checklist_type: "Post Provisioning Validations for DB"
+      checklist_category: POST PROVISION
+      post_build_status: "SUCCESSFUL"
+      task_desc: Post validation
   tags:
   - apex_api
 

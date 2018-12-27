@@ -81,7 +81,6 @@
     loop: "{{ db_list.stdout_lines }}"
     loop_control:
       loop_var: db_detail
-
   when: patch_type == 'RDBMS'
 
 - name: detemine success of opatch apply
