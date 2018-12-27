@@ -1,8 +1,5 @@
 ---
 
-- include_tasks: get_db_id.yml
-  when: db_id is not defined
-
 - name: POST To Insert new Checklist entry
   uri:
     url: "{{ apex_url }}/charter/insert_db_check_list"
