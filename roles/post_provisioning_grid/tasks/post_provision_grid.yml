@@ -74,6 +74,10 @@
   - include_tasks: cleanup_files_setup.yml
     become_user: "{{ oracle_user }}"
 
+  - name: Execute adrci setup
+    include_tasks: adrci_setup.yml  
+    when: master_node == inventory_hostname
+
   - name: Set up Directory in ORACLE_ADMIN
     file:
       group: "{{ oracle_group }}"
