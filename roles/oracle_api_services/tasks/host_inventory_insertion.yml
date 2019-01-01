@@ -1,7 +1,11 @@
 ---
 
 #- include_tasks: get_host_code.yml
+<<<<<<< HEAD
  # when: host_code is not defined
+=======
+#  when: host_code is not defined
+>>>>>>> 0dcde709d3bdbc0929170604f32ad60012757484
 
 - include_vars: var_host_inventory_insertion.yml
 
@@ -17,11 +21,23 @@
       headers:
           Content-Type: "application/json"
     register: v_host_detail_insertion_response
+<<<<<<< HEAD
   
  # - name: set host_id
   #  set_fact:
       #host_id: "{{ v_host_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
    #   host_id: "{{ host_id_get_response.json.ID }}"
+=======
+
+  - name: debug var_host_inventory_insertion
+    debug: 
+      var: var_host_inventory_insertion
+
+#  - name: set host_id
+#    set_fact:
+#      #host_id: "{{ v_host_detail_insertion_response.json | default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
+#      host_id: "{{ host_id_get_response.json.ID }}"
+>>>>>>> 0dcde709d3bdbc0929170604f32ad60012757484
 
   rescue:
   - name: Store the Json If APEX Server Is Down

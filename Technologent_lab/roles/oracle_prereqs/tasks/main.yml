@@ -28,7 +28,7 @@
 # THE BELOW TO BE UNCOMMENTED WHEN WE GET THE LAB ENVIRONMENT WITH ALL THE IP'S REQUIRED
 #*******************************************
 
-#- include: ntpd_config.yml
+- include: ntpd_config.yml
 
 #--------------------------------------------
 
@@ -51,5 +51,6 @@
   file: 
     path: /u01
     owner: "{{ oracle_user.name }}"
+    group: "{{ oracle_user.group }}"
 
 - import_tasks: Charter_checks.yml

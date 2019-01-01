@@ -4,17 +4,39 @@
   hosts: "{{ host }}"
   become: yes
 
-  vars:
-    disks:
-      - { raw: /dev/sdc, part: "1", vg: ora-dg-ocr01 }
-      - { raw: /dev/sdd, part: "1", vg: ora-dg-ocr02 }
-      - { raw: /dev/sde, part: "1", vg: ora-dg-ocr03 }
-      - { raw: /dev/sdf, part: "1", vg: ora-dg-data01 }
+
 
   tasks:
+    - set_fact:
+        disks:
+          - { raw: /dev/sdc, part: "1", vg: ora-dg-data01 }
+          - { raw: /dev/sdd, part: "1", vg: ora-dg-reco01 }
+          - { raw: /dev/sde, part: "1", vg: ora-dg-exp01 }
+          - { raw: /dev/sdf, part: "1", vg: ora-dg-exp02 }
+          - { raw: /dev/sdg, part: "1", vg: ora-dg-exp03 }
+          - { raw: /dev/sdh, part: "1", vg: ora-dg-gg01 }
+          - { raw: /dev/sdi, part: "1", vg: ora-dg-gg02 }
+          - { raw: /dev/sdj, part: "1", vg: ora-dg-gg03 }
+      when: install_type == "standalone"
+
+    - set_fact:
+        disks:
+          - { raw: /dev/sdc, part: "1", vg: ora-dg-ocr01 }
+          - { raw: /dev/sdd, part: "1", vg: ora-dg-ocr02 }
+          - { raw: /dev/sde, part: "1", vg: ora-dg-ocr03 }
+          - { raw: /dev/sdf, part: "1", vg: ora-dg-data01 }
+          - { raw: /dev/sdg, part: "1", vg: ora-dg-reco01 }
+          - { raw: /dev/sdh, part: "1", vg: ora-dg-exp01 }
+          - { raw: /dev/sdi, part: "1", vg: ora-dg-exp02 }
+          - { raw: /dev/sdj, part: "1", vg: ora-dg-exp03 }
+          - { raw: /dev/sdk, part: "1", vg: ora-dg-gg01 }
+          - { raw: /dev/sdl, part: "1", vg: ora-dg-gg02 }
+          - { raw: /dev/sdm, part: "1", vg: ora-dg-gg03 }
+      when: install_type == "rac_install"
     - name: install the needed packages
       yum: 
-        name: parted,lvm2,nfs-utils,nfs-utils-lib
+#        name: parted,lvm2,nfs-utils,nfs-utils-lib
+        name: parted,lvm2,nfs-utils
         state: present
       tags:
         - mount_nfs
