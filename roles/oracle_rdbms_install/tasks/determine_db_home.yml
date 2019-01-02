@@ -36,7 +36,7 @@
                         sort() }}"
   #when: fresh_install is False
 
-- debug: listing ora_home_locs
+- debug: listing orahomelocs
   var: ora_home_locs
 
 - name: set next oracle home for {{ oracle_version }}
@@ -55,5 +55,5 @@
   when: db_home_exist is defined
 
 
-- debug: listing oracle_db_home
-  var: "{{ oracle_db_home }}"
+- debug: listing oracledbhome
+  var: oracle_db_home 
