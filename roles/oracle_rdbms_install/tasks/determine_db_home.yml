@@ -36,8 +36,8 @@
                         sort() }}"
  
 
-- debug: 'listing orahomelocs'
-  var: ora_home_locs
+- debug: 
+    var : ora_home_locs
 
 - name: set next oracle home for {{ oracle_version }}
   set_fact:
@@ -55,5 +55,5 @@
   when: db_home_exist is defined
 
 
-- debug: 'listing oracledbhome'
-  var: oracle_db_home 
+- debug: 
+    var: oracle_db_home 
