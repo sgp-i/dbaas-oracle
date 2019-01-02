@@ -48,10 +48,12 @@
                     {%- endif %}"
     #when: fresh_install is False
 
-- debug: listing oracle_db_home
-  var: oracle_db_home
-  
+
 - name: set next oracle home for {{ oracle_version }} to db_2
   set_fact:
     oracle_db_home: db_2
   when: db_home_exist is defined
+
+
+- debug: listing oracle_db_home
+  var: "{{ oracle_db_home }}"
