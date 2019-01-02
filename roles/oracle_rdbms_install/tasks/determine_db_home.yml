@@ -21,11 +21,6 @@
   register: ora_home_xpath
 
 
-- name: check oratab for db_1
-  shell: cat /etc/oratab | grep db_1
-  register: db_home_exist
-  when: fresh_install
-
 
 - name: filter oracle home locations by version
   set_fact:
@@ -39,6 +34,24 @@
 - debug: 
     var : ora_home_locs
 
+
+- debug: 
+    var: oracle_db_home 
+
+- name: set next oracle home for {{ oracle_version }} to db_2
+  set_fact:
+    oracle_db_home: db_2
+  when: 
+    - fresh_install is true
+    - oracle_db_home | length > 0
+
+- name: set next oracle home for {{ oracle_version }} to db_1
+  set_fact:
+    oracle_db_home: db_1
+  when: 
+    - fresh_install is true
+    - oracle_db_home | length == 0
+    
 - name: set next oracle home for {{ oracle_version }}
   set_fact:
     oracle_db_home: "{% if ora_home_locs | length > 0 -%}db_{{ ora_home_locs[-1] | 
@@ -46,14 +59,8 @@
                         int + 1 }}
                     {%- else -%}db_1
                     {%- endif %}"
+    when: fresh_install is false
 
 
 
-- name: set next oracle home for {{ oracle_version }} to db_2
-  set_fact:
-    oracle_db_home: db_2
-  when: db_home_exist is defined
 
-
-- debug: 
-    var: oracle_db_home 
