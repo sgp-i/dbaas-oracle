@@ -10,7 +10,7 @@
     path: "{{ install_base }}/oraInventory/ContentsXML/inventory.xml"
   register: is_invntry_xml_exist
   failed_when: is_invntry_xml_exist.stat.exists == false
-  #when: fresh_install is False
+
   
 - name: get current oracle home locations
   xml:
@@ -19,7 +19,7 @@
     content: attribute
     attribute: LOC
   register: ora_home_xpath
-  #when: fresh_install is False
+
 
 - name: check oratab for db_1
   shell: cat /etc/oratab | grep db_1
@@ -34,9 +34,9 @@
                         sort() | 
                         json_query('[*].HOME.LOC') | 
                         sort() }}"
-  #when: fresh_install is False
+ 
 
-- debug: listing orahomelocs
+- debug: 'listing orahomelocs'
   var: ora_home_locs
 
 - name: set next oracle home for {{ oracle_version }}
@@ -46,7 +46,7 @@
                         int + 1 }}
                     {%- else -%}db_1
                     {%- endif %}"
-    #when: fresh_install is False
+
 
 
 - name: set next oracle home for {{ oracle_version }} to db_2
@@ -55,5 +55,5 @@
   when: db_home_exist is defined
 
 
-- debug: listing oracledbhome
+- debug: 'listing oracledbhome'
   var: oracle_db_home 
