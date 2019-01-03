@@ -10,12 +10,12 @@
   shell: 'kill -9 {{ item }}'
   with_items: "{{running_ASM_processes.stdout_lines }}"
 
-- wait_for:
-  path: "/proc/{{ item }}/status"
-  state: absent
-  with_items: "{{running_ASM_processes.stdout_lines }}"
-  ignore_errors: yes
-  register: killed_processes
+# - wait_for:
+#   path: "/proc/{{ item }}/status"
+#   state: absent
+#   with_items: "{{running_ASM_processes.stdout_lines }}"
+#   ignore_errors: yes
+#   register: killed_processes
 
 
 - name: host checklist post for Patching
