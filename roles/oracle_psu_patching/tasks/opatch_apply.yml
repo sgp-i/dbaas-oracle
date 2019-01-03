@@ -3,7 +3,7 @@
 
 
 - name: Get running processes
-  shell: "ps -ef| grep -v grep| grep -w asmcmd| grep -w libclntsh.so| awk '{print $2}'"
+  shell: "ps -ef| grep -v grep| grep -w asmcmd| grep -w daemon| awk '{print $2}'"
   register: running_ASM_processes
 
 - name: Kill asm Running Processes
