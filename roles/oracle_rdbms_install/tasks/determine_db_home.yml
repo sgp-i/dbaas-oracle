@@ -37,6 +37,7 @@
 - name: set next oracle home for {{ oracle_version }} to db_1
   set_fact:
     oracle_db_home: db_1
+    first_run: True
   when: 
     - fresh_install == 'true'
     - oracle_db_home is not defined
@@ -49,7 +50,8 @@
     oracle_db_home: db_2
   when: 
     - fresh_install == 'true'
-    - oracle_db_home | length > 0
+    - oracle_db_home == 'db_1' 
+    - first_run is True
 
     
 - name: set next oracle home for {{ oracle_version }}
