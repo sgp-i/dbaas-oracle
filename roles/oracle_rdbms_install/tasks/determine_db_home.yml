@@ -51,7 +51,7 @@
   when: 
     - fresh_install == 'true'
     - oracle_db_home == 'db_1' 
-    - first_run is True
+    - first_run is false
 
     
 - name: set next oracle home for {{ oracle_version }}
