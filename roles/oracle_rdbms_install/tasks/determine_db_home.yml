@@ -34,6 +34,12 @@
 - debug: 
     var : ora_home_locs
 
+- name: set next oracle home for {{ oracle_version }} to db_1
+  set_fact:
+    oracle_db_home: db_1
+  when: 
+    - fresh_install is true
+    - oracle_db_home is not defined
 
 - debug: 
     var: oracle_db_home 
@@ -45,12 +51,6 @@
     - fresh_install is true
     - oracle_db_home | length > 0
 
-- name: set next oracle home for {{ oracle_version }} to db_1
-  set_fact:
-    oracle_db_home: db_1
-  when: 
-    - fresh_install is true
-    - oracle_db_home | length == 0
     
 - name: set next oracle home for {{ oracle_version }}
   set_fact:
