@@ -138,7 +138,7 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations for DB"
-      checklist_category: POST PROVISION
+      checklist_category: POST VALIDATION
       post_build_status: "SUCCESSFUL"
       task_desc: Post validation
   tags:
@@ -251,9 +251,9 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      checklist_category: POST PROVISION
+      checklist_category: POST Validation
       post_build_status: "FAILED"
-      task_desc: post validation
+      task_desc: post VALIDATION
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags:
   - apex_api
@@ -268,7 +268,7 @@
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      checklist_category: POST PROVISION
+      checklist_category: POST VALIDATION
       post_build_status: "SUCCESSFUL"
       task_desc: post validation
   when: checklist | json_query('[?status == `FAILED`]') | length == 0
