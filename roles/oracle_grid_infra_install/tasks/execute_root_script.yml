@@ -30,6 +30,6 @@
   include_tasks: upload_log.yml
   vars:
     logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
-    log_file_desc: "grid root.sh"
+    log_file_desc: grid_root.sh
   tags:
     - apex_api

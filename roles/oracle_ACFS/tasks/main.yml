@@ -15,8 +15,9 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
+      ticket_ref: "{{ ticket_ref }}"
       checklist_type: 'ACFS Config'
-      category_type: 'Install'
+      checklist_category: 'Install'
       gi_install_status: 'STARTED'
       task_desc: 'acfs check'
   tags:
@@ -29,9 +30,11 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: false
-      checklist_type: 'CFS Config'
-      category_type: 'Install'
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      ticket_ref: "{{ ticket_ref }}"
+      checklist_type: 'ACFS Config'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'acfs install'
   tags:
@@ -54,9 +57,11 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: false
-      checklist_type: 'CFS Config'
-      category_type: 'Install'
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      ticket_ref: "{{ ticket_ref }}"
+      checklist_type: 'ACFS Config'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
       task_desc: 'check currently mounted ASM DGs'
   tags:
@@ -79,11 +84,13 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: false
-      checklist_type: 'CFS Config'
-      category_type: 'Install'
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      ticket_ref: "{{ ticket_ref }}"
+      checklist_type: 'ACFS Config'
+      checklist_category: 'Install'
       gi_install_status: 'IN_PROGRESS'
-      task_desc: 'Configuring ACFS'
+      task_desc: 'Configuring ACFS for EXP'
   tags:
   - apex_api
 
@@ -94,9 +101,37 @@
   - create_exp_diskgroup
   - oracle_base + '/' + exp_dg.dir not in ansible_mounts | json_query('[].mount')
 
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: 'ACFS Config'
+      ticket_ref: "{{ ticket_ref }}"
+      checklist_category: 'Install'
+      gi_install_status: 'IN_PROGRESS'
+      task_desc: 'Configuring ACFS for GG'
+  tags:
+  - apex_api
+
 - include_tasks: configure_acfs.yml
   vars:
     diskgroup: "{{ gg_dg }}"
   when: 
   - create_gg_diskgroup
   - oracle_base + '/' + gg_dg.dir not in ansible_mounts | json_query('[].mount')
+
+- name: host checklist Start  for Grid Install
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      checklist_type: 'ACFS Config'
+      host_name: "{{ ansible_hostname }}"
+      ticket_ref: "{{ ticket_ref }}"
+      checklist_category: 'Install'
+      gi_install_status: 'COMPLETED'
+      task_desc: 'Configuring ACFS for GG'
+  tags:
+  - apex_api

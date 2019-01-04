@@ -1,15 +1,20 @@
 ---
-- name: db checklist post update for post provisioning validation
-  include_tasks: db_checklist_post_update.yml
+- name: host checklist post update for post provisioning validation
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "IN_PROGRESS"
+      new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "Post Provisioning Validations For DB"
+      checklist_category: POST VALIDATION
+      post_build_status: "STARTED"
+      task_desc: Post validation
   tags:
   - apex_api
+  
 - name: check oracle user
   user:
     name: oracle
@@ -124,14 +129,18 @@
   when: oracle_home != "" and oracle_context != 'grid'
 
 - name: db checklist post update for post provisioning validation
-  import_tasks: db_checklist_post_update.yml
+  import_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "SUCCESS"
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "Post Provisioning Validations for DB"
+      checklist_category: POST PROVISION
+      post_build_status: "SUCCESSFUL"
+      task_desc: Post validation
   tags:
   - apex_api
 
@@ -164,10 +173,10 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: EXP Mount (in GiB)
-      expected_value: 299
+      expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
       status: "{% if exp_disk_size == 'unmounted' or
-                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 299 -%}FAILED
+                  (exp_disk_size | int / 1024 | pow(3)) | round | int < 295 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
     - name: GG Mount (in GiB)
@@ -228,19 +237,41 @@
     logfile_path: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
+    log_file_desc: post validation
+  tags:
+  - apex_api
+
+- name: host checklist post update for post provisioning validation
+  include_tasks: host_checklist_post_update.yml
+  vars:
+    chklst_json_body:
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "Post Provisioning Validations"
+      checklist_category: POST PROVISION
+      post_build_status: "FAILED"
+      task_desc: post validation
+  when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags:
   - apex_api
 
 - name: db checklist post update for post provisioning validation
-  include_tasks: db_checklist_post_update.yml
+  include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
-      checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "FAILED"
-  when: checklist | json_query('[?status == `FAILED`]') | length > 1
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "Post Provisioning Validations"
+      checklist_category: POST PROVISION
+      post_build_status: "SUCCESSFUL"
+      task_desc: post validation
+  when: checklist | json_query('[?status == `FAILED`]') | length == 0
   tags:
   - apex_api
 

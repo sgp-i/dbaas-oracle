@@ -72,9 +72,10 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      checklist_type: 'GI Host Test'
-      category_type: 'Install'
+      checklist_type: 'GI Install'
+      checklist_category: 'Install'
       gi_install_status: 'STARTED'
+      ticket_ref: "{{ ticket_ref }}"
       task_desc: 'Install Grid'
   tags:
   - apex_api
@@ -94,11 +95,14 @@
   include_tasks: "host_checklist_post_update.yml"
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
+      new_entry: True
+      #ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
-      category_type: Install
+      checklist_category: Install
       gi_install_status: IN_PROGRESS
+      ticket_ref: "{{ ticket_ref }}"
+      task_desc: configuring Disk Groups
   when: inventory_hostname == master_node
   tags:
   - apex_api
@@ -114,11 +118,14 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
+      new_entry: True
+      #ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'Configuring Disk Groups'
-      category_type: Install
+      checklist_category: Install
       gi_install_status: "FAILED"
+      ticket_ref: "{{ ticket_ref }}"
+      task_desc: 'Install Grid'
   when:
     - inventory_hostname == master_node
     - diskgroup_failed
@@ -129,10 +136,13 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
+      #ID: "{{ checklist_id }}"
+      host_name: "{{ ansible_hostname }}"
       checklist_type: 'GRID Install'
-      new_entry: False
+      new_entry: True
+      ticket_ref: "{{ ticket_ref }}"
       gi_install_status: "SUCCESSFUL"
+      task_desc: 'Install Grid'
   when:
     - inventory_hostname == master_node
     - diskgroup_failed == False

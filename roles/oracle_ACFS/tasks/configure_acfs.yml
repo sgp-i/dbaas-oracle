@@ -67,9 +67,10 @@
     #   fstype: acfs
     #   state: present
 
-  - name: set ownership/perms on {{ dev_path }}
+  - name: set ownership/perms on {{ oracle_base }}/{{ diskgroup.dir }}
     file:
-      path: "{{ dev_path }}"
+      #path: "{{ dev_path }}"
+      path: "{{ oracle_base }}/{{ diskgroup.dir }}"
       owner: "{{ oracle_user }}"
       group: "{{ oracle_group }}"
       state: directory
@@ -123,3 +124,14 @@
   when:
   - rac_install
   - inventory_hostname != master_node
+  - name: set ownership/perms on {{ oracle_base }}/{{ diskgroup.dir }}
+    file:
+      #path: "{{ dev_path }}"
+      path: "{{ oracle_base }}/{{ diskgroup.dir }}"
+      owner: "{{ oracle_user }}"
+      group: "{{ oracle_group }}"
+      state: directory
+      mode: 0755
+    when: 
+    - inventory_hostname != master_node
+    - rac_install

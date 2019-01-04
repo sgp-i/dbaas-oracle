@@ -9,7 +9,7 @@
       tasks_from: host_inventory_insertion.yml
     vars:
       clustered: N
-      env_source: "{{ env_source | mandatory }}"  ## must be passed in
+      gi_version: "{{ grid_version }}"   
     tags:
     - apex_api
 

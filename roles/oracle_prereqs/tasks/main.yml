@@ -8,9 +8,9 @@
       new_entry: True
       host_name: "{{ ansible_hostname }}"
       checklist_type: PRE-CHECK Host
-      category_type: PRE-CHECK
+      checklist_category: PRE-CHECK
       gi_install_status: STARTED
-      task_desc: Check List
+      task_desc: Pre-Check List
   tags:
   - apex_api
 
@@ -580,8 +580,12 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      ID: "{{ checklist_id }}"
-      new_entry: False
+      #ID: "{{ checklist_id }}"
+      new_entry: True
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: PRE-CHECK Host
+      checklist_category: PRE-CHECK
+      task_desc: Pre-Check List
       gi_install_status: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"

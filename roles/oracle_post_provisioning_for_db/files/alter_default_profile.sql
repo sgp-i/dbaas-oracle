@@ -1,6 +1,6 @@
 SET SERVEROUTPUT ON
 SET DEFINE OFF
-SPOOL post_provisioning_sql_result.lst append;
+SPOOL /u01/tmp/postval/post_provisioning_sql_result.lst append;
 ALTER PROFILE "DEFAULT" LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 SPOOL OFF;
 SET DEFINE ON

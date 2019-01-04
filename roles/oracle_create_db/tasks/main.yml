@@ -59,9 +59,13 @@
     vars:
       chklst_json_body:
         new_entry: True
-        checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
-        category_type: DB Creation
-        db_install_status: "IN PROGRESS"
+        host_name: "{{ ansible_hostname }}"
+        checklist_type: "CREATE DATABASE"
+        checklist_category: DB Creation
+        ticket_ref: "{{ ticket_ref }}"
+        db_install_status: "STARTED"
+        db_name: "{{ oracle_db_name }}"
+        #ID: "{{ checklist_id }}"
     tags:
     - apex_api
 
@@ -92,7 +96,7 @@
       include_tasks: upload_log.yml
       vars:
         logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
-        log_file_desc: dbca log
+        log_file_desc: dbca_log
       tags:
       - apex_api
 
@@ -101,9 +105,14 @@
       include_tasks: db_checklist_post_update.yml
       vars:
         chklst_json_body:
-          ID: "{{ checklist_id }}"
-          new_entry: False
-          db_install_status: "FAILED"
+        host_name: "{{ ansible_hostname }}"
+        checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
+        checklist_category: DB Creation
+        ticket_ref: "{{ ticket_ref }}"
+        db_name: "{{ oracle_db_name }}"
+        #ID: "{{ checklist_id }}"
+        new_entry: True
+        db_install_status: "FAILED"
       tags:
       - apex_api
 
@@ -115,8 +124,13 @@
     include_tasks: db_checklist_post_update.yml
     vars:
       chklst_json_body:
-        ID: "{{ checklist_id }}"
-        new_entry: False
+        host_name: "{{ ansible_hostname }}"
+        checklist_type: "CREATE DATABASE {{ oracle_db_name }}"
+        checklist_category: DB Creation
+        ticket_ref: "{{ ticket_ref }}"
+        db_name: "{{ oracle_db_name }}"
+        #ID: "{{ checklist_id }}"
+        new_entry: True
         db_install_status: "SUCCESS"
     tags:
     - apex_api
@@ -202,7 +216,7 @@
 #       chklst_json_body:
 #         new_entry: True
 #         checklist_type: " CREATE DATABASE {{ oracle_db_name }}"
-#         category_type: DB Creation
+#         checklist_category: DB Creation
 #         db_install_status: "IN PROGRESS"
 #     tags:
 #     - apex_api

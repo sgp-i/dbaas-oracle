@@ -1,20 +1,11 @@
 ---
-- name: db checklist post update for post provisioning validation
-  include_tasks: db_checklist_post_update.yml
-  vars:
-    chklst_json_body:
-      new_entry: True
-      checklist_type: "Post Provisioning Validations Done on DB"
-      category_type: DB Install
-      db_install_status: "IN_PROGRESS"
-  tags:
-  - apex_api
+
 - name: check oracle_db_name is defined or not
   debug:
     msg: The Variable oracle_db_name is not defined
   when: oracle_db_name is undefined
 
-- name: set orace_home
+- name: set oracle_home
   block:
     - name: get oracle_sid
       shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'

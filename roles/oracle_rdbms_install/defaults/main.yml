@@ -12,7 +12,7 @@ install_base: /u01/app
 
 oracle_base: "{{ install_base }}/oracle"
 
-oracle_db_name: db
+oracle_db_name: ''
 
 
 oracle_db_mem: "2048"
@@ -34,4 +34,6 @@ oracle_images:
 
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false
+
+fresh_install: False
 

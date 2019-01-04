@@ -42,24 +42,32 @@
   - name: restore opatch from backup
     command: mv {{ oracle_home }}/OPatch.old {{ oracle_home }}/OPatch
   - name: host checklist post for Grid Install
-    include_tasks: db_checklist_post_update.yml
+    include_tasks: host_checklist_post_update.yml
     vars:
       chklst_json_body:
-        new_entry: False
+        new_entry: true
         ID: "{{ checklist_id }}"
-        checklist_type: PATCH
-        category_type: Install
+        db_name: "{{ oracle_db_name }}"
+        host_name: "{{ ansible_hostname }}"
+        checklist_type: PATCHING
+        checklist_category: Install
         db_install_status: OPATCH Install FAILED
     when: fresh_install
     tags:
     - apex_api
 
-- name: host checklist post for Patching
+- name: patch checklist post for Patching
   include_tasks: db_patch_checklist_update.yml
   vars:
       chklst_json_body:
+        db_home: "{{ oracle_db_home }}"
+        host_name: "{{ ansible_hostname }}"
+        PSU_NUMBER: "{{ patch_num }}"
+        PSU_QUARTER: "{{ patch_quarter }}"
+        PSU_YEAR: "{{ patch_year }}"
+        patch_type: "{{ patch_type }}"
         patch_status: OPATCH install FAILED
-        new_entry: False
+        new_entry: true
   tags:
     - apex_api
 - fail:

@@ -41,10 +41,13 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
-      checklist_type: "Root.sh execution RDBMS"
-      category_type: Install
+      new_entry: true
+      #ID: "{{ checklist_id }}"
+      db_name:  "{{ oracle_db_name }}"
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: "RDBMS Software Install"
+      checklist_category: Install
+      task_desc: Root.sh execution RDBMS
       db_install_status: IN PROGRESS
   tags:
   - apex_api
@@ -71,9 +74,14 @@
   include_tasks: host_checklist_post_update.yml
   vars:
     chklst_json_body:
-       ID: "{{ checklist_id }}"
-       new_entry: False
-       db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
+      new_entry: True
+      #ID: "{{ checklist_id }}"
+      db_name:  "{{ oracle_db_name }}"
+      host_name: "{{ ansible_hostname }}"
+      checklist_type: "RDBMS Software Install"
+      checklist_category: Install
+      task_desc: RDBMS INSTALL        
+      db_install_status: "{% if hostvars[master_node]['db_install']['failed'] is defined and
                                  hostvars[master_node]['db_install']['failed'] -%}FAILED
                           {%- else -%}SUCCESSFUL
                           {%- endif -%}"

@@ -18,7 +18,7 @@ install_base: /u01/app
 
 oracle_base: "{{ install_base }}/oracle"
 
-oracle_db_home: ''
+oracle_db_home: ""
 
 oracle_db_name: ""
 grid_home: "/u01/app/12.1.0.2/grid_1"

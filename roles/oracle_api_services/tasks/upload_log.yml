@@ -8,13 +8,13 @@
 - block:
   - name: execute 'upload DB check log' API call
     uri:
-      url: "{{ apex_url }}/charter/upload_db_check_log/"
+      url: "{{ apex_url }}/charter/upload_db_check_log"
       validate_certs: no  # should be removed after https certs becomes renewed
       method: POST
       body: "{{ logfile_text.content | b64decode | string }}"
       headers:
         Content-Type: text/plain
-        ID: "{{ checklist_id }}"
+        #ID: "{{ checklist_id }}"
     register: log_insrt_response
 
   rescue:

@@ -1,15 +1,13 @@
 ---
 
-- name: insert cluster
+- name: insert database
   hosts: '{{ host }}' # Comma-deliminated list (e.g. server1.domain,server2.domain,server3.domain)
   any_errors_fatal: true
   become: yes
   tasks:
   - import_role:
       name: oracle_api_services
-      tasks_from: cluster_inventory_update.yml
-    vars:
-      gi_version: "{{ grid_version }}"
+      tasks_from: db_inventory_update.yml
     tags:
     - apex_api
 

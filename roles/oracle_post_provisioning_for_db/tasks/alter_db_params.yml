@@ -18,10 +18,13 @@
   include_tasks: db_checklist_post_update.yml
   vars:
     chklst_json_body:
-      new_entry: False
-      ID: "{{ checklist_id }}"
-      checklist_type: "post_provision_db steps"
-      category_type: db install
+      new_entry: true
+      host_name: "{{ ansible_hostname }}"
+      db_name: "{{ oracle_db_name }}" 
+      ticket_ref: "{{ ticket_ref }}"
+      #ID: "{{ checklist_id }}"
+      checklist_type: "POST PROVISIONING for db"
+      checklist_category: db install
       post_build_status: "SUCCESS"
   tags:
   - apex_api
