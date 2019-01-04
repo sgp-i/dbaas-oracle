@@ -10,7 +10,7 @@ install_base: /u01/app
 oracle_version: 12.1.0.2
 oracle_db_home: db_1
 oracle_db_name: ''
-oracle_context: ''
+oracle_context: 'grid'
 
 oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
               {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
@@ -29,7 +29,7 @@ ora_user_env:
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
-  TMPDIR: "/u01/app/oracle"  
+  TMPDIR: "/u01/app/oracle"
 sql_files:
   - verify_dba_directories.sql
   - verify_tablespace.sql
