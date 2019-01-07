@@ -61,7 +61,7 @@
     patterns: ".*opatch.*log"
     use_regex: yes
   register: opatch_log
-  when: inventory_hostname == master_node
+  #when: inventory_hostname == master_node
   tags:
   - apex_api
 
@@ -79,9 +79,7 @@
   include_tasks: db_patch_upload_log.yml
   vars:
     logfile_path:   "{{ opatch_log.files[0].path }}"
-  when: 
-  - inventory_hostname == master_node
-  - opatch_log.files[0] is defined
+  when:  opatch_log.files[0] is defined
   tags:
   - apex_api
 
