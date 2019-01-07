@@ -53,7 +53,7 @@
 
 - name: create old logs folder
   file:
-    path: {{ oracle_home }}/oldlogs
+    path: "{{ oracle_home }}/oldlogs"
     state: directory
 
 - name: get opatch logfile
