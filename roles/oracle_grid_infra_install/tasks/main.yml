@@ -91,9 +91,9 @@
   register: asm_running_check
   failed_when: asm_running_check.stdout_lines | length == 0
   changed_when: False
-  
+
 - name: get oracle_sid
-  shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
+  shell: ps -ef | grep smon | grep {{ oracle_asm_name }} | grep -v grep | awk '{ print $8 }'
   register: ps_grep_smon
   changed_when: False
 
