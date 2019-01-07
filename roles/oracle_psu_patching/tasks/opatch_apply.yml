@@ -56,7 +56,6 @@
     path: {{ oracle_home }}/oldlogs
     state: directory
 
-
 - name: get opatch logfile
   find:
     paths: "{{ oracle_home }}/cfgtoollogs/opatch"
