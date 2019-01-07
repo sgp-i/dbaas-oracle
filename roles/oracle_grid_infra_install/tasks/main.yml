@@ -84,12 +84,18 @@
 - include_tasks: grid_install.yml
   when: ohas_grid_check.stdout_lines | length == 0
 
+
+
 - name: check ASM is running
   shell: ps -ef|grep asm_smon|grep -v grep
   register: asm_running_check
   failed_when: asm_running_check.stdout_lines | length == 0
   changed_when: False
 
+- name: set oracle_sid
+  set_fact:
+    oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
+ #when: asm_running_check.stdout_lines | length =! 0
 
 - name: include host checklist post update for precheck
   include_tasks: "host_checklist_post_update.yml"
