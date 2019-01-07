@@ -32,7 +32,7 @@
       new_entry: True
   tags:
   - apex_api
-  
+
 - name: Run Opatch
   environment: "{{ ora_user_env }}"
   command: opatchauto apply {{ pstage }}/{{ patch_num }} {{ opatch_flags }} -oh {{ oracle_home }}
@@ -51,30 +51,34 @@
   changed_when: False
   when: opatch_apply.stderr_lines | length > 0
 
+- name: create old logs folder
+  file:
+    path: /home/oracle/app/oracle/product/12.2.0/dbhome_1/oldlogs
+    state: directory
+
+
 - name: get opatch logfile
   find:
-    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
+    paths: "/home/oracle/app/oracle/product/12.2.0/dbhome_1/cfgtoollogs/opatch"
     file_type: file
-    age: -10m
-    age_stamp: mtime
-    #patterns: opatch\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}[AP]M*.log
-    patterns: ".*opatch.*log"
-    use_regex: yes
+    patterns: '*.log'
   register: opatch_log
-  #when: inventory_hostname == master_node
-  tags:
-  - apex_api
+
+
+- name: move log files to old logs folder
+  command: mv {{ item.path }} /home/oracle/app/oracle/product/12.2.0/dbhome_1/oldlogs
+  with_items: "{{ opatch_log.files }}"
 
 - debug:
     var: oracle_home
-    
+
 - debug:
     var: opatch_log
-    
+
 - name: Get latest log file
   set_fact:
     latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
-    
+
 - name: host checklist post for Patching
   include_tasks: db_patch_upload_log.yml
   vars:
@@ -82,4 +86,3 @@
   when:  opatch_log.files[0] is defined
   tags:
   - apex_api
-
