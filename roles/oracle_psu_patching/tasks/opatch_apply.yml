@@ -32,6 +32,23 @@
       new_entry: True
   tags:
   - apex_api
+  
+- name: create old logs folder
+  file:
+    path: "{{ oracle_home }}/cfgtoollogs/opatch/oldlogs"
+    state: directory
+
+- name: get opatch logfile
+  find:
+    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
+    file_type: file
+    patterns: '*.log'
+  register: opatch_log
+
+
+- name: move log files to old logs folder
+  command: mv {{ item.path }} {{ oracle_home }}/oldlogs
+  with_items: "{{ opatch_log.files }}"
 
 - name: Run Opatch
   environment: "{{ ora_user_env }}"
@@ -51,22 +68,6 @@
   changed_when: False
   when: opatch_apply.stderr_lines | length > 0
 
-- name: create old logs folder
-  file:
-    path: "{{ oracle_home }}/oldlogs"
-    state: directory
-
-- name: get opatch logfile
-  find:
-    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
-    file_type: file
-    patterns: '*.log'
-  register: opatch_log
-
-
-- name: move log files to old logs folder
-  command: mv {{ item.path }} {{ oracle_home }}/oldlogs
-  with_items: "{{ opatch_log.files }}"
 
 - debug:
     var: oracle_home
