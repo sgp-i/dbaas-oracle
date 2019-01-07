@@ -53,20 +53,20 @@
 
 - name: create old logs folder
   file:
-    path: /home/oracle/app/oracle/product/12.2.0/dbhome_1/oldlogs
+    path: {{ oracle_home }}/oldlogs
     state: directory
 
 
 - name: get opatch logfile
   find:
-    paths: "/home/oracle/app/oracle/product/12.2.0/dbhome_1/cfgtoollogs/opatch"
+    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
     file_type: file
     patterns: '*.log'
   register: opatch_log
 
 
 - name: move log files to old logs folder
-  command: mv {{ item.path }} /home/oracle/app/oracle/product/12.2.0/dbhome_1/oldlogs
+  command: mv {{ item.path }} {{ oracle_home }}/oldlogs
   with_items: "{{ opatch_log.files }}"
 
 - debug:
