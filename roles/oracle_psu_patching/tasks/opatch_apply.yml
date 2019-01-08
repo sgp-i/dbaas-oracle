@@ -46,9 +46,9 @@
   register: opatch_log
 
 
-- name: move log files to old logs folder
-  command: mv {{ item.path }} {{ oracle_home }}/oldlogs
-  with_items: "{{ opatch_log.files }}"
+# - name: move log files to old logs folder
+#   command: mv {{ item.path }} {{ oracle_home }}/oldlogs
+#   with_items: "{{ opatch_log.files }}"
 
 - name: Run Opatch
   environment: "{{ ora_user_env }}"
