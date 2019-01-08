@@ -32,7 +32,7 @@
       new_entry: True
   tags:
   - apex_api
-  
+
 - name: create old logs folder
   file:
     path: "{{ oracle_home }}/cfgtoollogs/opatch/oldlogs"
@@ -68,21 +68,21 @@
   changed_when: False
   when: opatch_apply.stderr_lines | length > 0
 
-
-- debug:
-    var: oracle_home
-
-- debug:
-    var: opatch_log
+- name: get new opatch logfile
+  find:
+    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
+    file_type: file
+    patterns: '*.log'
+  register: new_opatch_log
 
 - name: Get latest log file
   set_fact:
-    latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
+    latest_file: "{{ new_opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
 
 - name: host checklist post for Patching
   include_tasks: db_patch_upload_log.yml
   vars:
-    logfile_path:   "{{ opatch_log.files[0].path }}"
-  when:  opatch_log.files[0] is defined
+    logfile_path:   "{{ new_opatch_log.files[0].path }}"
+  when:  new_opatch_log.files[0] is defined
   tags:
   - apex_api
