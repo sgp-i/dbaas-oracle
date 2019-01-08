@@ -76,7 +76,7 @@
       state: directory
       mode: 0755
   when: inventory_hostname == master_node
-    
+
 - name: Mount on additional nodes (if any)
   block:
   - name: get {{ diskgroup_vol }} Volume Info
@@ -120,10 +120,11 @@
 
   - name: Mount the disk
     command: '/bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}'
-     
+
   when:
   - rac_install
   - inventory_hostname != master_node
+  
   - name: set ownership/perms on {{ oracle_base }}/{{ diskgroup.dir }}
     file:
       #path: "{{ dev_path }}"
@@ -132,6 +133,6 @@
       group: "{{ oracle_group }}"
       state: directory
       mode: 0755
-    when: 
+    when:
     - inventory_hostname != master_node
     - rac_install
