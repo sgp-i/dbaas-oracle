@@ -52,7 +52,7 @@
     #   fstype: acfs
     #   dev: "{{ dev_path }}"
 
-  - name: mount {{ dev_path }} filesystem
+  - name: "mount {{ dev_path }} filesystem"
     #command: /bin/mount -t acfs -o gid={{ oracle_group }},uid={{ oracle_user }} {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}
     command: /bin/mount -t acfs {{ dev_path }} {{ oracle_base }}/{{ diskgroup.dir }}
     # environment: "{{ ora_user_env }}"
