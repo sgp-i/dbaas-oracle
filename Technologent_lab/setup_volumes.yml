@@ -83,6 +83,7 @@
         vg: "{{ item.vg}}"
         lv: lvol0
         size: 100%FREE
+        shrink: no
         state: present
       with_items: "{{ disks }}"
       tags:
