@@ -8,6 +8,7 @@ set LINESIZE 1000
 set FEEDBACK OFF
 set VERIFY OFF
 set heading off
+connect / as sysdba
 --alter session set nls_date_format='YYYY.MM.DD_HH24.MI.SS';
 alter session set nls_date_format='DD-MON-RRRR HH24:MI:SS';
 -- Prepare settings for pre 12c databases
@@ -32,26 +33,27 @@ prompt +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 */
 --create table v_license_feature_usage as
 --;
-
-SELECT json_object(
-    'host_name' VALUE d.host_name,
-    'instance_name' VALUE d.instance_name,
-    'database_name' VALUE  d.database_name,
-    'open_mode' VALUE d.open_mode,
-    'database_role' VALUE d.database_role,
-    'created' VALUE d.created,
-    'dbid' VALUE d.dbid,
-    'version' VALUE d.version,
-    'banner' VALUE d.banner,
-    'product' VALUE f.product,
-    'feature_being_used' VALUE f.feature_being_used,
-    'usage' VALUE f.usage,
-    'last_sample_date' VALUE f.last_sample_date,
-    'detected_usages' VALUE f.detected_usages,
-    'total_samples' VALUE f.total_samples,
-    'currently_used' VALUE f.currently_used,
-    'last_usage_date' VALUE f.last_usage_date,
-    'extra_feature_info' VALUE f.extra_feature_info FORMAT JSON) ||','
+spool features.csv
+SELECT
+    d.host_name||','||
+    d.instance_name||','||
+    d.database_name||','||
+    d.open_mode||','||
+    d.database_role||','||
+    d.created||','||
+    d.dbid||','||
+    d.version||','||
+    d.banner||','||
+    f.product||','||
+    f.feature_being_used||','||
+    f.usage||','||
+    f.last_sample_date||','||
+    f.detected_usages||','||
+    f.total_samples||','||
+    f.currently_used||','||
+    f.first_usage_date||','||
+    f.last_usage_date||','||
+    f.extra_feature_info
 from
 (
 with
@@ -311,4 +313,5 @@ order by CON_ID, decode(substr(PRODUCT, 1, 1), '.', 2, 1), PRODUCT, FEATURE_BEIN
   where v.BANNER LIKE 'Oracle%' or v.BANNER like 'Personal Oracle%'
 ) d
 ;
-
+spool off
+exit
