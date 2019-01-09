@@ -83,7 +83,7 @@
     become_user: "{{ oracle_user }}"
     environment: "{{ ora_user_env }}"
     ignore_errors: yes
-    command: "asmcmd volinfo -G {{ diskgroup_name }} {{ diskgroup_vol }}"
+    command: "asmcmd volinfo -G {{ diskgroup.name }} {{ diskgroup_vol }}"
     register: vol_info
 
   - name: set dev_path
