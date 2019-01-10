@@ -28,7 +28,9 @@
           - { raw: /dev/sdh, part: "1", vg: ora-dg-gg01 }
           - { raw: /dev/sdi, part: "1", vg: ora-dg-gg02 }
           - { raw: /dev/sdj, part: "1", vg: ora-dg-gg03 }
-      when:  install_type == "standalone"
+      when:  
+      - install_type == "standalone"
+      - setup_volumes_result.stat.exists == false 
 
     - set_fact:
         disks:
@@ -43,7 +45,10 @@
           - { raw: /dev/sdk, part: "1", vg: ora-dg-gg01 }
           - { raw: /dev/sdl, part: "1", vg: ora-dg-gg02 }
           - { raw: /dev/sdm, part: "1", vg: ora-dg-gg03 }
-      when: install_type == "rac_install"
+      when: 
+        - install_type == "rac_install"
+        - setup_volumes_result.stat.exists == false 
+
     - name: install the needed packages
       yum:
 #        name: parted,lvm2,nfs-utils,nfs-utils-lib
@@ -68,8 +73,10 @@
       args:
         creates: "{{ item.raw }}{{ item.part }}"
       with_items: "{{ disks }}"
+      when: setup_volumes_result.stat.exists == false 
       tags:
         - create_lvms
+
 
     - name: create the volume groups
       lvg:
@@ -77,6 +84,7 @@
         pvs: "{{ item.raw }}{{ item.part }}"
         state: present
       with_items: "{{ disks }}"
+      when: setup_volumes_result.stat.exists == false 
       tags:
         - create_lvms
 
@@ -88,6 +96,7 @@
         shrink: no
         state: present
       with_items: "{{ disks }}"
+      when: setup_volumes_result.stat.exists == false 
       tags:
         - create_lvms
 
@@ -104,7 +113,7 @@
         - name: chown lvm disks
           command: chown oracle:oinstall {{ item.path }}
           loop: "{{ lvm_disks.files }}"
-
+      when: setup_volumes_result.stat.exists == false 
       #when: ansible_distribution == "RedHat"
       tags:
       - chown_lvm_disks
@@ -112,3 +121,6 @@
     - name: Mark Setup Volumes Done
       file:
         path: /opt/setup_volumes
+        state: touch
+        mode: 0400
+      when: setup_volumes_result.stat.exists == false 

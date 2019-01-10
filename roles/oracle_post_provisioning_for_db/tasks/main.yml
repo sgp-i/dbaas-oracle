@@ -6,7 +6,7 @@
   register: post_provisioning_done
 
 - include_tasks: post_provision_db.yml
-  when: post_provisioning_done.stat.exists ==false
+  when: post_provisioning_done.stat.exists == false
 
 - include_tasks: alter_db_params.yml
-  when: alter_params ==true
+  when: alter_params == true
