@@ -11,7 +11,7 @@ gg_dg:
   dir: gg
   pattern: GG*
   vol: GG_FS_VOL
-  size: 25
+  size: 10
 
 exp_dg:
   name: EXP_DG
