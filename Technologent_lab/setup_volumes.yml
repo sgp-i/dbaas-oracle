@@ -13,8 +13,10 @@
         path: /opt/setup_volumes
       register: setup_volumes_result
 
-    - name: Fail if Setup Volumes already Done
-      failed_when: stat_result.stat.exists
+    #- name: Fail if Setup Volumes already Done
+    #  failed_when: stat_result.stat.exists
+    - debug:
+        vars: setup_volumes_result
 
     - set_fact:
         disks:
@@ -26,7 +28,7 @@
           - { raw: /dev/sdh, part: "1", vg: ora-dg-gg01 }
           - { raw: /dev/sdi, part: "1", vg: ora-dg-gg02 }
           - { raw: /dev/sdj, part: "1", vg: ora-dg-gg03 }
-      when: install_type == "standalone"
+      when:  install_type == "standalone"
 
     - set_fact:
         disks:
@@ -103,7 +105,7 @@
           command: chown oracle:oinstall {{ item.path }}
           loop: "{{ lvm_disks.files }}"
 
-      when: ansible_distribution == "RedHat"
+      #when: ansible_distribution == "RedHat"
       tags:
       - chown_lvm_disks
 
