@@ -11,7 +11,7 @@
   user:
     name: "{{ oracle_user.name }}"
     group: "{{ oracle_groups[0].name }}"
-    uid: "{{ oracle_user.id }}"
+    uid: "{{ oracle_user.ID }}"
     groups: "{{ oracle_groups | json_query('[].name') | join(',')}}"
     home: "/home/{{ oracle_user.name }}"
     shell: /bin/bash 
