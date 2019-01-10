@@ -1,7 +1,7 @@
 ---
 
 - include_vars: secrets.yml
-  no_log: true
+  no_log: false
 
 - name: get asm disk paths - {{ diskgroup.dir }}
   find:
