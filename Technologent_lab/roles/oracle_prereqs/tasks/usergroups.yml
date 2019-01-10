@@ -9,18 +9,18 @@
 
 - name: create oracle user
   user:
-    name: "{{ oracle_user.name }}"
-    group: "{{ oracle_groups[0].name }}"
-    uid: "{{ oracle_user.ID }}"
-    groups: "{{ oracle_groups | json_query('[].name') | join(',')}}"
-    home: "/home/{{ oracle_user.name }}"
+    name: "{{ oracle_user }}"
+    group: "{{ oracle_default_group }}"
+    uid: "{{ oracle_id }}"
+    groups: "{{ oracle_groups  json_query('[].name|') | join(',')}}"
+    home: "/home/{{ oracle_user }}"
     shell: /bin/bash 
     password: "{{ oracle_pass | password_hash('sha512') }}"
     append: yes
 
 - name: set oracle user environment
   lineinfile:
-    dest: "/home/{{ oracle_user.name }}/.bashrc"
+    dest: "/home/{{ oracle_user }}/.bashrc"
     state: present
     line: "{{ item }}"
   with_items:
@@ -49,7 +49,7 @@
 
 - name: copy grid_env file
   copy:
-    dest: /home/{{ oracle_user.name }}/grid_env
+    dest: /home/{{ oracle_user }}/grid_env
     content: |
       export ORACLE_SID=+ASM 
       export ORACLE_HOME=$GRID_HOME 
@@ -60,7 +60,7 @@
       
 - name: copy db_env file
   copy:
-    dest: /home/{{ oracle_user.name }}/db_env
+    dest: /home/{{ oracle_user }}/db_env
     content: |
       export ORACLE_SID="{{ oracle_db_name }}"
       export ORACLE_HOME=$DB_HOME
