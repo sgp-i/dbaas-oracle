@@ -10,4 +10,4 @@
 
   - import_role:
       name: oracle_asm_config
-    when: ansible_distribution == "OracleLinux"
+    #when: ansible_distribution == "OracleLinux"
