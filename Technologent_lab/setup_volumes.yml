@@ -16,7 +16,7 @@
     #- name: Fail if Setup Volumes already Done
     #  failed_when: stat_result.stat.exists
     - debug:
-        vars: setup_volumes_result
+        var: setup_volumes_result
 
     - set_fact:
         disks:
