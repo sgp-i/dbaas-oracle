@@ -3,7 +3,7 @@
 - name: create initial groups for the oracle user
   group:
     name: "{{ item.name }}"
-    gid: "{{ item.id }}"
+    gid: "{{ item.ID }}"
     state: present
   with_items: "{{ oracle_groups }}"
 
