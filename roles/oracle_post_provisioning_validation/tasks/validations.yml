@@ -5,7 +5,7 @@
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations For DB"
@@ -14,7 +14,7 @@
       task_desc: Post validation
   tags:
   - apex_api
-  
+
 - name: check oracle user
   user:
     name: oracle
@@ -134,11 +134,11 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations for DB"
-      checklist_category: POST PROVISION
+      checklist_category: POST VALIDATION
       post_build_status: "SUCCESSFUL"
       task_desc: Post validation
   tags:
@@ -219,6 +219,10 @@
 -  debug:
     var: checklist
 
+- name: debug oracle_context
+  debug:
+    msg: "{{oracle_context}}"
+
 - name: store the result in a json
   copy:
     dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
@@ -247,13 +251,13 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      checklist_category: POST PROVISION
+      checklist_category: POST Validation
       post_build_status: "FAILED"
-      task_desc: post validation
+      task_desc: post VALIDATION
   when: checklist | json_query('[?status == `FAILED`]') | length > 1
   tags:
   - apex_api
@@ -264,11 +268,11 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "Post Provisioning Validations"
-      checklist_category: POST PROVISION
+      checklist_category: POST VALIDATION
       post_build_status: "SUCCESSFUL"
       task_desc: post validation
   when: checklist | json_query('[?status == `FAILED`]') | length == 0

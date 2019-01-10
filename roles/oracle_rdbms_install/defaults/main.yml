@@ -34,6 +34,6 @@ oracle_images:
 
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: false
-
+first_run: False
 fresh_install: False
 

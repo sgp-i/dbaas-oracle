@@ -32,7 +32,24 @@
       new_entry: True
   tags:
   - apex_api
-  
+
+- name: create old logs folder
+  file:
+    path: "{{ oracle_home }}/cfgtoollogs/opatch/oldlogs"
+    state: directory
+
+- name: get opatch logfile
+  find:
+    paths: "{{ oracle_home }}/cfgtoollogs/opatch"
+    file_type: file
+    patterns: '*.log'
+  register: opatch_log
+
+
+# - name: move log files to old logs folder
+#   command: mv {{ item.path }} {{ oracle_home }}/oldlogs
+#   with_items: "{{ opatch_log.files }}"
+
 - name: Run Opatch
   environment: "{{ ora_user_env }}"
   command: opatchauto apply {{ pstage }}/{{ patch_num }} {{ opatch_flags }} -oh {{ oracle_home }}
@@ -51,37 +68,21 @@
   changed_when: False
   when: opatch_apply.stderr_lines | length > 0
 
-- name: get opatch logfile
+- name: get new opatch logfile
   find:
     paths: "{{ oracle_home }}/cfgtoollogs/opatch"
     file_type: file
-    age: -10m
-    age_stamp: mtime
-    #patterns: opatch\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}[AP]M*.log
-    patterns: ".*opatch.*log"
-    use_regex: yes
-  register: opatch_log
-  when: inventory_hostname == master_node
-  tags:
-  - apex_api
+    patterns: '*.log'
+  register: new_opatch_log
 
-- debug:
-    var: oracle_home
-    
-- debug:
-    var: opatch_log
-    
 - name: Get latest log file
   set_fact:
-    latest_file: "{{ opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
-    
+    latest_file: "{{ new_opatch_log.files | sort(attribute='mtime',reverse=true) | first }}"
+
 - name: host checklist post for Patching
   include_tasks: db_patch_upload_log.yml
   vars:
-    logfile_path:   "{{ opatch_log.files[0].path }}"
-  when: 
-  - inventory_hostname == master_node
-  - opatch_log.files[0] is defined
+    logfile_path:   "{{ new_opatch_log.files[0].path }}"
+  when:  new_opatch_log.files[0] is defined
   tags:
   - apex_api
-

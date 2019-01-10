@@ -9,7 +9,7 @@
     state: directory
 
 - name: Put necessary processing file on server
-  copy: 
+  copy:
     src: "{{ feature_files }}"
     dest: "{{ oracle_features_tmp }}/features"
     owner: "{{ oracle_user }}"
@@ -20,38 +20,49 @@
     loop_var: feature_files
   changed_when: false
 
-- name: check oracle_db_name is defined or not
-  debug:
-    msg: The Variable oracle_db_name is not defined
-  when: oracle_db_name is undefined
+- include_tasks: get_db_name.yml
 
-- name: set oracle_home
-  block:
-    - name: get oracle_sid
-      shell: ps -ef | grep smon | grep {{ oracle_db_name }} | grep -v grep | awk '{ print $8 }'
-      register: ps_grep_smon
-      changed_when: False
+# - name: check oracle_db_name is defined or not
+#   debug:
+#     msg: The Variable oracle_db_name is not defined
+#   when: oracle_db_name is undefined
+#
+# - name: set oracle_home
+#   block:
+#     - name: get oracle_sid
+#       shell: ps -ef | grep smon | grep -v grep | awk '{ print $8 }'
+#       register: ps_grep_smon
+#       changed_when: False
+#
+#     - name: set oracle_sid
+#       set_fact:
+#         oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
+# #      when: oracle_db_name > length=0
+#
+#     - name: get db details
+#       shell: grep "^{{ oracle_sid }}:" /etc/oratab | awk 'NR == 1'
+#       ignore_errors: yes
+#       changed_when: false
+#       register: db_details
+#
+#     - name: set oracle_home
+#       set_fact:
+#         oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
+#
+#     - fail:
+#         msg: Database named {{ oracle_sid }} doesn't exists'
+#       when: oracle_home == ""
+#   when: oracle_context != 'grid'
+#   ignore_errors: yes
 
-    - name: set oracle_sid
-      set_fact:
-        oracle_sid: "{{ ps_grep_smon.stdout | regex_replace('ora_smon_(.*)', '\\1') }}"
-#      when: oracle_db_name > length=0
+- debug:
+    msg: "{{ oracle_sid }}"
 
-    - name: get db details
-      shell: grep "^{{ oracle_db_name }}:" /etc/oratab | awk 'NR == 1'
-      ignore_errors: yes
-      changed_when: false
-      register: db_details
+- debug:
+    msg: "{{ oracle_home }}"
 
-    - name: set oracle_home
-      set_fact:
-        oracle_home: "{{ db_details.stdout | regex_replace('^[^:]*:([^:]*).*', '\\1') }}"
-
-    - fail:
-        msg: Database named {{ oracle_db_name }} doesn't exists'
-      when: oracle_home == ""
-  when: oracle_context != 'grid'
-  ignore_errors: yes
+- debug:
+    msg: "{{ db_details }}"
 
 - name: task only for db'
   block:
@@ -59,9 +70,13 @@
       become: yes
       become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ oracle_features_tmp }}/features/product_stats.sql
+      shell: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ oracle_features_tmp }}/features/product_stats.sql"
       register: product_stats
       changed_when: false
+      # timeout need to be implemented
+
+    - debug:
+        msg: "{{ product_stats }}"
 
     - name: get installed features
       become: yes
@@ -75,4 +90,4 @@
 - name: remove directory for features
   file:
     path: "{{ oracle_features_tmp }}/features"
-    state: absent      
+    state: absent

@@ -30,7 +30,5 @@
   include_tasks: db_patch_upload_lsinv.yml
   vars:
     logfile_path: "{{ oracle_tmp }}/opatch_lsinv.out"
-  when: 
-  - inventory_hostname == master_node
   tags:
   - apex_api

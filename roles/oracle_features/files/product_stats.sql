@@ -8,9 +8,10 @@ set LINESIZE 500
 set FEEDBACK OFF
 set VERIFY OFF
 set heading off
-
+connect / as sysdba
 --alter session set nls_date_format='YYYY.MM.DD_HH24.MI.SS';
 alter session set nls_date_format='DD-MON-RRRR HH24:MI:SS';
+spool products.csv
 define DFUS=DBA_
 col DFUS_ new_val DFUS noprint
 define DCOL1=CON_ID
@@ -23,25 +24,24 @@ col DCOL2_ new_val DCOL2 noprint
 define DCNA=to_char(NULL)
 col DCNA_ new_val DCNA noprint
 define OCS=to_char(NULL)
-SELECT json_object(
-    'host_name' VALUE d.host_name,
-    'instance_name' VALUE d.instance_name,
-    'database_name' VALUE d.database_name,
-    'open_mode' VALUE d.open_mode,
-    'database_role' VALUE d.database_role,
-    'created' VALUE d.created,
-    'dbid' VALUE d.dbid,
-    'version' VALUE d.version,
-    'banner' VALUE d.banner,
-    'gid' VALUE f.gid,
-    'con_id' VALUE f.con_id,
-    'con_name' VALUE f.con_name,
-    'product' VALUE f.product,
-    'usage' VALUE f.usage,
-    'last_sample' VALUE f.last_sample_date,
-    'first_usage_rate' VALUE f.first_usage_date,
-    'last_usage' VALUE f.last_usage_date
-    FORMAT JSON) ||','
+SELECT
+    d.host_name||','||
+    d.instance_name||','||
+    d.database_name||','||
+    d.open_mode||','||
+    d.database_role||','||
+    d.created||','||
+    d.dbid||','||
+    d.version||','||
+    d.banner||','||
+    f.gid||','||
+    f.con_id||','||
+    f.con_name||','||
+    f.product||','||
+    f.usage||','||
+    f.last_sample_date||','||
+    f.first_usage_date||','||
+    f.last_usage_date
 from
 (
 with
@@ -304,3 +304,4 @@ order by GID desc, CON_ID, decode(substr(PRODUCT, 1, 1), '.', 2, 1), PRODUCT
 ) d
 /
 spool off
+exit
