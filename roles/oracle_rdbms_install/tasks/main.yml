@@ -1,7 +1,8 @@
 ---
 
 - include_vars: secrets.yml
-  no_log: true
+  no_log: False
+
 - debug: msg="API call out"
 
 
