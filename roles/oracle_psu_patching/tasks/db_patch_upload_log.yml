@@ -14,7 +14,7 @@
       body: "{{ logfile_text.content | b64decode | string }}"
       headers:
         Content-Type: text/plain
-        #ID: "{{ checklist_id }}"
+        ID: "{{ checklist_id }}"
     register: log_insrt_response
 
   rescue:
