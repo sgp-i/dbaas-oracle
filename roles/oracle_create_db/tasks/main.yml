@@ -136,11 +136,11 @@
     - apex_api
   when: not db_exists
 
-- include_role:
-    name: oracle_api_services
-    tasks_from: db_inventory_update.yml
-  tags:
-  - apex_api
+#- include_role:
+#    name: oracle_api_services
+#    tasks_from: db_inventory_update.yml
+#  tags:
+#  - apex_api
 # - include_vars: secrets.yml
 #   no_log: true
 
