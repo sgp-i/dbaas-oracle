@@ -29,4 +29,4 @@ host_inventory_insrt_body:
             {%- elif ansible_os_family | lower == 'solaris' -%}SOLARIS
             {%- else -%}LINUX
             {%- endif %}"
-  env_source: "{{ env_source_check }}" # Possibly HostVar?
+  #env_source: "{{ env_source }}" # Possibly HostVar?
