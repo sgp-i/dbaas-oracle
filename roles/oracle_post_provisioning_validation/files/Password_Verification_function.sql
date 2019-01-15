@@ -22,7 +22,7 @@ BEGIN
    chararraylower := 'abcdefghijklmnopqrstuvwxyz';
    chararrayupper := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
    punctarray := '!#$%^*+-_=<>';
-   
+
 -- Check if the password is same as the username
    IF NLS_LOWER (PASSWORD) = NLS_LOWER (username)
    THEN
@@ -30,7 +30,7 @@ BEGIN
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- Check for the minimum length of the password
    IF LENGTH (PASSWORD) < 12
    THEN
@@ -38,7 +38,7 @@ BEGIN
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- Check if the password is too simple. A dictionary of words may be maintained and a check may be made so as not to allow the words
 -- that are too simple for the password.
    IF NLS_LOWER (PASSWORD) IN ('welcome', 'database', 'account', 'user', 'password', 'oracle','computer', 'abcd','Charter1','charter1)')
@@ -47,7 +47,7 @@ BEGIN
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 
 --Check if the first letter is special character.
 isFrist := TRUE;
@@ -104,7 +104,7 @@ END IF;
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- 2. Check for the lowwer case character
    ischarlower := FALSE;
    FOR i IN 1 .. LENGTH (chararraylower)
@@ -124,7 +124,7 @@ END IF;
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- 3. Check for the upper case character
    ischarupper := FALSE;
    FOR i IN 1 .. LENGTH (chararrayupper)
@@ -144,7 +144,7 @@ END IF;
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- 4. Check for the punctuation
    ispunct := FALSE;
    FOR i IN 1 .. LENGTH (punctarray)
@@ -167,8 +167,9 @@ END IF;
 		should contain at least 1 UPPER and at least 1 LOWER Letter, at least 1 DIGIT and at least 1 SPECIAL CHARACTER(!#$%^*+-_=<>),
 		should NOT start with digit or special character, NOT be same as USERNAME');
    END IF;
-   
+
 -- Everything is fine; return TRUE ;
    RETURN (TRUE);
 END;
 /
+EXIT
