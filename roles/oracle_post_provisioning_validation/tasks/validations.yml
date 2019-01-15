@@ -38,8 +38,8 @@
     loop_var: group_name
   when: oracle_context == 'grid'
 
-- include_tasks: adrci_setup.yml
-  when: oracle_context == 'grid'
+# - include_tasks: adrci_setup.yml
+#   when: oracle_context == 'grid'
 
 - include_tasks: cleanup_files_setup.yml
   when: oracle_context == 'grid'
