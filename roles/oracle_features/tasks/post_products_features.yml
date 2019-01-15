@@ -1,12 +1,12 @@
 ---
 - name: read remote feature file
   slurp:
-    src: /u01/tmp/features/apex-stage_techlab_com_feature_stats.json
+    src: "{{ features_destination }}_feature_stats.json"
   register: feature_stats_raw
 
 - name: read remote product file
   slurp:
-    src: /u01/tmp/features/apex-stage_techlab_com_product_stats.json
+    src: "{{ features_destination }}_product_stats.json"
   register: product_stats_raw
 
 
