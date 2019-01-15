@@ -63,6 +63,7 @@
       fail:
         msg: "The storage is less than 294GB"
       when: u01_available_storage.stdout|int < 137665437499392
+
     - name: check for the directory structure of scripts/logs/ctl
       stat:
         path: /scripts/logs/ctl
@@ -71,6 +72,15 @@
     - debug:
         msg: "The file /scripts/logs/ctl exists"
       when: ctl_file_status.stat.exists
+
+    - name: check for SetDB.sh file exist or not
+      stat:
+        path: /SetDB.sh
+      register: SetDB_file_status
+
+    - debug:
+        msg: "The file SetDB.sh exists"
+      when: SetDB_file_status.stat.exist  
   when: oracle_context = 'grid'
 
 
