@@ -41,6 +41,7 @@ ora_user_env:
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
+  GRID_HOME: "/u01/app/12.1.0.2/grid"
 
 sql_files:
   - verify_dba_directories.sql
