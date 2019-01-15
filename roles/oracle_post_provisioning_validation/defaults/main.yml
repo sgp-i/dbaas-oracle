@@ -8,8 +8,8 @@ oracle_user: oracle
 grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
-oracle_db_home: db_1
-oracle_db_name: ''
+# oracle_db_home: db_1
+oracle_db_name: 'apexstg' # TODO: Temporary for debug
 oracle_context: "{% if oracle_db_name == '' -%}grid
                  {%- else -%}database{%- endif %}"
 
