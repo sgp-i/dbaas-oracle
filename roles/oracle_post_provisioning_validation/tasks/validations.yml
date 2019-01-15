@@ -350,8 +350,8 @@
             value: "{{ asm_status_cleanup_status }}"
           - check_type: "database name clean up file status"
             value: "{{ oracle_db_name_entry_status }}"
-           - check_type: "verify memory status"
-             value: "{{ verify_memory_status.stdout_lines | default('') }}"
+          - check_type: "verify memory status"
+            value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
   when: oracle_context == 'database'
 
