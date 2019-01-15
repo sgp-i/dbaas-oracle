@@ -216,6 +216,7 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+      when: oracle_context == 'grid'          
     - name: oracle groups
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
@@ -224,6 +225,7 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+      when: oracle_context == 'grid'
     - name: EXP Mount (in GiB)
       expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
