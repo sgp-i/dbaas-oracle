@@ -272,19 +272,35 @@
             value: "{{ verify_dba_directories_result.stdout_lines | default('') }}"
       status: ""
   when: oracle_context == 'database'
+
 -  debug:
-    var: checklist
+    var: checklist_grid
+   when: oracle_context == 'grid'
+
+-  debug:
+    var: checklist_database
+   when: oracle_context == 'database'
 
 - name: debug oracle_context
   debug:
     msg: "{{oracle_context}}"
 
-- name: store the result in a json
+#- name: store the result in a json
+#  copy:
+#    dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+#              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+#              {%- endif %}"
+#    content: "{{ checklist }}"
+
+- name: store the result  of grid checklist  to a json
   copy:
-    dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
-              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
-              {%- endif %}"
-    content: "{{ checklist }}"
+    dest: {{ oracle_tmp }}/grid_post_validaton_result.json
+    content: "{{ checklist_grid }}"
+
+- name: store the result  of database checklist  to a json
+  copy:
+    dest: {{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+    content: "{{ checklist_database }}"
 
 #- name: Create json template for verify result
 #  template:
