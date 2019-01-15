@@ -24,7 +24,7 @@ sql_file_path: "{{ oracle_tmp }}"
 
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
-  ORACLE_SID: "{{ oracle_sid | default('') }}"
+  ORACLE_SID: "{{ oracle_db_name }}"
   ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"

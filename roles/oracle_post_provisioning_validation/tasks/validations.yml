@@ -83,6 +83,11 @@
       when: SetDB_file_status.stat.exist
   when: oracle_context == 'grid'
 
+- name:
+  debug:
+    msg: "{{ ora_user_env }}"
+
+
 
 - name: task only for database
   block:
