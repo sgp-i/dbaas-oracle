@@ -1,7 +1,7 @@
 ---
 
 - name: show adrci homes
-  become: yes 
+  become: yes
   become_user: "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: adrci exec="SHOW HOMES"
@@ -11,7 +11,7 @@
 - name: make adrci script from jinja template
   become: yes
   become_user: '{{ oracle_user }}'
-  template: 
+  template:
     src: adrci_setup.j2
     dest: "{{ oracle_base }}/adrci_setup.txt"
 
@@ -24,13 +24,12 @@
 
 - name: save output of adrci
   copy:
-    dest: "{{ oracle_tmp }}/adrci_setup.out"
+    dest: "{{ oracle_tmp }}/adrci_setup_grid.out"
     content: "adrci_script_output.stdout"
 
 - name: save error of adrci
   copy:
-    dest: "{{ oracle_tmp }}/cluvfy_stderr.err"
+    dest: "{{ oracle_tmp }}/adrci_stderr_grid.err"
     content: "{{ adrci_script_output.stderr }}"
   changed_when: False
   when: adrci_script_output.stderr_lines | length > 0
-  

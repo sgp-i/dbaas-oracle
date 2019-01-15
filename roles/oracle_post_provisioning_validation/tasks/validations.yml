@@ -38,11 +38,11 @@
     loop_var: group_name
   when: oracle_context == 'grid'
 
-- include_tasks: adrci_setup.yml
-  when: oracle_context == 'grid'
+# - include_tasks: adrci_setup.yml TODO: grep adrci from file and thats it
+#   when: oracle_context == 'grid'
 
-- include_tasks: cleanup_files_setup.yml
-  when: oracle_context == 'grid'
+# - include_tasks: cleanup_files_setup.yml TODO: just cat the file, not running it again
+#   when: oracle_context == 'grid'
 
 - name: task only for database
   block:
@@ -210,7 +210,7 @@
       register: verify_database_service_status
 
     - name: check for content of clean up asm file
-      command: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
+      command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
       register: asm_status_cleanup
       ignore_errors: yes
 
@@ -225,7 +225,7 @@
       when: asm_status_cleanup.stderr != [""]
 
     - name: check for content of clean up file
-      command: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
+      command: "cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
       register: oracle_db_name_entry
       ignore_errors: yes
 
