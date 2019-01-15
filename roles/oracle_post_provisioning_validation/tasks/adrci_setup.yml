@@ -4,9 +4,9 @@
   debug:
     msg: "{{ ora_user_env }}"
 
-- name: oracle_user
+- name: oracle_context
   debug:
-    msg: "{{ oracle_user }}"
+    msg: "{{ oracle_context }}"
 
 
 - name: show adrci homes
