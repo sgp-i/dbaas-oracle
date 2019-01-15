@@ -1,7 +1,7 @@
 ---
 
 oracle_tmp: /u01/tmp/postval
-
+ticket_ref: "45678"
 golden_gate_check: False
 
 oracle_user: oracle
