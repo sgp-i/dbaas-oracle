@@ -22,15 +22,23 @@ oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
 sql_file_path: "{{ oracle_tmp }}"
 
+# ora_user_env:
+#   ORACLE_BASE: "{{ oracle_base }}"
+#   ORACLE_SID: "{{ oracle_db_name }}"
+#   ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
+#   ORACLE_HOME: "{{ oracle_home }}"
+#   NLS_LANG: "American_America.UTF8"
+#   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+#   TMP: "/u01/app/oracle"
+#   TMPDIR: "/u01/app/oracle"
+
 ora_user_env:
-  ORACLE_BASE: "{{ oracle_base }}"
   ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
   ORACLE_HOME: "{{ oracle_home }}"
-  NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
+
 sql_files:
   - verify_dba_directories.sql
   - verify_tablespace.sql

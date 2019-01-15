@@ -88,7 +88,6 @@
     msg: "{{ ora_user_env }}"
 
 
-
 - name: task only for database
   block:
     - name: execute tablespace_size sql file
