@@ -245,6 +245,8 @@
       environment: "{{ ora_user_env }}"
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
       register: verify_memory_status
+      changed_when: false
+
   when: oracle_home != "" and oracle_context == 'database'
 
 
