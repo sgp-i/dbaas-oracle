@@ -194,18 +194,21 @@
       command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/Password_Verification_function.sql"
       register: Password_Verification_function_result
       failed_when: '"ORA-" in Password_Verification_function_result.stdout'
+
     - name: run archive log mod script
       become: yes
       become_user: '{{ oracle_user }}'
       environment: "{{ ora_user_env }}"
       command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/archive_log_mode.sql"
       register: archive_log_mode_result
+
     - name: check for database service running status
       become: yes
       become_user: '{{ oracle_user }}'
       environment: "{{ ora_user_env }}"
       command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/verify_database_service.sql"
       register: verify_database_service_status
+
     - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
       become: yes
       become_user: '{{ oracle_user }}'
