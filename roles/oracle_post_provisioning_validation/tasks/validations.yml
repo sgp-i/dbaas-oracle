@@ -210,15 +210,34 @@
       register: verify_database_service_status
 
     - name: check for content of clean up asm file
-      shell: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
+      command: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
       register: asm_status_cleanup
       ignore_errors: yes
 
-    - name: check for content of clean up file
-      shell: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
-      register: oracle_db_name_entry
+    - name: set asm_status_cleanup_status for stdout
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stdout }}"
+      when: asm_status_cleanup.stdout != [""]
 
+    - name: set asm_status_cleanup_status for stderr
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stderr }}"
+      when: asm_status_cleanup.stderr != [""]
+
+    - name: check for content of clean up file
+      command: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
+      register: oracle_db_name_entry
       ignore_errors: yes
+
+    - name: set oracle_db_name_entry_status for stdout
+      set_fact:
+        oracle_db_name_entry_status: "{{ oracle_db_name_entry.stdout }}"
+      when: oracle_db_name_entry.stdout != [""]
+
+    - name: set oracle_db_name_entry_status for stderr
+      set_fact:
+        oracle_db_name_entry_status: "{{ oracle_db_name_entry.stderr }}"
+      when: oracle_db_name_entry.stderr != [""]
 
     # - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
     #   become: yes
@@ -265,7 +284,6 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-      when: oracle_context == 'grid'
     - name: oracle groups
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
@@ -274,7 +292,6 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-      when: oracle_context == 'grid'
     - name: EXP Mount (in GiB)
       expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
@@ -282,7 +299,6 @@
                   (exp_disk_size | int / 1024 | pow(3)) | round | int < 295 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-      when: oracle_context == 'grid'
     - name: GG Mount (in GiB)
       expected_value: "{% if golden_gate_check -%}300
                        {%- else -%}
@@ -295,7 +311,10 @@
                        (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-      when: oracle_context == 'grid'
+  when: oracle_context == 'grid'
+
+- set_fact:
+    checklist:
     - name: results of validation done using sql queries
       expected_value: ""
       actual_value:
@@ -328,43 +347,29 @@
           - check_type: "verify database service status"
             value: "{{ verify_database_service_status.stdout_lines | default('') }}"
           - check_type: "clean up file status"
-            value: "{{ asm_status_cleanup.stdout_lines | default('') }}"
+            value: "{{ asm_status_cleanup_status }}"
           - check_type: "database name clean up file status"
-            value: "{{ oracle_db_name_entry.stdout_lines | default('') }}"
+            value: "{{ oracle_db_name_entry_status }}"
           # - check_type: "verify memory status"
           #   value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
-      when: oracle_context == 'database'
+  when: oracle_context == 'database'
 
 -  debug:
     var: checklist
-
--  debug:
-    var: checklist_database
-   when: oracle_context == 'database'
 
 - name: debug oracle_context
   debug:
     msg: "{{oracle_context}}"
 
-#- name: store the result in a json
-#  copy:
-#    dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
-#              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
-#              {%- endif %}"
-#    content: "{{ checklist }}"
 
-- name: store the result  of grid checklist  to a json
+- name: store the result in a json
   copy:
-    dest: "{{ oracle_tmp }}/grid_post_validaton_result.json"
-    content: "{{ checklist_grid }}"
-  when: oracle_context == 'grid'
+    dest: "{% if oracle_context == 'grid' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+              {%- elif oracle_context == 'database' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- endif %}"
+    content: "{{ checklist }}"
 
-- name: store the result  of database checklist  to a json
-  copy:
-    dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json"
-    content: "{{ checklist_database }}"
-  when: oracle_context == 'database'
 
 #- name: Create json template for verify result
 #  template:
