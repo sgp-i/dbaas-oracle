@@ -209,12 +209,12 @@
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_database_service.sql"
       register: verify_database_service_status
 
-    - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
-      become: yes
-      become_user: "{{ oracle_user }}"
-      environment: "{{ ora_user_env }}"
-      command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
-      register: verify_memory_status
+    # - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
+    #   become: yes
+    #   become_user: "{{ oracle_user }}"
+    #   environment: "{{ ora_user_env }}"
+    #   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
+    #   register: verify_memory_status
   when: oracle_home != "" and oracle_context == 'database'
 
 - name: db checklist post update for post provisioning validation
@@ -315,8 +315,8 @@
             value: "{{ archive_log_mode_result.stdout_lines | default('') }}"
           - check_type: "verify database service status"
             value: "{{ verify_database_service_status.stdout_lines | default('') }}"
-          - check_type: "verify memory status"
-            value: "{{ verify_memory_status.stdout_lines | default('') }}"
+          # - check_type: "verify memory status"
+          #   value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
   when: oracle_context == 'database'
 
