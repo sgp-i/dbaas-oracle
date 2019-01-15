@@ -209,14 +209,13 @@
 
 
 - set_fact:
-    checklist:
+    checklist_grid:
     - name: oracle user
       expected_value: "900"
       actual_value: "{{ oracle_user_check.uid }}"
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-      when: oracle_context == 'grid'          
     - name: oracle groups
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
@@ -225,7 +224,6 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-      when: oracle_context == 'grid'
     - name: EXP Mount (in GiB)
       expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
@@ -245,6 +243,10 @@
                        (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
+  when: oracle_context == 'grid'
+
+- set_fact:
+    checklist_database:
     - name: results of validation done using sql queries
       expected_value: ""
       actual_value:
@@ -269,7 +271,7 @@
           - check_type: "verify dba directories"
             value: "{{ verify_dba_directories_result.stdout_lines | default('') }}"
       status: ""
-
+  when: oracle_context == 'database'
 -  debug:
     var: checklist
 
