@@ -212,11 +212,13 @@
     - name: check for content of clean up asm file
       shell: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
       register: asm_status_cleanup
+      ignore_errors: yes
 
     - name: check for content of clean up file
       shell: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
       register: oracle_db_name_entry
-
+      ignore_errors: yes
+      
     # - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
     #   become: yes
     #   become_user: "{{ oracle_user }}"
