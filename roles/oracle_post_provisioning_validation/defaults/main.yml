@@ -50,6 +50,11 @@ sql_files:
   - verify_recyclebin_status.sql
   - verify_snapshot_interval.sql
   - verify_redo_logs.sql
+  - post_check_audit_purge.sql
+  - Password_Verification_function.sql
+  - archive_log_mode.sql
+  - verify_database_service.sql
+  - verify_memory_values.sql
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
