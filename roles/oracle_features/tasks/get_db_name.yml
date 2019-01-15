@@ -2,20 +2,45 @@
 
 - include_tasks: get_db_home.yml
 
-- name: Get Database name
-  environment: "{{ ora_user_env }}"
-  shell: "srvctl status database -thishome | grep -B1 'Database is running.'| awk -F : 'NF > 1 {print $2}'"
-  changed_when: False
-  register: db_name_info
-  loop: "{{ ora_home_list }}"
-  loop_control:
-    loop_var: oracle_home
+- set_fact:
+    db_info: {}
 
-- name: Set db_name_list
-  set_fact:
-    db_name_list: "{{ db_name_list | default ([]) }} + {{ item.stdout_lines }}"
-  with_items: "{{ db_name_info.results }}"
+- name: Include home dictionary yaml
+  include_tasks: iterate_home.yml
+  with_items: "{{listofhomes.stdout_lines}}"
+
+
+- debug:
+    msg: "{{ db_info }}"
+
+- name: Include Get Products and Features
+  include_tasks: get_products_features.yml
+  with_dict: "{{db_info}}"
+
+
 #
+# - name: Set db_name_list
+#   set_fact:
+#     db_name_list: "{{ db_name_list | default ([]) }} + {{ item.stdout_lines }}"
+#   with_items: "{{ db_name_info.results }}"
+#
+# - name: db_name_list
+#   debug:
+#     msg: "{{db_name_list}}"
+#
+# - name: run product and features query on each db
+#   import_tasks: get_products_features.yml
+#   vars:
+#     oracle_homes: "{{ listofhomes.stdout_lines }}"
+
+#
+
+
+
+
+
+
+
 # - name: get oracle grid home
 #   shell: "ps -ef | grep ohasd | grep {{ install_base }}/{{ grid_version }}/ |  grep -v grep | awk -F ' ' '{ print $8 }'"
 #   changed_when: False
@@ -39,49 +64,66 @@
 #     oracle_grid_sid: "{{ ps_grep_smon.stdout | regex_replace('asm_smon_(.*)', '\\1') }}"
 
 
-- name : get db_status_check
-  shell: ps -ef | grep pmon | grep -v +ASM | grep -v MGMTDB| grep -v grep
-  changed_when: false
-  failed_when: db_status_check.stdout_lines | length < 0
-  register: db_status_check
 
 
-- name: Get {{ curr_db_name }} Database Home
-  environment: "{{ ora_user_env }}"
-  command: srvctl config database -d {{ curr_db_name }}
-  changed_when: False
-  register: db_config
-  vars:
-    oracle_home: "{{ oracle_grid_home }}"
-    oracle_sid: "{{ oracle_grid_sid }}"
-  loop_control:
-    loop_var: curr_db_name
-  loop: "{{ db_name_list }}"
-  when:
-  - db_name_list | length > 0
-  - inventory_hostname == master_node
 
-- name: Print DB Name List
-  debug:
-    msg: "{{db_name_list}}"
 
-- set_fact:
-    oracle_db_name: "{{ curr_db_name }}"
-    oracle_home: "{{ db_config.stdout | regex_search('home:') | regex_replace('home: (.*)','\\1')}}"
-  loop_control:
-    loop_var: curr_db_name
-  loop: "{{ db_name_list }}"
-  when:
-  - db_name_list | length > 0
-  - inventory_hostname == master_node
 
-- name: Print ORacle DB Name
-  debug:
-    msg: "{{oracle_db_name}}"
 
-- name: Print ORacle DB Home
-  debug:
-    msg: "{{oracle_home}}"
+
+
+#
+#
+#
+# - name : get db_status_check
+#   shell: ps -ef | grep pmon | grep -v +ASM | grep -v MGMTDB| grep -v grep
+#   changed_when: false
+#   failed_when: db_status_check.stdout_lines | length < 0
+#   register: db_status_check
+#
+# - name: db_status_check
+#   debug:
+#     msg: "{{db_status_check}}"
+#
+# - name: Get {{ curr_db_name }} Database Home
+#   environment: "{{ ora_user_env }}"
+#   command: srvctl config database -d {{ curr_db_name }}
+#   changed_when: False
+#   register: db_config
+#   vars:
+#     oracle_sid: "{{ curr_db_name }}"
+#   loop_control:
+#     loop_var: curr_db_name
+#   loop: "{{ db_name_list }}"
+#   when:
+#   - db_name_list | length > 0
+#   - inventory_hostname == master_node
+#
+# - name: db_status_check
+#   debug:
+#     msg: "{{db_config}}"
+#
+# - name: Print DB Name List
+#   debug:
+#     msg: "{{db_name_list}}"
+#
+# - set_fact:
+#     oracle_db_name: "{{ curr_db_name }}"
+#     oracle_home: "{{ db_config.stdout | regex_search('home:') | regex_replace('home: (.*)','\\1')}}"
+#   loop_control:
+#     loop_var: curr_db_name
+#   loop: "{{ db_name_list }}"
+#   when:
+#   - db_name_list | length > 0
+#   - inventory_hostname == master_node
+#
+# - name: Print ORacle DB Name
+#   debug:
+#     msg: "{{oracle_db_name}}"
+#
+# - name: Print ORacle DB Home
+#   debug:
+#     msg: "{{oracle_home}}"
 
 
 # - name: Check {{ curr_db_name }} Database Status
