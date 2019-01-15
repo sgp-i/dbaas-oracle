@@ -210,15 +210,36 @@
       register: verify_database_service_status
 
     - name: check for content of clean up asm file
-      shell: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
+      command: cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep +ASM
       register: asm_status_cleanup
       ignore_errors: yes
 
+    - name: set asm_status_cleanup_status for stdout
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stdout }}"
+      when: asm_status_cleanup.stdout != [""]
+
+    - name: set asm_status_cleanup_status for stderr
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stderr }}"
+      when: asm_status_cleanup.stderr != [""]
+
+
     - name: check for content of clean up file
-      shell: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
+      command: "cat /u01/app/oracle/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
       register: oracle_db_name_entry
       ignore_errors: yes
-      
+
+    - name: set oracle_db_name_entry_status for stdout
+      set_fact:
+        oracle_db_name_entry_status: "{{ oracle_db_name_entry.stdout }}"
+      when: oracle_db_name_entry.stdout != [""]
+
+    - name: set oracle_db_name_entry_status for stderr
+      set_fact:
+        oracle_db_name_entry_status: "{{ oracle_db_name_entry.stderr }}"
+      when: oracle_db_name_entry.stderr != [""]
+
     # - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
     #   become: yes
     #   become_user: "{{ oracle_user }}"
@@ -327,9 +348,9 @@
           - check_type: "verify database service status"
             value: "{{ verify_database_service_status.stdout_lines | default('') }}"
           - check_type: "clean up file status"
-            value: "{{ asm_status_cleanup.stdout_lines | default('') }}"
+            value: "{{ asm_status_cleanup_status }}"
           - check_type: "database name clean up file status"
-            value: "{{ oracle_db_name_entry.stdout_lines | default('') }}"
+            value: "{{ oracle_db_name_entry_status }}"
           # - check_type: "verify memory status"
           #   value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
