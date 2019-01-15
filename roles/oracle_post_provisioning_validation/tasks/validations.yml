@@ -239,12 +239,12 @@
         oracle_db_name_entry_status: "{{ oracle_db_name_entry.stderr }}"
       when: oracle_db_name_entry.stderr != [""]
 
-    # - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
-    #   become: yes
-    #   become_user: "{{ oracle_user }}"
-    #   environment: "{{ ora_user_env }}"
-    #   command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
-    #   register: verify_memory_status
+    - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
+      become: yes
+      become_user: "{{ oracle_user }}"
+      environment: "{{ ora_user_env }}"
+      command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
+      register: verify_memory_status
   when: oracle_home != "" and oracle_context == 'database'
 
 
@@ -350,8 +350,8 @@
             value: "{{ asm_status_cleanup_status }}"
           - check_type: "database name clean up file status"
             value: "{{ oracle_db_name_entry_status }}"
-          # - check_type: "verify memory status"
-          #   value: "{{ verify_memory_status.stdout_lines | default('') }}"
+           - check_type: "verify memory status"
+             value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
   when: oracle_context == 'database'
 
