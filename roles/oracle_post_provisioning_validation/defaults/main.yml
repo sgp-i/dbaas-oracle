@@ -9,7 +9,7 @@ grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
 # oracle_db_home: db_1
-oracle_db_name: 'apexstg' # TODO: Temporary for debug
+# oracle_db_name: 'apexstg' # TODO: Temporary for debug
 #oracle_context: "{% if oracle_db_name == '' -%}grid
 #                 {%- else -%}database{%- endif %}"
 
@@ -33,8 +33,11 @@ sql_file_path: "{{ oracle_tmp }}"
 #   TMPDIR: "/u01/app/oracle"
 
 ora_user_env:
+  ORACLE_BASE: "{{ oracle_base }}"
   ORACLE_SID: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
+  ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
+  NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
