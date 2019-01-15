@@ -22,7 +22,7 @@
   check_mode: yes
   changed_when: False
   register: oracle_user_check
-  when: oracle_context = 'grid'
+  when: oracle_context=='grid'
 
 - name: check oracle groups
   group:
@@ -36,13 +36,13 @@
   - dba
   loop_control:
     loop_var: group_name
-  when: oracle_context = 'grid'
+  when: oracle_context == 'grid'
 
 - include_tasks: adrci_setup.yml
-  when: oracle_context = 'grid'
+  when: oracle_context == 'grid'
 
 - include_tasks: cleanup_files_setup.yml
-  when: oracle_context = 'grid'
+  when: oracle_context == 'grid'
 
 - name: task only for database
   block:
@@ -80,8 +80,8 @@
 
     - debug:
         msg: "The file SetDB.sh exists"
-      when: SetDB_file_status.stat.exist  
-  when: oracle_context = 'grid'
+      when: SetDB_file_status.stat.exist
+  when: oracle_context == 'grid'
 
 
 - name: task only for database
@@ -174,7 +174,7 @@
       shell: sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_dba_directories.sql
       register: verify_dba_directories_result
       changed_when: false
-  when: oracle_home != "" and oracle_context = 'database'
+  when: oracle_home != "" and oracle_context == 'database'
 
 - name: db checklist post update for post provisioning validation
   import_tasks: host_checklist_post_update.yml
