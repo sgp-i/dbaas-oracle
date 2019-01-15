@@ -181,42 +181,40 @@
 
     - name: run post_check_audit_purge.sql script
       become: yes
-      become_user: '{{ oracle_user }}'
+      become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/post_check_audit_purge.sql"
+      command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/post_check_audit_purge.sql"
       register: post_check_audit_purge_result
       failed_when: '"ERROR" in post_check_audit_purge_result.stdout'
 
     - name: run Password_Verification_function.sql script
       become: yes
-      become_user: '{{ oracle_user }}'
+      become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/Password_Verification_function.sql"
+      command: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/Password_Verification_function.sql"
       register: Password_Verification_function_result
       failed_when: '"ORA-" in Password_Verification_function_result.stdout'
 
     - name: run archive log mod script
       become: yes
-      become_user: '{{ oracle_user }}'
+      become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/archive_log_mode.sql"
+      command: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/archive_log_mode.sql"
       register: archive_log_mode_result
 
     - name: check for database service running status
       become: yes
-      become_user: '{{ oracle_user }}'
+      become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/verify_database_service.sql"
+      command: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/verify_database_service.sql"
       register: verify_database_service_status
 
     - name: check for memory status of SGA/PGA, shared_pool, db_cache_size, large_pool_size, streams_pool_size
       become: yes
-      become_user: '{{ oracle_user }}'
+      become_user: "{{ oracle_user }}"
       environment: "{{ ora_user_env }}"
-      command: "sqlplus / as sysdba @{{ oracle_base }}/admin/scripts/verify_memory_values.sql"
+      command: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ sql_file_path }}/verify_memory_values.sql"
       register: verify_memory_status
-
-
   when: oracle_home != "" and oracle_context == 'database'
 
 - name: db checklist post update for post provisioning validation
