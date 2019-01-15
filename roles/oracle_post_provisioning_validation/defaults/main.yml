@@ -43,6 +43,7 @@ sql_files:
   - verify_snapshot_interval.sql
   - verify_redo_logs.sql
 
+oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
 # vars to be take care
 # oracle_db_home
