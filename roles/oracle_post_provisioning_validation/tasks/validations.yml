@@ -296,11 +296,13 @@
   copy:
     dest: "{{ oracle_tmp }}/grid_post_validaton_result.json"
     content: "{{ checklist_grid }}"
+  when: oracle_context == 'grid'
 
 - name: store the result  of database checklist  to a json
   copy:
     dest: "{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json"
     content: "{{ checklist_database }}"
+  when: oracle_context == 'database'
 
 #- name: Create json template for verify result
 #  template:
