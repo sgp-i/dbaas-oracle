@@ -1,5 +1,4 @@
 set line 100
-set pages 100
 
 col name format a50
 col display_value format a40
