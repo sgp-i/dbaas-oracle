@@ -27,4 +27,3 @@
     #checklist_id: "{{ checklist_insrt_response.id }}"
    #checklist_id: "{{ checklist_insrt_response| default('{`items`:[{`ID`:``}]}') | json_query('ID') }}"
     checklist_id: "{{ checklist_insrt_response.json.ID }}"
-  ignore_errors: yes # TODO: remove afer apex_url fixed
