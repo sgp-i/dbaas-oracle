@@ -38,23 +38,26 @@
     loop_var: group_name
   when: oracle_context == 'grid'
 
+- name: check for adrci in adrci_setup.out file
+  command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
+  register: adrci_status
+  ignore_errors: yes
+  no_log: True
+
+- name: set adrci_status for stdout
+  set_fact:
+    adrci_status_check: "{{ adrci_status.stdout }}"
+  when: adrci_status.stdout != ""
+
+- name: set adrci_status for stderr
+  set_fact:
+    adrci_status_check: "{{ adrci_status.stderr }}"
+  when: adrci_status.stderr != [""]
+
 
 - name: task only for grid
   block:
-    - name: check for adrci in adrci_setup.out file
-      command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
-      register: adrci_status
-      ignore_errors: yes
 
-    - name: set adrci_status for stdout
-      set_fact:
-        adrci_status_check: "{{ adrci_status.stdout }}"
-      when: adrci_status.stdout != ""
-
-    - name: set adrci_status for stderr
-      set_fact:
-        adrci_status_check: "{{ adrci_status.stderr }}"
-      when: adrci_status.stderr != [""]
 
     - name: check for content of clean up asm file
       command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
@@ -243,20 +246,6 @@
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_database_service.sql"
       register: verify_database_service_status
 
-    - name: check for adrci in adrci_setup.out file
-      command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
-      register: adrci_status
-      ignore_errors: yes
-
-    - name: set adrci_status for stdout
-      set_fact:
-        adrci_status_check: "{{ adrci_status.stdout }}"
-      when: adrci_status.stdout != ""
-
-    - name: set adrci_status for stderr
-      set_fact:
-        adrci_status_check: "{{ adrci_status.stderr }}"
-      when: adrci_status.stderr != [""]
 
     - name: check for content of clean up file
       command: "cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
