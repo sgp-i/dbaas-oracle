@@ -129,7 +129,7 @@
       when: ctl_file_status.stderr != ""
 
     - name: check for the .profile file in oracle home
-      shell: "ls -a {{ oracle_home }}/ | grep .profile"
+      shell: "ls -a $HOME | grep .profile"
       register: profile_status
       ignore_errors: yes
       no_log: True
