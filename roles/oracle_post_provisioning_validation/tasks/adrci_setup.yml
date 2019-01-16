@@ -8,7 +8,6 @@
   debug:
     msg: "{{ oracle_context }}"
 
-
 - name: show adrci homes
   become: yes
   become_user: "{{ oracle_user }}"

@@ -41,28 +41,65 @@
 # - include_tasks: adrci_setup.yml TODO: grep adrci from file and thats it
 #   when: oracle_context == 'grid'
 
+
 # - include_tasks: cleanup_files_setup.yml TODO: just cat the file, not running it again
 #   when: oracle_context == 'grid'
 
-- name: task only for database
+- name: task only for grid
   block:
-    - name: Read the oratab file
-      shell: cat /etc/oratab
+    - name: check for adrci in adrci_setup.out file
+      command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
+      register: adrci_status
       ignore_errors: yes
-      register: oratab
 
-    - name: Check the oratab file for onsid
-      when: oratab.stdout.find('onsid') != -1
-      debug: msg="Onsid exists"
+    - name: set adrci_status for stdout
+      set_fact:
+        asm_status_cleanup_status: "{{ adrci_status.stdout }}"
+      when: adrci_status.stdout != [""]
 
-    - name: check the ACFS file system for value of u01 less than 294GB
-      shell: df --output=avail /u01 | tail -n 1
-      register: u01_available_storage
+    - name: set adrci_status for stderr
+      set_fact:
+        asm_status_cleanup_status: "{{ adrci_status.stderr }}"
+      when: adrci_status.stderr != [""]
 
-    - name: fail if the  value is less than 294GB
-      fail:
-        msg: "The storage is less than 294GB"
-      when: u01_available_storage.stdout|int < 137665437499392
+    - name: check for content of clean up asm file
+      command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
+      register: asm_status_cleanup
+      ignore_errors: yes
+
+    - name: set asm_status_cleanup_status for stdout
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stdout }}"
+      when: asm_status_cleanup.stdout != [""]
+
+    - name: set asm_status_cleanup_status for stderr
+      set_fact:
+        asm_status_cleanup_status: "{{ asm_status_cleanup.stderr }}"
+      when: asm_status_cleanup.stderr != [""]
+
+    - name: check for content of oratab file
+      command: cat /etc/oratab | grep onsid
+      register: onsid_status
+      ignore_errors: yes
+
+    - name: set onsid_status for stdout
+      set_fact:
+        onsid_oratab_status: "{{ onsid_status.stdout }}"
+      when: onsid_status.stdout != [""]
+
+    - name: set onsid_status for stderr
+      set_fact:
+        onsid_oratab_status: "{{ onsid_status.stderr }}"
+      when: onsid_status.stderr != [""]
+
+    # - name: check the ACFS file system for value of u01 less than 294GB
+    #   shell: df -h --output=avail /u01 | tail -n 1
+    #   register: u01_available_storage
+    #
+    # - name: fail if the  value is less than 294GB
+    #   fail:
+    #     msg: "The storage is less than 294GB"
+    #   when: u01_available_storage.stdout|int < 137665437499392
 
     - name: check for the directory structure of scripts/logs/ctl
       stat:
@@ -209,20 +246,20 @@
       command: "sqlplus -S -NOLOGINTIME / as sysdba @{{ sql_file_path }}/verify_database_service.sql"
       register: verify_database_service_status
 
-    - name: check for content of clean up asm file
-      command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
-      register: asm_status_cleanup
+    - name: check for adrci in adrci_setup.out file
+      command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
+      register: adrci_status
       ignore_errors: yes
 
-    - name: set asm_status_cleanup_status for stdout
+    - name: set adrci_status for stdout
       set_fact:
-        asm_status_cleanup_status: "{{ asm_status_cleanup.stdout }}"
-      when: asm_status_cleanup.stdout != [""]
+        adrci_status: "{{ adrci_status.stdout }}"
+      when: adrci_status.stdout != [""]
 
-    - name: set asm_status_cleanup_status for stderr
+    - name: set adrci_status for stderr
       set_fact:
-        asm_status_cleanup_status: "{{ asm_status_cleanup.stderr }}"
-      when: asm_status_cleanup.stderr != [""]
+        adrci_status: "{{ adrci_status.stderr }}"
+      when: adrci_status.stderr != [""]
 
     - name: check for content of clean up file
       command: "cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
@@ -270,6 +307,7 @@
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
                     {%- endif -%}"
+  when: oracle_context == 'grid'
 
 - set_fact:
     ggs_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`]') == [] -%}unmounted
@@ -294,6 +332,21 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+    - name: check adrci file status
+      expected_value: ""
+      actual_value: "{{ adrci_status }}"
+      status: ""
+
+    - name: check for asm in clean up files
+      expected_value: ""
+      actual_value: "{{ asm_status_cleanup_status }}"
+      status: ""
+
+    - name: check for osdi in oratab files
+      expected_value: ""
+      actual_value: "{{ onsid_oratab_status }}"
+      status: ""
+
     - name: EXP Mount (in GiB)
       expected_value: 295
       actual_value: "{{ (exp_disk_size | int / 1024 | pow(3)) | round | int }}"
@@ -348,8 +401,8 @@
             value: "{{ archive_log_mode_result.stdout_lines | default('') }}"
           - check_type: "verify database service status"
             value: "{{ verify_database_service_status.stdout_lines | default('') }}"
-          - check_type: "clean up file status"
-            value: "{{ asm_status_cleanup_status }}"
+          - check_type: "check for adrci in the saved output"
+            value: "{{ adrci_status }}"
           - check_type: "database name clean up file status"
             value: "{{ oracle_db_name_entry_status }}"
           - check_type: "verify memory status"
