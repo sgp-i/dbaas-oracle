@@ -50,7 +50,7 @@
     - name: set adrci_status for stdout
       set_fact:
         adrci_status_check: "{{ adrci_status.stdout }}"
-      when: adrci_status.stdout != [""]
+      when: adrci_status.stdout != ""
 
     - name: set adrci_status for stderr
       set_fact:
@@ -66,7 +66,7 @@
     - name: set asm_status_cleanup_status for stdout
       set_fact:
         asm_status_cleanup_status: "{{ asm_status_cleanup.stdout }}"
-      when: asm_status_cleanup.stdout != [""]
+      when: asm_status_cleanup.stdout != ""
 
     - name: set asm_status_cleanup_status for stderr
       set_fact:
@@ -252,7 +252,7 @@
     - name: set adrci_status for stdout
       set_fact:
         adrci_status_check: "{{ adrci_status.stdout }}"
-      when: adrci_status.stdout != [""]
+      when: adrci_status.stdout != ""
 
     - name: set adrci_status for stderr
       set_fact:
@@ -267,7 +267,7 @@
     - name: set oracle_db_name_entry_status for stdout
       set_fact:
         oracle_db_name_entry_status: "{{ oracle_db_name_entry.stdout }}"
-      when: oracle_db_name_entry.stdout != [""]
+      when: oracle_db_name_entry.stdout != ""
 
     - name: set oracle_db_name_entry_status for stderr
       set_fact:
@@ -332,33 +332,33 @@
                 {%- else -%}PASSED
                 {%- endif %}"
 
-    - name: check adrci file status
-      expected_value: "adrci in adrci_setup.out file should exist"
-      actual_value: "{{ adrci_status_check }}"
-      status: '{% if adrci_status.stdout != [""] -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}'
-
-    - name: check for asm in clean up files
-      expected_value: "asm should existing in clean up files "
-      actual_value: "{{ asm_status_cleanup_status }}"
-      status: "{% if asm_status_cleanup.stdout != [''] -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}"
-
-    - name: check for osdi in oratab files
-      expected_value: "osdi should exist in oratab file"
-      actual_value: "{{ onsid_oratab_status }}"
-      status: "{% if onsid_status.stdout != [''] -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}"
-
-    - name: check for ctl file directory structure
-      expected_value: "The ctl file should exist in specific directory i.e. scripts/logs/ctl"
-      actual_value: "{{ ctl_file_exist }}"
-      status: "{% if ctl_file_status.stdout != [''] -%}FAILED
-               {%- else -%}PASSED
-               {%- endif -%}"
+    # - name: check adrci file status
+    #   expected_value: "adrci in adrci_setup.out file should exist"
+    #   actual_value: "{{ adrci_status_check }}"
+    #   status: '{% if adrci_status.stdout != "" -%}FAILED
+    #            {%- else -%}PASSED
+    #            {%- endif -%}'
+    #
+    # - name: check for asm in clean up files
+    #   expected_value: "asm should existing in clean up files "
+    #   actual_value: "{{ asm_status_cleanup_status }}"
+    #   status: "{% if asm_status_cleanup.stdout != '' -%}FAILED
+    #            {%- else -%}PASSED
+    #            {%- endif -%}"
+    #
+    # - name: check for osdi in oratab files
+    #   expected_value: "osdi should exist in oratab file"
+    #   actual_value: "{{ onsid_oratab_status }}"
+    #   status: "{% if onsid_status.stdout != '' -%}FAILED
+    #            {%- else -%}PASSED
+    #            {%- endif -%}"
+    #
+    # - name: check for ctl file directory structure
+    #   expected_value: "The ctl file should exist in specific directory i.e. scripts/logs/ctl"
+    #   actual_value: "{{ ctl_file_exist }}"
+    #   status: "{% if ctl_file_status.stdout != '' -%}FAILED
+    #            {%- else -%}PASSED
+    #            {%- endif -%}"
 
     - name: EXP Mount (in GiB)
       expected_value: 295
