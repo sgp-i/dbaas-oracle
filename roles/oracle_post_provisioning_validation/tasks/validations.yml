@@ -73,7 +73,7 @@
     - name: set asm_status_cleanup_status for stderr
       set_fact:
         asm_status_cleanup_status: "{{ asm_status_cleanup.stderr }}"
-      when: asm_status_cleanup.stderr != [""]
+      when: asm_status_cleanup.stderr != ""
 
     - name: check for content of oratab file
       shell: "cat /etc/oratab | grep onsid"
@@ -89,7 +89,7 @@
     - name: set onsid_status for stderr
       set_fact:
         onsid_oratab_status: "{{ onsid_status.stderr }}"
-      when: onsid_status.stderr != [""]
+      when: onsid_status.stderr != ""
 
     - name: check for Hugepage settings
       shell: "cat /proc/meminfo | grep Huge"
@@ -108,7 +108,7 @@
       when: hugepage_settings.stderr != ""
 
     - name: check for the directory structure of scripts/logs/ctl
-      command: ls /scripts/logs | grep ctl
+      shell: "ls /scripts/logs | grep ctl"
       register: ctl_file_status
       ignore_errors: yes
       no_log: True
@@ -124,7 +124,7 @@
     - name: set ctl_file_status for stderr
       set_fact:
         ctl_file_exist: "{{ ctl_file_status.stderr }}"
-      when: ctl_file_status.stderr != [""]
+      when: ctl_file_status.stderr != ""
 
     # - name: check for SetDB.sh file exist or not
     #   stat:
