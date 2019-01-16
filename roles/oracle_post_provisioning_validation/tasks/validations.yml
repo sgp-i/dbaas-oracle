@@ -74,19 +74,19 @@
       when: asm_status_cleanup.stderr != ""
 
     - name: check for content of oratab file
-      shell: "cat /etc/oratab | grep onsid"
+      shell: "cat /etc/oratab | grep nosid"
       register: onsid_status
       ignore_errors: yes
       no_log: True
 
     - name: onsid debug
       debug:
-        msg: "{{ onsid_status }}"
+        msg: "{{ nosid_status }}"
 
-    - name: set onsid_status for stdout
+    - name: set nosid_status for stdout
       set_fact:
-        onsid_oratab_status: "{{ onsid_status.stdout }}"
-      when: onsid_status.stdout != ""
+        nosid_oratab_status: "{{ nosid_status.stdout }}"
+      when: nosid_status.stdout != ""
 
     - name: set onsid_status for stderr
       set_fact:
@@ -366,10 +366,10 @@
                {%- else -%}FAILED
                {%- endif -%}"
 
-    - name: check for osdi in oratab files
-      expected_value: "osid should exist in oratab file"
-      actual_value: "{{ onsid_oratab_status }}"
-      status: "{% if onsid_status.stdout != '' -%}PASSED
+    - name: check for nosid in oratab files
+      expected_value: "nosid should exist in oratab file"
+      actual_value: "{{ nosid_oratab_status }}"
+      status: "{% if nosid_status.stdout != '' -%}PASSED
                {%- else -%}FAILED
                {%- endif -%}"
 
