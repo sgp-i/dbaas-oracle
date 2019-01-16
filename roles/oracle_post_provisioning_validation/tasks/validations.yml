@@ -314,6 +314,23 @@
   when: golden_gate_check
 
 
+- name: debug for set_facts
+  debug:
+    msg: "{{ adrci_status }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ asm_status_cleanup }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ onsid_status }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ ctl_file_status }}"
+
+
 - set_fact:
     checklist:
     - name: oracle user
@@ -347,7 +364,7 @@
                {%- endif -%}"
 
     - name: check for osdi in oratab files
-      expected_value: "osidshould exist in oratab file"
+      expected_value: "osid should exist in oratab file"
       actual_value: "{{ onsid_oratab_status }}"
       status: "{% if onsid_status.stdout != '' -%}FAILED
                {%- else -%}PASSED
