@@ -93,7 +93,7 @@
     - name: set onsid_status for stderr
       set_fact:
         onsid_oratab_status: "Not able to find entry in oratab file"
-      when: onsid_status.stderr != "" and onsid_status.stdout != ""
+      when: onsid_status.stderr == "" and onsid_status.stdout == ""
 
     - name: check for Hugepage settings
       shell: "cat /proc/meminfo | grep Huge"
