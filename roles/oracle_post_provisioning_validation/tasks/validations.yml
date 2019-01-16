@@ -45,7 +45,6 @@
       command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
       register: adrci_status
       ignore_errors: yes
-      no_log: True
 
     - name: set adrci_status for stdout
       set_fact:
@@ -359,22 +358,22 @@
     - name: check for asm in clean up files
       expected_value: "asm should existing in clean up files "
       actual_value: "{{ asm_status_cleanup_status }}"
-      status: "{% if asm_status_cleanup.stdout_lines != [''] -%}FAILED
-               {%- else -%}PASSED
+      status: "{% if asm_status_cleanup.stdout != '' -%}PASSED
+               {%- else -%}FAILED
                {%- endif -%}"
 
     - name: check for osdi in oratab files
       expected_value: "osid should exist in oratab file"
       actual_value: "{{ onsid_oratab_status }}"
-      status: "{% if onsid_status.stdout != '' -%}FAILED
-               {%- else -%}PASSED
+      status: "{% if onsid_status.stdout != '' -%}PASSED
+               {%- else -%}FAILED
                {%- endif -%}"
 
     - name: check for ctl file directory structure
       expected_value: "The ctl file should exist in specific directory i.e. scripts/logs/ctl"
       actual_value: "{{ ctl_file_exist }}"
-      status: "{% if ctl_file_status.stdout_lines != [''] -%}FAILED
-               {%- else -%}PASSED
+      status: "{% if ctl_file_status.stdout != '' -%}PASSED
+               {%- else -%}FAILED
                {%- endif -%}"
 
     - name: EXP Mount (in GiB)
