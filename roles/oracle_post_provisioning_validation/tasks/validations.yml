@@ -91,6 +91,22 @@
         onsid_oratab_status: "{{ onsid_status.stderr }}"
       when: onsid_status.stderr != [""]
 
+    - name: check for Hugepage settings
+      command: cat /proc/meminfo | grep Huge
+      register: hugepage_settings
+      ignore_errors: yes
+      no_log: True
+
+    - name: check for hugepage stdout
+      set_fact:
+        hugepage_settings_check: "{{ hugepage_settings.stdout }}"
+      when: hugepage_settings.stdout != ""
+
+    - name: check for hugepage stderr
+      set_fact:
+        hugepage_settings_check: "{{ hugepage_settings.stderr }}"
+      when: hugepage_settings.stderr != [""]
+
     - name: check for the directory structure of scripts/logs/ctl
       command: ls /scripts/logs | grep ctl
       register: ctl_file_status
@@ -304,7 +320,7 @@
 
 - name: debug for set_facts
   debug:
-    msg: "{{ adrci_status }}"
+    msg: "{{ hugepage_settings }}"
 
 - name: debug for set_facts
   debug:
@@ -364,6 +380,11 @@
       status: "{% if ctl_file_status.stdout != '' -%}PASSED
                {%- else -%}FAILED
                {%- endif -%}"
+
+    - name: check for hugepage settings
+      expected_value: ""
+      actual_value: "{{ hugepage_settings_check }}"
+      status: ""
 
     - name: EXP Mount (in GiB)
       expected_value: 295
