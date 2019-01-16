@@ -102,8 +102,6 @@
     #   when: u01_available_storage.stdout|int < 137665437499392
 
     - name: check for the directory structure of scripts/logs/ctl
-      stat:
-        path: /scripts/logs/ctl
       command: ls /scripts/logs | grep ctl
       register: ctl_file_status
 
