@@ -347,9 +347,9 @@
                {%- endif -%}"
 
     - name: check for osdi in oratab files
-      expected_value: "osdi should exist in oratab file"
+      expected_value: "osidshould exist in oratab file"
       actual_value: "{{ onsid_oratab_status }}"
-      status: "{% if onsid_status.stdout_lines != [''] -%}FAILED
+      status: "{% if onsid_status.stdout != '' -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
 
