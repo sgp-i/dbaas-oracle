@@ -105,7 +105,7 @@
     - name: check for hugepage stderr
       set_fact:
         hugepage_settings_check: "{{ hugepage_settings.stderr }}"
-      when: hugepage_settings.stderr != [""]
+      when: hugepage_settings.stderr != ""
 
     - name: check for the directory structure of scripts/logs/ctl
       command: ls /scripts/logs | grep ctl
