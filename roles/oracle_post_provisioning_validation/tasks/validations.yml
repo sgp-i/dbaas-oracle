@@ -106,18 +106,24 @@
         path: /scripts/logs/ctl
       register: ctl_file_status
 
-    - debug:
-        msg: "The file /scripts/logs/ctl exists"
-      when: ctl_file_status.stat.exists
+    - name: set ctl_file_status for stdout
+      set_fact:
+        ctl_file_exist: "{{ ctl_file_status.stdout }}"
+      when: ctl_file_status.stdout != [""]
 
-    - name: check for SetDB.sh file exist or not
-      stat:
-        path: /SetDB.sh
-      register: SetDB_file_status
+    - name: set ctl_file_status for stderr
+      set_fact:
+        ctl_file_exist: "{{ ctl_file_status.stderr }}"
+      when: ctl_file_status.stderr != [""]
 
-    - debug:
-        msg: "The file SetDB.sh exists"
-      when: SetDB_file_status.stat.exist
+    # - name: check for SetDB.sh file exist or not
+    #   stat:
+    #     path: /SetDB.sh
+    #   register: SetDB_file_status
+    #
+    # - debug:
+    #     msg: "The file SetDB.sh exists"
+    #   when: SetDB_file_status.stat.exist
   when: oracle_context == 'grid'
 
 - name:
@@ -345,6 +351,11 @@
     - name: check for osdi in oratab files
       expected_value: ""
       actual_value: "{{ onsid_oratab_status }}"
+      status: ""
+
+    - name: check for ctl file directory structure
+      expected_value: ""
+      actual_value: "{{ ctl_file_exist }}"
       status: ""
 
     - name: EXP Mount (in GiB)
