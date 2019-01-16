@@ -75,7 +75,7 @@
 
     - name: check for content of oratab file
       shell: "cat /etc/oratab | grep nosid"
-      register: onsid_status
+      register: nosid_status
       ignore_errors: yes
       no_log: True
 
@@ -110,7 +110,7 @@
       when: hugepage_settings.stderr != ""
 
     - name: check for the directory structure of scripts/logs/ctl
-      shell: "ls /scripts/logs | grep ctl"
+      shell: "ls {{ oracle_base }}/admin/ctl | grep ctl"
       register: ctl_file_status
       ignore_errors: yes
       no_log: True
