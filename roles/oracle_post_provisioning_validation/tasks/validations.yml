@@ -104,7 +104,11 @@
     - name: check for the directory structure of scripts/logs/ctl
       stat:
         path: /scripts/logs/ctl
+      command: ls /scripts/logs | grep ctl
       register: ctl_file_status
+
+    - debug:
+        msg: "{{ ctl_file_status }}"
 
     - name: set ctl_file_status for stdout
       set_fact:
