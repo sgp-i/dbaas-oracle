@@ -313,6 +313,22 @@
                     {%- endif -%}"
   when: golden_gate_check
 
+- name: debug for set_facts
+  debug:
+    msg: "{{ adrci_status }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ asm_status_cleanup }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ onsid_status }}"
+
+- name: debug for set_facts
+  debug:
+    msg: "{{ ctl_file_status }}"
+
 
 - set_fact:
     checklist:
