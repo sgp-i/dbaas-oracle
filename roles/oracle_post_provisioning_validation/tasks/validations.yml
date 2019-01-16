@@ -383,7 +383,7 @@
 
     - name: check for hugepage settings
       expected_value: ""
-      actual_value: "{{ hugepage_settings_check.stdout }}"
+      actual_value: "{{ hugepage_settings_check }}"
       status: ""
 
     - name: EXP Mount (in GiB)
