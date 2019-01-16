@@ -38,12 +38,6 @@
     loop_var: group_name
   when: oracle_context == 'grid'
 
-# - include_tasks: adrci_setup.yml TODO: grep adrci from file and thats it
-#   when: oracle_context == 'grid'
-
-
-# - include_tasks: cleanup_files_setup.yml TODO: just cat the file, not running it again
-#   when: oracle_context == 'grid'
 
 - name: task only for grid
   block:
@@ -51,21 +45,23 @@
       command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
       register: adrci_status
       ignore_errors: yes
+      no_log: True
 
     - name: set adrci_status for stdout
       set_fact:
-        asm_status_cleanup_status: "{{ adrci_status.stdout }}"
+        adrci_status_check: "{{ adrci_status.stdout }}"
       when: adrci_status.stdout != [""]
 
     - name: set adrci_status for stderr
       set_fact:
-        asm_status_cleanup_status: "{{ adrci_status.stderr }}"
+        adrci_status_check: "{{ adrci_status.stderr }}"
       when: adrci_status.stderr != [""]
 
     - name: check for content of clean up asm file
       command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
       register: asm_status_cleanup
       ignore_errors: yes
+      no_log: True
 
     - name: set asm_status_cleanup_status for stdout
       set_fact:
@@ -81,6 +77,7 @@
       command: cat /etc/oratab | grep onsid
       register: onsid_status
       ignore_errors: yes
+      no_log: True
 
     - name: set onsid_status for stdout
       set_fact:
@@ -92,19 +89,11 @@
         onsid_oratab_status: "{{ onsid_status.stderr }}"
       when: onsid_status.stderr != [""]
 
-    # - name: check the ACFS file system for value of u01 less than 294GB
-    #   shell: df -h --output=avail /u01 | tail -n 1
-    #   register: u01_available_storage
-    #
-    # - name: fail if the  value is less than 294GB
-    #   fail:
-    #     msg: "The storage is less than 294GB"
-    #   when: u01_available_storage.stdout|int < 137665437499392
-
     - name: check for the directory structure of scripts/logs/ctl
       command: ls /scripts/logs | grep ctl
       register: ctl_file_status
       ignore_errors: yes
+      no_log: True
 
     - debug:
         msg: "{{ ctl_file_status }}"
@@ -262,12 +251,12 @@
 
     - name: set adrci_status for stdout
       set_fact:
-        adrci_status: "{{ adrci_status.stdout }}"
+        adrci_status_check: "{{ adrci_status.stdout }}"
       when: adrci_status.stdout != [""]
 
     - name: set adrci_status for stderr
       set_fact:
-        adrci_status: "{{ adrci_status.stderr }}"
+        adrci_status_check: "{{ adrci_status.stderr }}"
       when: adrci_status.stderr != [""]
 
     - name: check for content of clean up file
@@ -333,6 +322,7 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+
     - name: oracle groups
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
@@ -341,25 +331,34 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+
     - name: check adrci file status
-      expected_value: ""
-      actual_value: "{{ adrci_status }}"
-      status: ""
+      expected_value: "adrci in adrci_setup.out file should exist"
+      actual_value: "{{ adrci_status_check }}"
+      status: "{% if adrci_status.stdout != [""] -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
 
     - name: check for asm in clean up files
-      expected_value: ""
+      expected_value: "asm should existing in clean up files "
       actual_value: "{{ asm_status_cleanup_status }}"
-      status: ""
+      status: "{% if asm_status_cleanup.stdout != [""] -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
 
     - name: check for osdi in oratab files
-      expected_value: ""
+      expected_value: "osdi should exist in oratab file"
       actual_value: "{{ onsid_oratab_status }}"
-      status: ""
+      status: "{% if onsid_status.stdout != [""] -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
 
     - name: check for ctl file directory structure
-      expected_value: ""
+      expected_value: "The ctl file should exist in specific directory i.e. scripts/logs/ctl"
       actual_value: "{{ ctl_file_exist }}"
-      status: ""
+      status: "{% if ctl_file_status.stdout != [""] -%}FAILED
+               {%- else -%}PASSED
+               {%- endif -%}"
 
     - name: EXP Mount (in GiB)
       expected_value: 295
@@ -416,7 +415,7 @@
           - check_type: "verify database service status"
             value: "{{ verify_database_service_status.stdout_lines | default('') }}"
           - check_type: "check for adrci in the saved output"
-            value: "{{ adrci_status }}"
+            value: "{{ adrci_status_check }}"
           - check_type: "database name clean up file status"
             value: "{{ oracle_db_name_entry_status }}"
           - check_type: "verify memory status"
