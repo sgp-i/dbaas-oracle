@@ -92,7 +92,7 @@
       when: onsid_status.stderr != [""]
 
     - name: check for Hugepage settings
-      command: "cat /proc/meminfo | grep Huge"
+      shell: "cat /proc/meminfo | grep Huge"
       register: hugepage_settings
       ignore_errors: yes
       no_log: True
