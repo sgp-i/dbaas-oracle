@@ -60,7 +60,7 @@
 
 
     - name: check for content of clean up asm file
-      command: cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM
+      shell: "cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep +ASM"
       register: asm_status_cleanup
       ignore_errors: yes
       no_log: True
@@ -76,7 +76,7 @@
       when: asm_status_cleanup.stderr != [""]
 
     - name: check for content of oratab file
-      command: cat /etc/oratab | grep onsid
+      shell: "cat /etc/oratab | grep onsid"
       register: onsid_status
       ignore_errors: yes
       no_log: True
