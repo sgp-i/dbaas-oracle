@@ -82,7 +82,7 @@
     - name: set onsid_status for stdout
       set_fact:
         onsid_oratab_status: "{{ onsid_status.stdout }}"
-      when: onsid_status.stdout != [""]
+      when: onsid_status.stdout != ""
 
     - name: set onsid_status for stderr
       set_fact:
@@ -101,7 +101,7 @@
     - name: set ctl_file_status for stdout
       set_fact:
         ctl_file_exist: "{{ ctl_file_status.stdout }}"
-      when: ctl_file_status.stdout != [""]
+      when: ctl_file_status.stdout != ""
 
     - name: set ctl_file_status for stderr
       set_fact:
