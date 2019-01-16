@@ -81,6 +81,10 @@
       ignore_errors: yes
       no_log: True
 
+    - name: onsid debug
+      debug:
+        msg: "{{ onsid_status }}"
+
     - name: set onsid_status for stdout
       set_fact:
         onsid_oratab_status: "{{ onsid_status.stdout }}"
