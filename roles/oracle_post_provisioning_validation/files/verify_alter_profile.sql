@@ -7,3 +7,4 @@ Col bytes format 9999999.999
 Col maxbytes format 9999999.999
 select profile, LIMIT from dba_profiles where profile = 'DEFAULT' and RESOURCE_NAME = 'PASSWORD_LIFE_TIME';
 Spool off
+EXIT
