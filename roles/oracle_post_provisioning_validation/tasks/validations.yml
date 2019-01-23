@@ -281,7 +281,7 @@
 
 
     - name: check for content of clean up file
-      command: "cat {{ oracle_base }}/admin/ctl/cleanup_files.ctl | grep {{ oracle_db_name }}"
+      command: "grep {{ oracle_db_name }} {{ oracle_base }}/admin/ctl/cleanup_files.ctl"
       register: oracle_db_name_entry
       ignore_errors: yes
 
