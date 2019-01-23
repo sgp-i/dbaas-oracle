@@ -11,10 +11,13 @@ oracle_version: 12.1.0.2
 # oracle_db_home: db_1
 
 
-oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
-              {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
-              {%- endif %}"
+# oracle_home: "{% if oracle_context_grid == 'True' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
+#               {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
+#               {%- endif %}"
 
+oracle_database_home: "{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
+
+grid_home: "{{ oracle_base }}/{{ grid_version }}/grid_1"
 
 oracle_base: "{{ install_base }}/oracle"
 oracle_group: oinstall
@@ -33,7 +36,7 @@ sql_file_path: "{{ oracle_tmp }}"
 ora_user_env:
   ORACLE_BASE: "{{ oracle_base }}"
   ORACLE_SID: "{{ oracle_db_name }}"
-  ORACLE_HOME: "{{ oracle_home }}"
+  ORACLE_HOME: "{{ oracle_database_home }}"
   ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
   NLS_LANG: "American_America.UTF8"
   PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"

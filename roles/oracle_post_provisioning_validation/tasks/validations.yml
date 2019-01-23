@@ -303,7 +303,7 @@
       register: verify_memory_status
       changed_when: false
 
-  when: oracle_home != "" and oracle_context_database == 'True'
+  when: oracle_database_home != "" and oracle_context_database == 'True'
 
 
 - name: db checklist post update for post provisioning validation
