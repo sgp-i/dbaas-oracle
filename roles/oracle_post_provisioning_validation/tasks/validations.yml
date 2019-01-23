@@ -22,7 +22,7 @@
   check_mode: yes
   changed_when: False
   register: oracle_user_check
-  when: oracle_context_grid == 'True'
+  when: oracle_context_grid
 
 - name: check oracle groups
   group:
@@ -36,7 +36,7 @@
   - dba
   loop_control:
     loop_var: group_name
-  when: oracle_context_grid == 'True'
+  when: oracle_context_grid
 
 - name: check for adrci in adrci_setup.out file
   shell: grep adrci {{ oracle_tmp }}/adrci_setup.out
@@ -151,7 +151,7 @@
     # - debug:
     #     msg: "The file SetDB.sh exists"
     #   when: SetDB_file_status.stat.exist
-  when: oracle_context_grid == 'True'
+  when: oracle_context_grid
 
 - name:
   debug:
@@ -303,7 +303,7 @@
       register: verify_memory_status
       changed_when: false
 
-  when: oracle_database_home != "" and oracle_context_database == 'True'
+  when: oracle_database_home != "" and oracle_context_database
 
 
 - name: db checklist post update for post provisioning validation
@@ -326,7 +326,7 @@
     exp_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`]') == [] -%}unmounted
                     {%- else -%}{{ ansible_mounts | json_query('[?mount == `/u01/app/oracle/exp`].size_total|[0]') }}
                     {%- endif -%}"
-  when: oracle_context_grid == 'True'
+  when: oracle_context_grid
 
 - set_fact:
     ggs_disk_size: "{% if ansible_mounts | json_query('[?mount == `/u01/app/oracle/ggs`]') == [] -%}unmounted
@@ -411,7 +411,7 @@
                        (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-  when: oracle_context_grid == 'True'
+  when: oracle_context_grid
 
 - set_fact:
     checklist:
@@ -453,7 +453,7 @@
           - check_type: "verify memory status"
             value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
-  when: oracle_context_database == 'True'
+  when: oracle_context_database
 
 -  debug:
     var: checklist
@@ -465,8 +465,8 @@
 
 - name: store the result in a json
   copy:
-    dest: "{% if oracle_context_grid == 'True' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
-              {%- elif oracle_context_database == 'True' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+    dest: "{% if oracle_context_grid -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+              {%- elif oracle_context_database -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
     content: "{{ checklist }}"
 
@@ -479,8 +479,8 @@
 - name: upload log for post provisioning validation
   include_tasks: upload_log.yml
   vars:
-    logfile_path: "{% if oracle_context_grid == 'True' -%}{{ oracle_tmp }}/grid_post_validaton_result.json
-              {%- elif oracle_context_database == 'True' -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+    logfile_path: "{% if oracle_context_grid -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+              {%- elif oracle_context_database -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
               {%- endif %}"
     log_file_desc: post validation
   tags:

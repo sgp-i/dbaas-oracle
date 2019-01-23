@@ -30,7 +30,7 @@
     - fail:
         msg: Database named {{ oracle_db_name }} doesn't exists'
       when: oracle_database_home == ""
-  when: oracle_context_database == 'True'
+  when: oracle_context_database
   ignore_errors: yes
 
 - name: create tmp dir
@@ -60,7 +60,7 @@
       loop: "{{ sql_files }}"
       loop_control:
         loop_var: sql_file
-  when: oracle_database_home !='' and oracle_context_database == 'True'
+  when: oracle_database_home !='' and oracle_context_database
   ignore_errors: yes
 
 - include_tasks: validations.yml
