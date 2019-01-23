@@ -409,7 +409,7 @@
                        (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-  when: oracle_context_database
+  when: oracle_context_grid
 
 - set_fact:
     checklist:
