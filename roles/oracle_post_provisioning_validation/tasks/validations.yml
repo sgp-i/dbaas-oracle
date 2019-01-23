@@ -39,7 +39,7 @@
   when: oracle_context == 'grid'
 
 - name: check for adrci in adrci_setup.out file
-  command: cat {{ oracle_tmp }}/adrci_setup.out | grep adrci
+  shell: grep adrci {{ oracle_tmp }}/adrci_setup.out
   register: adrci_status
   ignore_errors: yes
   no_log: True

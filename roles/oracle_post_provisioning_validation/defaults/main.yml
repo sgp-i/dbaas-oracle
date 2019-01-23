@@ -3,15 +3,14 @@
 oracle_tmp: /u01/tmp/postval
 ticket_ref: "45678"
 golden_gate_check: False
-apex_url: "https://apex-dev.techlab.com:8443/ords/invent2"
+apex_url: "https://apex-dev.techlab.com:8443"
 oracle_user: oracle
 grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
 # oracle_db_home: db_1
 # oracle_db_name: 'apexstg' # TODO: Temporary for debug
-#oracle_context: "{% if oracle_db_name == '' -%}grid
-#                 {%- else -%}database{%- endif %}"
+
 
 oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
               {%- else -%}{{ install_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}
@@ -60,7 +59,6 @@ sql_files:
   - verify_database_service.sql
   - verify_memory_values.sql
 
-oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
 # vars to be take care
 # oracle_db_home
