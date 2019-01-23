@@ -8,7 +8,7 @@ oracle_user: oracle
 grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
-# oracle_db_home: db_1
+oracle_db_home: db_1
 
 
 # oracle_home: "{% if oracle_context_grid == 'True' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
