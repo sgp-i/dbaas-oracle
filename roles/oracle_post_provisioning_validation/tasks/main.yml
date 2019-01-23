@@ -60,7 +60,8 @@
       loop: "{{ sql_files }}"
       loop_control:
         loop_var: sql_file
-  when: oracle_database_home !='' and oracle_context_database
+#  when: oracle_database_home !='' and oracle_context_database
+  when: oracle_context_database
   ignore_errors: yes
 
 - include_tasks: validations.yml

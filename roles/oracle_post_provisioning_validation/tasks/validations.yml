@@ -303,8 +303,8 @@
       register: verify_memory_status
       changed_when: false
 
-  when: oracle_database_home != "" and oracle_context_database
-
+#  when: oracle_database_home != "" and oracle_context_database
+  when: and oracle_context_database
 
 - name: db checklist post update for post provisioning validation
   import_tasks: host_checklist_post_update.yml
