@@ -9,7 +9,6 @@ grid_version: 12.1.0.2
 install_base: /u01/app
 oracle_version: 12.1.0.2
 # oracle_db_home: db_1
-# oracle_db_name: 'apexstg' # TODO: Temporary for debug
 
 
 oracle_home: "{% if oracle_context == 'grid' -%}{{ oracle_base }}/{{ grid_version }}/grid_1
@@ -58,8 +57,3 @@ sql_files:
   - archive_log_mode.sql
   - verify_database_service.sql
   - verify_memory_values.sql
-
-
-# vars to be take care
-# oracle_db_home
-# oracle_context

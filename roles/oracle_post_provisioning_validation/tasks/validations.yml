@@ -44,10 +44,6 @@
   ignore_errors: yes
   no_log: True
 
-- name: debug the adrci setup status
-  debug:
-    msg : "{{ adrci_status }}"
-
 - name: set adrci_status for stdout
   set_fact:
     adrci_status_check: "{{ adrci_status.stdout }}"
