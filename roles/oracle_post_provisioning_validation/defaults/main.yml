@@ -39,7 +39,7 @@ ora_user_env:
   ORACLE_HOME: "{{ oracle_database_home }}"
   ORACLE_UNQNAME: "{{ oracle_db_name | default('') }}"
   NLS_LANG: "American_America.UTF8"
-  PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+  PATH: "{{ oracle_database_home }}/bin:{{ ansible_env.PATH }}"
   TMP: "/u01/app/oracle"
   TMPDIR: "/u01/app/oracle"
   GRID_HOME: "/u01/app/12.1.0.2/grid"
