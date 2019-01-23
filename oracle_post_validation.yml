@@ -4,12 +4,13 @@
   hosts: '{{ host }}'
   become: yes
   vars:
-    oracle_context: database
-    oracle_db_name: orcl
+    oracle_context_grid: True
+    oracle_context_database: False
   tasks:
   - import_role:
       name: oracle_post_provisioning_validation
 
 # variables required
-# oracle_context
+# oracle_context_grid
+# oracle_context_database
 # oracle_db_name
