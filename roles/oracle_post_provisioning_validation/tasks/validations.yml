@@ -342,7 +342,7 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-
+      when: oracle_context_grid
     - name: oracle groups
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
@@ -351,6 +351,7 @@
                       oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+      when: oracle_context_database
 
     - name: check adrci file status
       expected_value: "adrci in adrci_setup.out file should exist"
@@ -411,7 +412,7 @@
                        (ggs_disk_size | int / 1024 | pow(3)) | round | int < 300 -%}FAILED
                {%- else -%}PASSED
                {%- endif -%}"
-  when: oracle_context_grid
+
 
 - set_fact:
     checklist:
