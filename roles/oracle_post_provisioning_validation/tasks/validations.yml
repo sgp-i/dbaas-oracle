@@ -38,6 +38,10 @@
     loop_var: group_name
   when: oracle_context_grid
 
+- name: debug oracle groups
+  debug:
+    msg: "{{ oracle_groups }}"
+
 - name: check for adrci in adrci_setup.out file
   shell: grep adrci {{ oracle_tmp }}/adrci_setup.out
   register: adrci_status
@@ -74,12 +78,12 @@
       when: asm_status_cleanup.stderr != ""
 
     - name: check for content of oratab file
-      shell: "cat /etc/oratab | grep nosid"
+      shell: "cat /etc/oratab | grep no_sid"
       register: nosid_status
       ignore_errors: yes
       no_log: True
 
-    - name: onsid debug
+    - name: no_sid debug
       debug:
         msg: "{{ nosid_status }}"
 
@@ -346,8 +350,10 @@
       expected_value: 900, 901
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
                       {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
-      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 900 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 901 -%}FAILED
+      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 9000 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 9001 or
+                      oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 9001 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 9001 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: check adrci file status
