@@ -347,13 +347,13 @@
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: oracle groups
-      expected_value: 900, 901
+      expected_value: 9000, 9001
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
                       {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
-      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 9000 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 9001 or
-                      oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 9001 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 9001 -%}FAILED
+      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 54321 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 54322 or
+                      oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 54322 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 54321 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
     - name: check adrci file status
