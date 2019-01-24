@@ -148,11 +148,11 @@
         profile_status_check: "{{ profile_status.stderr }}"
       when: profile_status.stderr != ""
 
-    - name: check for the .profile file in oracle home
-      shell: "ls -a $HOME | grep SetDB.sh"
+    - name: check for the setdb file in oracle home
+      shell: "ls $HOME | grep SetDB.sh"
       register: setdb_file
       ignore_errors: yes
-      no_log: True
+#      no_log: True
 
     - name: set setdb file status for stdout
       set_fact:
@@ -355,7 +355,7 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
-                
+
     - name: oracle groups
       expected_value: 9000, 9001
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
