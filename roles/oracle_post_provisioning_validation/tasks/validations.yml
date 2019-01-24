@@ -154,6 +154,9 @@
       ignore_errors: yes
 #      no_log: True
 
+    - debug:
+        msg: "{{ setdb_file }}"
+
     - name: set setdb file status for stdout
       set_fact:
         setdb_file_status: "{{ setdb_file.stdout }}"
