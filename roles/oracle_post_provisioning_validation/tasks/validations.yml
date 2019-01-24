@@ -38,10 +38,6 @@
     loop_var: group_name
   when: oracle_context_grid
 
-- name: debug oracle groups
-  debug:
-    msg: "{{ oracle_groups }}"
-
 - name: check for adrci in adrci_setup.out file
   shell: grep adrci {{ oracle_tmp }}/adrci_setup.out
   register: adrci_status
@@ -83,9 +79,6 @@
       ignore_errors: yes
       no_log: True
 
-    - name: no_sid debug
-      debug:
-        msg: "{{ nosid_status }}"
 
     - name: set nosid_status for stdout
       set_fact:
@@ -97,21 +90,6 @@
         nosid_oratab_status: "Not able to find entry in oratab file"
       when: nosid_status.stderr == "" and nosid_status.stdout == ""
 
-    # - name: check for Hugepage settings
-    #   shell: "cat /proc/meminfo | grep Huge"
-    #   register: hugepage_settings
-    #   ignore_errors: yes
-    #   no_log: True
-    #
-    # - name: check for hugepage stdout
-    #   set_fact:
-    #     hugepage_settings_check: "{{ hugepage_settings.stdout }}"
-    #   when: hugepage_settings.stdout != ""
-    #
-    # - name: check for hugepage stderr
-    #   set_fact:
-    #     hugepage_settings_check: "{{ hugepage_settings.stderr }}"
-    #   when: hugepage_settings.stderr != ""
 
     - name: Get The Huge Page Total Size
       shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
@@ -124,8 +102,6 @@
       ignore_errors: yes
       no_log: True
 
-    - debug:
-        msg: "{{ ctl_file_status }}"
 
     - name: set ctl_file_status for stdout
       set_fact:
@@ -413,10 +389,6 @@
                {%- else -%}FAILED
                {%- endif -%}"
 
-    # - name: check for hugepage settings
-    #   expected_value: ""
-    #   actual_value: "{{ hugepage_settings_check }}"
-    #   status: ""
 
     - check_name: HugePages Total Size
       expected_value: "{{ ansible_memtotal_mb // 2 }}"
@@ -490,10 +462,6 @@
 
 -  debug:
     var: checklist
-
-# - name: debug oracle_context
-#   debug:
-#     msg: "{{oracle_context}}"
 
 
 - name: store the result in a json
