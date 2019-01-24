@@ -97,21 +97,26 @@
         nosid_oratab_status: "Not able to find entry in oratab file"
       when: nosid_status.stderr == "" and nosid_status.stdout == ""
 
-    - name: check for Hugepage settings
-      shell: "cat /proc/meminfo | grep Huge"
-      register: hugepage_settings
-      ignore_errors: yes
-      no_log: True
+    # - name: check for Hugepage settings
+    #   shell: "cat /proc/meminfo | grep Huge"
+    #   register: hugepage_settings
+    #   ignore_errors: yes
+    #   no_log: True
+    #
+    # - name: check for hugepage stdout
+    #   set_fact:
+    #     hugepage_settings_check: "{{ hugepage_settings.stdout }}"
+    #   when: hugepage_settings.stdout != ""
+    #
+    # - name: check for hugepage stderr
+    #   set_fact:
+    #     hugepage_settings_check: "{{ hugepage_settings.stderr }}"
+    #   when: hugepage_settings.stderr != ""
 
-    - name: check for hugepage stdout
-      set_fact:
-        hugepage_settings_check: "{{ hugepage_settings.stdout }}"
-      when: hugepage_settings.stdout != ""
-
-    - name: check for hugepage stderr
-      set_fact:
-        hugepage_settings_check: "{{ hugepage_settings.stderr }}"
-      when: hugepage_settings.stderr != ""
+    - name: Get The Huge Page Total Size
+      shell: grep HugePages /proc/meminfo | awk ' $1 == "HugePages_Total:" {print $2}'
+      changed_when: False
+      register: huge_page_total_size
 
     - name: check for the directory structure of scripts/logs/ctl
       shell: "ls {{ oracle_base }}/admin/ctl | grep ctl"
@@ -152,10 +157,7 @@
       shell: "ls $HOME | grep SetDB.sh"
       register: setdb_file
       ignore_errors: yes
-#      no_log: True
-
-    - debug:
-        msg: "{{ setdb_file }}"
+      no_log: True
 
     - name: set setdb file status for stdout
       set_fact:
@@ -411,10 +413,17 @@
                {%- else -%}FAILED
                {%- endif -%}"
 
-    - name: check for hugepage settings
-      expected_value: ""
-      actual_value: "{{ hugepage_settings_check }}"
-      status: ""
+    # - name: check for hugepage settings
+    #   expected_value: ""
+    #   actual_value: "{{ hugepage_settings_check }}"
+    #   status: ""
+
+    - check_name: HugePages Total Size
+      expected_value: "{{ ansible_memtotal_mb // 2 }}"
+      actual_value: "{{ huge_page_total_size.stdout | int * 2 }}"
+      status: "{% if huge_page_total_size.stdout | int * 2 < ansible_memtotal_mb // 2 -%}FAILED
+               {%- else -%}PASSED
+               {%- endif %}"
 
     - name: EXP Mount (in GiB)
       expected_value: 295
