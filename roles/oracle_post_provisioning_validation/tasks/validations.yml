@@ -405,12 +405,12 @@
                {%- else -%}FAILED
                {%- endif -%}"
 
-    - name: check for Setdb.sh file in oracle home
-      expected_value: "The Setdb.sh file should exist in specific directory"
-      actual_value: "{{ setdb_file_status }}"
-      status: "{% if setdb_file.stdout != '' -%}PASSED
-               {%- else -%}FAILED
-               {%- endif -%}"
+    # - name: check for Setdb.sh file in oracle home
+    #   expected_value: "The Setdb.sh file should exist in specific directory"
+    #   actual_value: "{{ setdb_file_status }}"
+    #   status: "{% if setdb_file.stdout != '' -%}PASSED
+    #            {%- else -%}FAILED
+    #            {%- endif -%}"
 
     - name: check for hugepage settings
       expected_value: ""
