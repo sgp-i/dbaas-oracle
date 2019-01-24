@@ -172,8 +172,8 @@
     - name: set setdb file status for stderr and stdout
       set_fact:
         setdb_file_status: "File not found"
-  when: setdb_file.stderr == "" and setdb_file.stdout == ""
-
+      when: setdb_file.stderr == "" and setdb_file.stdout == ""
+  when: oracle_context_grid
 
 - name: task only for database
   block:
