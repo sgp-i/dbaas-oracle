@@ -167,11 +167,10 @@
         setdb_file_status: "{{ setdb_file.stderr }}"
       when: setdb_file.stderr != ""
 
-  when: oracle_context_grid
-
-- name:
-  debug:
-    msg: "{{ ora_user_env }}"
+    - name: set setdb file status for stderr and stdout
+      set_fact:
+        setdb_file_status: "File not found"
+  when: setdb_file.stderr == "" and setdb_file.stdout == ""
 
 
 - name: task only for database
@@ -405,12 +404,12 @@
                {%- else -%}FAILED
                {%- endif -%}"
 
-    # - name: check for Setdb.sh file in oracle home
-    #   expected_value: "The Setdb.sh file should exist in specific directory"
-    #   actual_value: "{{ setdb_file_status }}"
-    #   status: "{% if setdb_file.stdout != '' -%}PASSED
-    #            {%- else -%}FAILED
-    #            {%- endif -%}"
+    - name: check for Setdb.sh file in oracle home
+      expected_value: "The Setdb.sh file should exist in specific directory"
+      actual_value: "{{ setdb_file_status }}"
+      status: "{% if setdb_file.stdout != '' -%}PASSED
+               {%- else -%}FAILED
+               {%- endif -%}"
 
     - name: check for hugepage settings
       expected_value: ""
