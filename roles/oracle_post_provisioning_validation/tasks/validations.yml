@@ -147,14 +147,23 @@
       set_fact:
         profile_status_check: "{{ profile_status.stderr }}"
       when: profile_status.stderr != ""
-    # - name: check for SetDB.sh file exist or not
-    #   stat:
-    #     path: /SetDB.sh
-    #   register: SetDB_file_status
-    #
-    # - debug:
-    #     msg: "The file SetDB.sh exists"
-    #   when: SetDB_file_status.stat.exist
+
+    - name: check for the .profile file in oracle home
+      shell: "ls -a $HOME | grep SetDB.sh"
+      register: setdb_file
+      ignore_errors: yes
+      no_log: True
+
+    - name: set setdb file status for stdout
+      set_fact:
+        setdb_file_status: "{{ setdb_file.stdout }}"
+      when: setdb_file.stdout != ""
+
+    - name: set setdb file status for stderr
+      set_fact:
+        setdb_file_status: "{{ setdb_file.stderr }}"
+      when: setdb_file.stderr != ""
+
   when: oracle_context_grid
 
 - name:
@@ -346,16 +355,18 @@
       status: "{% if oracle_user_check.uid != 900 -%}FAILED
                 {%- else -%}PASSED
                 {%- endif %}"
+                
     - name: oracle groups
       expected_value: 9000, 9001
       actual_value: "{{ oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') }},
                       {{ oracle_groups | json_query('results[?name == `dba`] | [0].gid') }}"
-      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 54321 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 54322 or
-                      oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') != 54322 or
-                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') != 54321 -%}FAILED
-                {%- else -%}PASSED
+      status: "{% if oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') == 54321 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') == 54322 or
+                      oracle_groups | json_query('results[?name == `oinstall`] | [0].gid') == 54322 or
+                      oracle_groups | json_query('results[?name == `dba`] | [0].gid') == 54321 -%}PASSED
+                {%- else -%}FAILED
                 {%- endif %}"
+
     - name: check adrci file status
       expected_value: "adrci in adrci_setup.out file should exist"
       actual_value: "{{ adrci_status_check }}"
@@ -388,6 +399,13 @@
       expected_value: "The .profile file should exist in specific directory"
       actual_value: "{{ profile_status_check }}"
       status: "{% if profile_status.stdout != '' -%}PASSED
+               {%- else -%}FAILED
+               {%- endif -%}"
+
+    - name: check for Setdb.sh file in oracle home
+      expected_value: "The Setdb.sh file should exist in specific directory"
+      actual_value: "{{ setdb_file_status }}"
+      status: "{% if setdb_file.stdout != '' -%}PASSED
                {%- else -%}FAILED
                {%- endif -%}"
 
