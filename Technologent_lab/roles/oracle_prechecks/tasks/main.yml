@@ -553,8 +553,8 @@
 - debug:
     var: checklist | json_query('[?status == `FAILED`]')
     verbosity: 1
-  tags:
-    - charteronly  
+
+
 - name: create tmp dir
   file:
     path: "{{ oracle_tmp }}"
@@ -565,15 +565,14 @@
   copy:
     dest: "{{ oracle_tmp }}/prereq_checklist.json"
     content: "{{ checklist }}"
-  tags:
-    - charteronly  
+
+
 - name: include upload log for precheck
   include_tasks: upload_log.yml
   vars:
     logfile_path: "{{ oracle_tmp }}/prereq_checklist.json"
     log_file_desc: pre-check list
   tags:
-    - charteronly
     - apex_api
 
 - name: include host checklist post update for precheck
@@ -586,7 +585,6 @@
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"
   tags:
-    - charteronly
     - apex_api
 
 - name: view checklist
@@ -600,5 +598,4 @@
           {%- endif %}"
   when: checklist | json_query('[?status == `FAILED`]') | length > 0
   tags:
-    - charteronly 
     - precheck_fail

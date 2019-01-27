@@ -1,7 +1,8 @@
 ---
 
 - include_vars: secrets.yml
-  no_log: true
+  no_log: False
+
 - debug: msg="API call out"
 
 
@@ -14,6 +15,7 @@
       checklist_type: "RDBMS Software Install"
       checklist_category: Install
       db_install_status: STARTED
+      ticket_ref: "{{ ticket_ref }}"
       task_desc: RDBMS INSTALL
   tags:
   - apex_api

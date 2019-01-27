@@ -18,7 +18,7 @@
     register: log_insrt_response
 
   rescue:
-  - name: 
+  - name:
     delegate_to: localhost
     lineinfile:
       path: /apex/unsent_json_body/{{ ansible_hostname }}/upload_log.json

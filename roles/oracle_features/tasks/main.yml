@@ -20,7 +20,25 @@
     loop_var: feature_files
   changed_when: false
 
+- name: Put csv2json file on server
+  copy:
+    src: "csv2json.py"
+    dest: "{{ oracle_features_tmp }}/features"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: 0755
+
 - include_tasks: get_db_name.yml
+
+
+- name: Include Get Products and Features
+  include_tasks: get_products_features.yml
+  with_dict: "{{db_info}}"
+
+- debug:
+    msg: "{{ db_info }}"
+
+- include_tasks: post_products_features.yml
 
 # - name: check oracle_db_name is defined or not
 #   debug:
@@ -54,37 +72,6 @@
 #       when: oracle_home == ""
 #   when: oracle_context != 'grid'
 #   ignore_errors: yes
-
-- debug:
-    msg: "{{ oracle_sid }}"
-
-- debug:
-    msg: "{{ oracle_home }}"
-
-- debug:
-    msg: "{{ db_details }}"
-
-- name: task only for db'
-  block:
-    - name: get installed products
-      become: yes
-      become_user: "{{ oracle_user }}"
-      environment: "{{ ora_user_env }}"
-      shell: "sqlplus -S -NOLOGINTIME  / as sysdba @{{ oracle_features_tmp }}/features/product_stats.sql"
-      register: product_stats
-      changed_when: false
-      # timeout need to be implemented
-
-    - debug:
-        msg: "{{ product_stats }}"
-
-    - name: get installed features
-      become: yes
-      become_user: "{{ oracle_user }}"
-      environment: "{{ ora_user_env }}"
-      shell: sqlplus -S -NOLOGINTIME  / as sysdba @{{ oracle_features_tmp }}/features/feature_stats.sql
-      register: feature_stats
-      changed_when: false
 
 
 - name: remove directory for features

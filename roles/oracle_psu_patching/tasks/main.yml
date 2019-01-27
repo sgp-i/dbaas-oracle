@@ -9,6 +9,8 @@
       checklist_type: PATCHING
       checklist_category: Install
       db_install_status: STARTED 
+      ticket_ref: "{{ ticket_ref }}"
+      task_desc: 'PSU PATCHING'
   when: fresh_install
   tags:
   - apex_api
@@ -119,7 +121,6 @@
       host_name: "{{ ansible_hostname }}"
       checklist_type: PATCHING
       checklist_category: Install
-      #ID: "{{ checklist_id }}"
       db_install_status: Failed #Need a way to determine Failures
   when:
   - fresh_install
