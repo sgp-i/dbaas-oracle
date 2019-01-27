@@ -54,6 +54,19 @@
       dest: "{{ oracle_tmp }}/create_db_{{ oracle_db_name }}.rsp"
     diff: false
 
+  # - name: db checklist status post for Create DB
+  #   import_role: oracle_api_services.yml
+  #   tasks_from: db_checklist_status.yml
+  #   vars:
+  #     task_key: "{{ ansible_hostname }}"
+  #     task_area: "DB INSTANCE CREATION"
+  #     task_id: "{{ ticket_ref }}"
+  #     task_status: "STARTED"
+  #     task_message: "Creating Database {{ oracle_db_name }} "
+  #   tags:
+  #   - apex_api
+
+
   - name: db checklist post for Create DB
     include_tasks: db_checklist_post_update.yml
     vars:
@@ -92,6 +105,23 @@
                     create_db.rc != 0'
       when: inventory_hostname == master_node
 
+  # - name: db checklist status post for Create DB
+  #   import_role: oracle_api_services.yml
+  #   tasks_from: db_checklist_status_file.yml
+  #   vars:
+  #     checklist_body:
+  #       task_key: "{{ ansible_hostname }}"
+  #       task_area: "DB INSTANCE CREATION"
+  #       task_id: "{{ ticket_ref }}"
+  #       task_status: "UPLOAD Log"
+  #       task_message: "dbca log for Database {{ oracle_db_name }} "
+  #       file_mimetype: "text/plain"
+  #       record_type: "file_upload"
+  #       logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
+      
+  #   tags:
+  #   - apex_api
+
     - name: db log upload for create db
       include_tasks: upload_log.yml
       vars:
@@ -115,6 +145,17 @@
         db_install_status: "FAILED"
       tags:
       - apex_api
+    # - name: db checklist status post for Create DB
+    #   import_role: oracle_api_services.yml
+    #   tasks_from: db_checklist_status.yml
+    #   vars:
+    #     task_key: "{{ ansible_hostname }}"
+    #     task_area: "DB INSTANCE CREATION"
+    #     task_id: "{{ ticket_ref }}"
+    #     task_status: "FAILED"
+    #     task_message: "Creating Database {{ oracle_db_name }} "
+    #   tags:
+    #   - apex_api
 
     - name: Instance Creation Failed
       fail:
@@ -135,12 +176,23 @@
     tags:
     - apex_api
   when: not db_exists
+# - name: db checklist status post for Create DB
+#   import_role: oracle_api_services.yml
+#   tasks_from: db_checklist_status.yml
+#   vars:
+#     task_key: "{{ ansible_hostname }}"
+#     task_area: "DB INSTANCE CREATION"
+#     task_id: "{{ ticket_ref }}"
+#     task_status: "SUCCESSFUL"
+#     task_message: "Creating Database {{ oracle_db_name }} "
+#   tags:
+#   - apex_api
 
-#- include_role:
-#    name: oracle_api_services
-#    tasks_from: db_inventory_update.yml
-#  tags:
-#  - apex_api
+# - include_role:
+#     name: oracle_api_services
+#     tasks_from: db_inventory_update.yml
+#   tags:
+#   - apex_api
 # - include_vars: secrets.yml
 #   no_log: true
 
