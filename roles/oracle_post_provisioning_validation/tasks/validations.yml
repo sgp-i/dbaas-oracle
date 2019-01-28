@@ -155,7 +155,8 @@
       no_log: True
 
     - name:
-        debug: "{{ u01_permissions }}"
+      debug:
+        msg: "{{ u01_permissions }}"
 
   when: oracle_context_grid
 
