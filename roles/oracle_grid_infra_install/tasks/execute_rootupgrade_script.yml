@@ -14,6 +14,8 @@
     when: rootupgrade_script.changed
     tags: upgrade_script
 
+  ## Logic to get log logs is missing
+
   - name: save rootupgrade script  stderr
     copy:
       dest: "{{ oracle_tmp }}/rootupgrade_script_grid.err"

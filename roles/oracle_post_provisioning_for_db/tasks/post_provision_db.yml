@@ -6,12 +6,24 @@
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       checklist_type: "POST PROVISIONING for DB"
       ticket_ref: "{{ ticket_ref }}"
       checklist_category: POST PROVISION
       post_build_status: STARTED
       task_desc: post provisioning
+  tags:
+  - apex_api
+
+- name: db checklist status post for post provisioning for db
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for DB"
+    task_id: "{{ ticket_ref }}"
+    task_status: "STARTED"
+    task_message: "Post Provisoning for DB on {{ ansible_hostname }} for {{ oracle_db_name }}"
   tags:
   - apex_api
 
@@ -78,12 +90,27 @@
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: POST PROVISIONING for DB
       checklist_category: POST PROVISION
       post_build_status: "FAILED"
+  when:
+    - oracle_home == ""
+    - oracle_sid == ""
+  tags:
+  - apex_api
+
+- name: db checklist status post for post provisioning for db
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for DB"
+    task_id: "{{ ticket_ref }}"
+    task_status: "FAILED"
+    task_message: "Post Provisoning for DB on {{ ansible_hostname }} for {{ oracle_db_name }}"
   when:
     - oracle_home == ""
     - oracle_sid == ""
@@ -102,13 +129,25 @@
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       #ID: "{{ checklist_id }}"
       checklist_type: POST PROVISIONING for DB
       checklist_category: POST PROVISION
       post_build_status: "IN PROGRESS"
       ticket_ref: "{{ ticket_ref }}"
       task_desc: setting up cleanup_files.ctl
+  tags:
+  - apex_api
+
+- name: db checklist status post for post provisioning for db
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for DB"
+    task_id: "{{ ticket_ref }}"
+    task_status: "IN PROGRESS"
+    task_message: "Post Provisoning for DB on {{ ansible_hostname }} for {{ oracle_db_name }}"
   tags:
   - apex_api
 
@@ -153,7 +192,7 @@
       vars:
         chklst_json_body:
           host_name: "{{ ansible_hostname }}"
-          db_name: "{{ oracle_db_name }}" 
+          db_name: "{{ oracle_db_name }}"
           ticket_ref: "{{ ticket_ref }}"
           checklist_type: "POST PROVISIONING for DB"
           checklist_category: POST PROVISION
@@ -171,12 +210,24 @@
     chklst_json_body:
       new_entry: True
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       checklist_type: "POST PROVISIONING for DB"
       checklist_category: POST PROVISION
       #ID: "{{ checklist_id }}"
       post_build_status: "SUCCESSFUL"
       task_desc: post provisioning
+  tags:
+  - apex_api
+
+- name: db checklist status post for post provisioning for db
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for DB"
+    task_id: "{{ ticket_ref }}"
+    task_status: "SUCCESSFUL"
+    task_message: "Post Provisoning for DB on {{ ansible_hostname }} for {{ oracle_db_name }}"
   tags:
   - apex_api
