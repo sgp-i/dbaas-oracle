@@ -432,7 +432,7 @@
 
     - name: check file permissions of /u01
       expected_value: ""
-      actual_value: "u01_permissions.stdout"
+      actual_value: "{{ u01_permissions.stdout }}"
       status: ''
 
     - name: GG Mount (in GiB)
