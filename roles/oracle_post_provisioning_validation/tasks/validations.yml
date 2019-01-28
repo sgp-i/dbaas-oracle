@@ -148,6 +148,15 @@
         adrci_status_check: "{{ adrci_status.stderr }}"
       when: adrci_status.stderr != [""]
 
+    - name: Check for  permissions of /u01
+      shell: ls -l / | grep u01 | awk '{print $1;}'
+      register: u01_permissions
+      ignore_errors: yes
+      no_log: True
+
+    - name:
+        debug: "{{ u01_permissions }}"
+
   when: oracle_context_grid
 
 - name: task only for database
