@@ -89,11 +89,11 @@
     task_area: "Grid Install"
     task_id: "{{ ticket_ref }}"
     task_status: "STARTED"
-    task_message: "Install Grid Infrastructure for {{ ansible_hostname }} "
+    task_message: "Install Grid Infrastructure for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
   tags:
   - apex_api
 
-  
+
 
 - include_tasks: grid_install.yml
   when: ohas_grid_check.stdout_lines | length == 0
@@ -140,7 +140,7 @@
     task_area: "Grid Install"
     task_id: "{{ ticket_ref }}"
     task_status: "IN_PROGRESS"
-    task_message: "configuring Disk Groups for {{ ansible_hostname }} "
+    task_message: "Configuring Disk Groups for {{cluster_name if (cluster_name != '') else ansible_hostname }}"
   when: inventory_hostname == master_node
   tags:
   - apex_api
@@ -169,7 +169,7 @@
     - diskgroup_failed
   tags:
   - apex_api
-  
+
 - name: db checklist status post for Grid Install
   import_role: oracle_api_services.yml
   tasks_from: db_checklist_status.yml
@@ -178,8 +178,8 @@
     task_area: "Grid Install"
     task_id: "{{ ticket_ref }}"
     task_status: "FAILED"
-    task_message: "Grid Install for {{ ansible_hostname }} "
-  when: 
+    task_message: "Grid Install for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
+  when:
     - inventory_hostname == master_node
     - diskgroup_failed
   tags:
@@ -194,8 +194,8 @@
     task_area: "Grid Install"
     task_id: "{{ ticket_ref }}"
     task_status: "SUCCESSFUL"
-    task_message: "Grid Install for {{ ansible_hostname }} "
-  when: 
+    task_message: "Grid Install for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
+  when:
     - inventory_hostname == master_node
     - diskgroup_failed == False
   tags:

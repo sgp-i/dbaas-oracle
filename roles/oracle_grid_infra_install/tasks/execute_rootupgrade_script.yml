@@ -4,7 +4,7 @@
   - name: execute rootupgrade post-installation script
     command: "{{ oracle_grid_home }}/rootupgrade.sh"
     register: rootupgrade_script
-    tags: upgrade_script 
+    tags: upgrade_script
 
   always:
   - name: save rootupgrade script stdout
@@ -12,11 +12,35 @@
       dest: "{{ oracle_tmp }}/rootupgrade_script_grid.out"
       content: "{{ rootupgrade_script.stdout | default('') }}"
     when: rootupgrade_script.changed
-    tags: upgrade_script 
+    tags: upgrade_script
 
   - name: save rootupgrade script  stderr
     copy:
       dest: "{{ oracle_tmp }}/rootupgrade_script_grid.err"
       content: "{{ rootupgrade_script.stderr | default('') }}"
     when: rootupgrade_script.changed
-    tags: upgrade_script 
+    tags: upgrade_script
+
+  - name: Get files in a folder
+    find:
+      paths: "{{ oracle_grid_home }}/install/"
+      patterns: "root_{{ ansible_hostname }}*.log"
+    register: log_files
+    tags:
+    - apex_api
+
+  - name: db checklist status file upload for Upload root.sh log for grid
+    import_role: oracle_api_services.yml
+    tasks_from: db_checklist_status_file.yml
+    vars:
+      checklist_body:
+        task_key: "{{ ansible_hostname }}"
+        task_area: "GRID INSTALL"
+        task_id: "{{ ticket_ref }}"
+        task_status: "Upload Grid root.sh log"
+        task_message: "Grid root.sh Log {{ ansible_hostname }}"
+        file_mimetype: "text/plain"
+        record_type: "file_upload"
+        logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+    tags:
+    - apex_api

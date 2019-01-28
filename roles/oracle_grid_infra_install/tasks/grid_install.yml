@@ -75,7 +75,7 @@
       task_area: "GRID INSTALL"
       task_id: "{{ ticket_ref }}"
       task_status: "Upload Grid Install Log"
-      task_message: "Grid Install Log {{ ansible_hostname }} "
+      task_message: "Grid Install Log {{cluster_name if (cluster_name != '') else ansible_hostname }}"
       file_mimetype: "text/plain"
       record_type: "file_upload"
       logfile_path: "{{ gi_install_log.files[0].path }}"
