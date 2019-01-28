@@ -338,11 +338,6 @@
   when: golden_gate_check
 
 
--  debug:
-    var: "{{ ctl_file_exist }}"
-
-
-
 - set_fact:
     checklist:
     - name: oracle user
