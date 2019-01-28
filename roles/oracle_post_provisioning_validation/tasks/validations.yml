@@ -598,7 +598,7 @@
           - check_type: "verify memory status"
             value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
-  when: oracle_context_database = "True" and oracle_context_grid = "True"
+  when: oracle_context_database == "True" and oracle_context_grid == "True"
 
 
 -  debug:
