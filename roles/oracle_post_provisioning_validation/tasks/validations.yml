@@ -337,6 +337,12 @@
                     {%- endif -%}"
   when: golden_gate_check
 
+
+-  debug:
+    var: "{{ ctl_file_exist }}"
+
+
+
 - set_fact:
     checklist:
     - name: oracle user
@@ -381,7 +387,7 @@
     - name: check for ctl file directory structure
       expected_value: "The ctl file should exist in specific directory"
       actual_value: "{{ ctl_file_exist }}"
-      status: "{% if ctl_file_exist.stdout == 'The directory exist at {{ oracle_base }}/admin/ctl' -%}PASSED
+      status: "{% if ctl_file_exist == 'The directory exist at {{ oracle_base }}/admin/ctl' -%}PASSED
                {%- else -%}FAILED
                {%- endif -%}"
 
