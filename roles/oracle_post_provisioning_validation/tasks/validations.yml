@@ -115,12 +115,12 @@
 
     - name : check for scripts/logs/ctl directory structure exist
       stat:
-        path: {{ oracle_base }}/admin/ctl
+        path: "{{ oracle_base }}/admin/ctl"
       register: ctl_file_status
 
     - name: Store the value of directory structure
       set_fact:
-        ctl_file_exist: The directory exist at {{ oracle_base }}/admin/ctl
+        ctl_file_exist: "The directory exist at {{ oracle_base }}/admin/ctl"
       when: ctl_file_status.stat.exists == true and ctl_file_status.stat.isdir == true
 
     - name: check for the .profile file in oracle home
