@@ -81,6 +81,20 @@
   - apex_api
 
 
+- name: db checklist status post for Grid Install
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Grid Install"
+    task_id: "{{ ticket_ref }}"
+    task_status: "STARTED"
+    task_message: "Install Grid Infrastructure for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
+  tags:
+  - apex_api
+
+
+
 - include_tasks: grid_install.yml
   when: ohas_grid_check.stdout_lines | length == 0
 
@@ -118,6 +132,19 @@
   tags:
   - apex_api
 
+- name: db checklist status post for Grid Install
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Grid Install"
+    task_id: "{{ ticket_ref }}"
+    task_status: "IN_PROGRESS"
+    task_message: "Configuring Disk Groups for {{cluster_name if (cluster_name != '') else ansible_hostname }}"
+  when: inventory_hostname == master_node
+  tags:
+  - apex_api
+
 - include_tasks: configure_disk_groups.yml
   when: inventory_hostname == master_node
 - fail:
@@ -140,6 +167,37 @@
   when:
     - inventory_hostname == master_node
     - diskgroup_failed
+  tags:
+  - apex_api
+
+- name: db checklist status post for Grid Install
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Grid Install"
+    task_id: "{{ ticket_ref }}"
+    task_status: "FAILED"
+    task_message: "Grid Install for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
+  when:
+    - inventory_hostname == master_node
+    - diskgroup_failed
+  tags:
+  - apex_api
+
+
+- name: db checklist status post for Grid Install
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Grid Install"
+    task_id: "{{ ticket_ref }}"
+    task_status: "SUCCESSFUL"
+    task_message: "Grid Install for {{cluster_name if (cluster_name != '') else ansible_hostname }} "
+  when:
+    - inventory_hostname == master_node
+    - diskgroup_failed == False
   tags:
   - apex_api
 

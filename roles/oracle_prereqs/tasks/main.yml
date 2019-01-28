@@ -15,17 +15,17 @@
   - apex_api
 
 
-  # - name: db checklist status post for Pre-Check
-  #   import_role: oracle_api_services.yml
-  #   tasks_from: db_checklist_status.yml
-  #   vars:
-  #     task_key: "{{ ansible_hostname }}"
-  #     task_area: "PRE-CHeck"
-  #     task_id: "{{ ticket_ref }}"
-  #     task_status: "STARTED"
-  #     task_message: "Environment Pre-Check {{ ansible_hostname }} "
-  #   tags:
-  #   - apex_api
+  - name: db checklist status post for Pre-Check
+    import_role: oracle_api_services.yml
+    tasks_from: db_checklist_status.yml
+    vars:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "PRE-CHECK"
+      task_id: "{{ ticket_ref }}"
+      task_status: "STARTED"
+      task_message: "Pre-Check for {{ ansible_hostname }} "
+    tags:
+    - apex_api
 
 - name: check required RPMs
   yum:
@@ -589,22 +589,22 @@
 
     - apex_api
 
-# - name: db checklist status post for Create DB
-#   import_role: oracle_api_services.yml
-#   tasks_from: db_checklist_status_file.yml
-#   vars:
-#     checklist_body:
-#       task_key: "{{ ansible_hostname }}"
-#       task_area: "DB INSTANCE CREATION"
-#       task_id: "{{ ticket_ref }}"
-#       task_status: "UPLOAD Log"
-#       task_message: "dbca log for Database {{ oracle_db_name }} "
-#       file_mimetype: "text/plain"
-#       record_type: "file_upload"
-#       logfile_path: "{{ oracle_base }}/cfgtoollogs/dbca/{{ oracle_db_name }}/{{ oracle_db_name }}.log"
+- name: db checklist status file upload for Pre-Check
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status_file.yml
+  vars:
+    checklist_body:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "PRE-CHECK"
+      task_id: "{{ ticket_ref }}"
+      task_status: "Upload Checklist"
+      task_message: "Pre-Check {{ ansible_hostname }} "
+      file_mimetype: "text/plain"
+      record_type: "file_upload"
+      logfile_path:  "{{ oracle_tmp }}/prereq_checklist.json"
     
-#   tags:
-#   - apex_api
+  tags:
+  - apex_api
   
 - name: include host checklist post update for precheck
   include_tasks: host_checklist_post_update.yml
@@ -620,8 +620,21 @@
                           {%- else -%}SUCCESSFUL
                           {%- endif %}"
   tags:
-
     - apex_api
+
+- name: db checklist status post for Create DB
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "PRE-CHECK"
+    task_id: "{{ ticket_ref }}"
+    task_status: "{% if checklist | json_query('[?status == `FAILED`]') | length > 1 -%}FAILED
+                  {%- else -%}SUCCESSFUL
+                  {%- endif %}"
+    task_message: "Pre-check for {{ ansible_hostname }} "
+  tags:
+  - apex_api
 
 - name: Check for Precheck Failures
   fail:

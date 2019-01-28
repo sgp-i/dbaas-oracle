@@ -7,21 +7,21 @@ grid_install_mode: HA_CONFIG
 
 cluster_type: STANDARD
 
-cluster_name: scan1
+cluster_name: ''
 
 # location for temporary installation files
 oracle_tmp: /u01/tmp/{{ grid_version }}
 
 oracle_base: /u01/app
 
-oracle_db_home: db_1 
+oracle_db_home: db_1
 
 oracle_asm_name: +ASM
 
 # LOCAL_ASM_STORAGE | FLEX_ASM_STORAGE | CLIENT_ASM_STORAGE | FILE_SYSTEM_STORAGE
 grid_storage_type: LOCAL_ASM_STORAGE
 
-public_net: 
+public_net:
 - bond0
 - eth0
 
@@ -49,7 +49,7 @@ asm_ocr_pattern: GRID_DISK*
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
-grid_images: 
+grid_images:
 - linuxamd64_12102_grid_1of2.zip
 - linuxamd64_12102_grid_2of2.zip
 

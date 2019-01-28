@@ -33,3 +33,19 @@
     log_file_desc: grid_root.sh
   tags:
     - apex_api
+
+- name: db checklist status file upload for Upload root.sh log for grid
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status_file.yml
+  vars:
+    checklist_body:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "GRID INSTALL"
+      task_id: "{{ ticket_ref }}"
+      task_status: "Upload Grid root.sh log"
+      task_message: "Grid root.sh Log {{ ansible_hostname }}"
+      file_mimetype: "text/plain"
+      record_type: "file_upload"
+      logfile_path: "{{ log_files.files | sort(attribute='mtime',reverse=true) | first | json_query('path') }}"
+  tags:
+  - apex_api
