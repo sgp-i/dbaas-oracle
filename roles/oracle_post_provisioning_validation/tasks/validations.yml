@@ -96,22 +96,32 @@
       changed_when: False
       register: huge_page_total_size
 
-    - name: check for the directory structure of scripts/logs/ctl
-      shell: "ls {{ oracle_base }}/admin/ctl | grep ctl"
+    # - name: check for the directory structure of scripts/logs/ctl
+    #   shell: "ls {{ oracle_base }}/admin/ctl | grep ctl"
+    #   register: ctl_file_status
+    #   ignore_errors: yes
+    #   no_log: True
+    #
+    #
+    # - name: set ctl_file_status for stdout
+    #   set_fact:
+    #     ctl_file_exist: "{{ ctl_file_status.stdout }}"
+    #   when: ctl_file_status.stdout != ""
+    #
+    # - name: set ctl_file_status for stderr
+    #   set_fact:
+    #     ctl_file_exist: "{{ ctl_file_status.stderr }}"
+    #   when: ctl_file_status.stderr != ""
+
+    - name : check for scripts/logs/ctl directory structure exist
+      stat:
+        path: {{ oracle_base }}/admin/ctl
       register: ctl_file_status
-      ignore_errors: yes
-      no_log: True
 
-
-    - name: set ctl_file_status for stdout
+    - name: Store the value of directory structure
       set_fact:
-        ctl_file_exist: "{{ ctl_file_status.stdout }}"
-      when: ctl_file_status.stdout != ""
-
-    - name: set ctl_file_status for stderr
-      set_fact:
-        ctl_file_exist: "{{ ctl_file_status.stderr }}"
-      when: ctl_file_status.stderr != ""
+        ctl_file_exist: The directory exist at {{ oracle_base }}/admin/ctl
+      when: ctl_file_status.stat.exists == true and ctl_file_status.stat.isdir == true
 
     - name: check for the .profile file in oracle home
       shell: "ls -a $HOME | grep .profile"
@@ -369,9 +379,9 @@
                {%- endif -%}"
 
     - name: check for ctl file directory structure
-      expected_value: "The ctl file should exist in specific directory i.e. scripts/logs/ctl"
+      expected_value: "The ctl file should exist in specific directory"
       actual_value: "{{ ctl_file_exist }}"
-      status: "{% if ctl_file_status.stdout != '' -%}PASSED
+      status: "{% if ctl_file_exist.stdout == 'The directory exist at {{ oracle_base }}/admin/ctl' -%}PASSED
                {%- else -%}FAILED
                {%- endif -%}"
 
@@ -587,7 +597,8 @@
           - check_type: "verify memory status"
             value: "{{ verify_memory_status.stdout_lines | default('') }}"
       status: ""
-  when: oracle_context_database and oracle_context_grid
+  when: oracle_context_database = "True" and oracle_context_grid = "True"
+
 
 -  debug:
     var: checklist
