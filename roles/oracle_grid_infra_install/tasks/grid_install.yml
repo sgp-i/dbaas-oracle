@@ -66,6 +66,23 @@
     tags:
     - apex_api
 
+- name: db checklist status file upload for Grid Install
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status_file.yml
+  vars:
+    checklist_body:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "GRID INSTALL"
+      task_id: "{{ ticket_ref }}"
+      task_status: "Upload Grid Install Log"
+      task_message: "Grid Install Log {{ ansible_hostname }} "
+      file_mimetype: "text/plain"
+      record_type: "file_upload"
+      logfile_path: "{{ gi_install_log.files[0].path }}"
+  tags:
+  - apex_api
+
+
   - name: execute orainstRoot.sh script
     block:
     - name: execute orainstRoot.sh script

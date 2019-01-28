@@ -31,3 +31,5 @@ setup_ssh_user_equivalency: "{% if checklist_task == 'cluster' -%}True
 cluster_nodes: "{{ ansible_play_hosts }}"
 
 master_node: "{{ ansible_play_hosts | first }}"
+
+cluster_name: "{{ cluster_name }}"
