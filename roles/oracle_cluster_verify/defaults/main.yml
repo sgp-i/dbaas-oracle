@@ -13,6 +13,7 @@ oracle_db_name: +ASM
 
 oracle_installer_path: https://vm0pnyumxxw0001.twcable.com/yum/source/ORACLE_DB
 
+
 known_cluvfy_issues: 
   - "Group Existence: asmadmin"
   - "Group Membership: asmadmin"

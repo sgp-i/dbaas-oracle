@@ -32,6 +32,18 @@
   tags:
   - apex_api
 
+- name: host checklist post update for Post Grid
+  import_role: oracle_api_services.yml
+  tasks_from: host_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for Grid"
+    task_id: "{{ ticket_ref }}"
+    task_status: "STARTED"
+    task_message: "Post Provisoning for Grid on {{ ansible_hostname }}"
+  tags:
+  - apex_api
+
 - block:
   - name: Creating no sid entry in ORATAB file
     lineinfile:
@@ -75,7 +87,7 @@
     become_user: "{{ oracle_user }}"
 
   - name: Execute adrci setup
-    include_tasks: adrci_setup.yml  
+    include_tasks: adrci_setup.yml
     when: master_node == inventory_hostname
 
   - name: Set up Directory in ORACLE_ADMIN
@@ -98,13 +110,25 @@
         #ID: "{{ checklist_id }}"
         new_entry: TRUE
         host_name: "{{ ansible_hostname }}"
-        checklist_type: "POST PROVISION GRID"             
+        checklist_type: "POST PROVISION GRID"
         checklist_category: POST PROVISIONING
         post_build_status: SUCCESSFUL
         ticket_ref: "{{ ticket_ref }}"
         task_desc: 'EXECUTING Post Provisioning for Grid'
     tags:
       - apex_api
+
+  - name: host checklist status post for post provisioning for grid
+    import_role: oracle_api_services.yml
+    tasks_from: host_checklist_status.yml
+    vars:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "Post Provisioning for Grid"
+      task_id: "{{ ticket_ref }}"
+      task_status: "SUCCESSFUL"
+      task_message: "Post Provisoning for Grid on {{ ansible_hostname }}"
+    tags:
+    - apex_api
 
   rescue:
     - name: host checklist post update for Post Grid
@@ -114,10 +138,22 @@
           #ID: "{{ checklist_id }}"
           new_entry: TRUE
           host_name: "{{ ansible_hostname }}"
-          checklist_type: "POST PROVISION GRID"             
+          checklist_type: "POST PROVISION GRID"
           checklist_category: POST PROVISIONING
           post_build_status: FAILED
           ticket_ref: "{{ ticket_ref }}"
           task_desc: 'EXECUTING Post Provisioning for Grid'
+      tags:
+      - apex_api
+
+    - name: host checklist status post for post provisioning for grid
+      import_role: oracle_api_services.yml
+      tasks_from: host_checklist_status.yml
+      vars:
+        task_key: "{{ ansible_hostname }}"
+        task_area: "Post Provisioning for Grid"
+        task_id: "{{ ticket_ref }}"
+        task_status: "FAILED"
+        task_message: "Post Provisoning for Grid on {{ ansible_hostname }}"
       tags:
       - apex_api

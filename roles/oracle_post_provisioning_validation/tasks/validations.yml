@@ -15,6 +15,18 @@
   tags:
   - apex_api
 
+- name: host checklist post update for post provisioning validation
+  import_role: oracle_api_services.yml
+  tasks_from: host_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Validation"
+    task_id: "{{ ticket_ref }}"
+    task_status: "STARTED"
+    task_message: "Post Validations for Provisioning on {{ ansible_hostname }}"
+  tags:
+  - apex_api
+
 - name: check oracle user
   user:
     name: oracle
@@ -628,6 +640,7 @@
   copy:
     dest: "{% if oracle_context_grid -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context_database -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- elif oracle_context_database and oracle_context_grid -%}{{ oracle_tmp }}/combined_post_validaton_result.json
               {%- endif %}"
     content: "{{ checklist }}"
 
@@ -642,8 +655,28 @@
   vars:
     logfile_path: "{% if oracle_context_grid -%}{{ oracle_tmp }}/grid_post_validaton_result.json
               {%- elif oracle_context_database -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+              {%- elif oracle_context_database -%}{{ oracle_tmp }}/combined_post_validaton_result.json
               {%- endif %}"
     log_file_desc: post validation
+  tags:
+  - apex_api
+
+- name: upload log for post provisioning validation
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status_file.yml
+  vars:
+    checklist_body:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "PRE-CHECK"
+      task_id: "{{ ticket_ref }}"
+      task_status: "Upload Checklist"
+      task_message: "Post Validation Check on {{ ansible_hostname }} "
+      file_mimetype: "text/plain"
+      record_type: "file_upload"
+      logfile_path:  "{% if oracle_context_grid -%}{{ oracle_tmp }}/grid_post_validaton_result.json
+                {%- elif oracle_context_database -%}{{ oracle_tmp }}/{{ oracle_db_name }}_post_validaton_result.json
+                {%- elif oracle_context_database -%}{{ oracle_tmp }}/combined_post_validaton_result.json
+                {%- endif %}"
   tags:
   - apex_api
 
@@ -664,6 +697,19 @@
   tags:
   - apex_api
 
+- name: host checklist post update for post provisioning validation
+  import_role: oracle_api_services.yml
+  tasks_from: host_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Validation"
+    task_id: "{{ ticket_ref }}"
+    task_status: "FAILED"
+    task_message: "Post Validations for Provisioning on {{ ansible_hostname }}"
+  when: checklist | json_query('[?status == `FAILED`]') | length > 1
+  tags:
+  - apex_api
+
 - name: db checklist post update for post provisioning validation
   include_tasks: host_checklist_post_update.yml
   vars:
@@ -677,6 +723,19 @@
       checklist_category: POST VALIDATION
       post_build_status: "SUCCESSFUL"
       task_desc: post validation
+  when: checklist | json_query('[?status == `FAILED`]') | length == 0
+  tags:
+  - apex_api
+
+- name: host checklist post update for post provisioning validation
+  import_role: oracle_api_services.yml
+  tasks_from: host_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Validation"
+    task_id: "{{ ticket_ref }}"
+    task_status: "SUCCESSFUL"
+    task_message: "Post Validations for Provisioning on {{ ansible_hostname }}"
   when: checklist | json_query('[?status == `FAILED`]') | length == 0
   tags:
   - apex_api

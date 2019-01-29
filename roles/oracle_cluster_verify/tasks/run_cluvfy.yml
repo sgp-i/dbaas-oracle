@@ -13,6 +13,18 @@
   tags:
   - apex_api
 
+- name: db checklist status post for CLUVFY
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ cluster_name }}"
+    task_area: "CLUVFY"
+    task_id: "{{ ticket_ref }}"
+    task_status: "STARTED"
+    task_message: "CLUVRY for {{ cluster_name }} - {{ ansible_hostname }} "
+  tags:
+  - apex_api
+
 - name: create the cluster verify directory to the oracle user
   file:
     group: "{{ oracle_group }}"
@@ -95,6 +107,22 @@
   tags:
   - apex_api
 
+- name: db checklist status file upload for Cluvfy
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status_file.yml
+  vars:
+    checklist_body:
+      task_key: "{{ ansible_hostname }}"
+      task_area: "CLUVFY"
+      task_id: "{{ ticket_ref }}"
+      task_status: "Upload CLUFY"
+      task_message: "CLUVFY {{ cluster_name }} "
+      file_mimetype: "text/plain"
+      record_type: "file_upload"
+      logfile_path: "{{ oracle_tmp }}/cluvfy_stdout.out"
+  tags:
+  - apex_api
+
 - name: Check Cluster Verify Result
   set_fact:
     final_result: "{% if cluvfy_results.rc | default(1) != 0 and
@@ -102,6 +130,19 @@
                    {%- else -%}SUCCESSFUL
                    {%- endif %}"
 
+
+
+- name: db checklist status post for CLUVFY
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "CLUVFY"
+    task_id: "{{ ticket_ref }}"
+    task_status:  "{{ final_result }}"
+    task_message: "CLUVRY for {{ cluster_name }} - {{ ansible_hostname }} "
+    tags:
+    - apex_api
 - name: include host checklist post update for run cluvfy
   include_tasks: "host_checklist_post_update.yml"
   vars:

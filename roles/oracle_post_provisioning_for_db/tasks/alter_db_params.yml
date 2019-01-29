@@ -20,11 +20,23 @@
     chklst_json_body:
       new_entry: true
       host_name: "{{ ansible_hostname }}"
-      db_name: "{{ oracle_db_name }}" 
+      db_name: "{{ oracle_db_name }}"
       ticket_ref: "{{ ticket_ref }}"
       #ID: "{{ checklist_id }}"
       checklist_type: "POST PROVISIONING for db"
       checklist_category: db install
       post_build_status: "SUCCESS"
+  tags:
+  - apex_api
+
+- name: db checklist status post for post provisioning for db
+  import_role: oracle_api_services.yml
+  tasks_from: db_checklist_status.yml
+  vars:
+    task_key: "{{ ansible_hostname }}"
+    task_area: "Post Provisioning for DB"
+    task_id: "{{ ticket_ref }}"
+    task_status: "SUCCESSFUL"
+    task_message: "Post Provisoning for DB on {{ ansible_hostname }} for {{ oracle_db_name }}"
   tags:
   - apex_api
