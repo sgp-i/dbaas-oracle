@@ -18,7 +18,7 @@
 - name: host checklist post update for post provisioning validation
   import_role:
     name: oracle_api_services
-  tasks_from: host_checklist_status.yml
+    tasks_from: host_checklist_status
   vars:
     task_key: "{{ ansible_hostname }}"
     task_area: "Post Validation"
